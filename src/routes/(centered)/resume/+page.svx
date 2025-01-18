@@ -1,0 +1,115 @@
+<main class=resume>
+
+# John Kim Murphy *john@leftium.com*
+
+## Selected Experience
+
+###  Freelance Consultant *2013–Present*
+#### Seoul, Korea & Minneapolis, MN
+- Web app design & development (Gallaudet University)
+- Software development (HomeSpotter)
+- UX analysis and design (Igloo Security)
+
+###  Technology Researcher *2011–2014*
+#### BD (Bluedigm), *Seoul*
+- Evaluate emerging technologies, with focus on big data and open source
+- Present and train other developers in these technologies
+
+###  Software Development Engineer *2008–2009*
+#### Microsoft Korea, *Seoul*
+- Document and maintain Windows/Office Korean IME
+- Help develop Group Approval (SharePoint Server feature)
+
+###  Software Engineer *2005–2007*
+#### Lockheed Martin Transportation and Security Solutions, *Eagan, MN*
+- Analyze air traffic control software bug reports
+- Design, implement, and test solutions to defects
+- Implement new functionality based on design documents
+
+###  Research Scientist *2004*
+#### GroupLens Research Group, *University of Minnesota, Minneapolis, MN*
+- Location-aware mobile application development research
+- Author research paper
+- Develop mLibrary (multi-threaded library to send GPS data from mobile devices over-the-air to a remote database)
+- Train other lab members in J2ME development and use of mLibrary
+
+
+## Education
+- B.S., Computer Science, May 2004
+- Minor, Korean Languages and Literature, May 2004
+- University of Minnesota, Institute of Technology, Minneapolis, MN
+- Summa cum laude with distinction
+- GPA: 3.8/4.0
+
+
+</main>
+
+<style lang="postcss">
+	main.resume {
+		max-width: 800px;
+		margin: 2rem auto;
+
+		--font-size: 0.9rem;
+		--font-size: 1.1rem;
+	}
+
+	h1,
+	h2,
+	h3,
+	h4,
+	ul,
+    li {
+		margin-top: 0em;
+		//margin-bottom: 0em;
+	}
+
+    h3,
+    h4 {
+        em {
+            font-size: 80%;
+            font-weight: 500;
+			opacity: 0.6;
+        }
+    }
+
+	h1 {
+		/* Title: Name + email */
+		text-align: center;
+	}
+
+	h2 {
+		/* Section */
+		opacity: 0.4;
+
+		text-align: end;
+		text-transform: uppercase;
+	}
+
+	h3 {
+		/* Job Title */
+        margin-bottom: 0;
+		em {
+			/* Date */
+		}
+	}
+
+	h4 {
+		/* Company */
+        margin-bottom: 0;
+        em {
+			/* Location */
+		}
+	}
+
+	ul {
+		padding-left: 22px;
+
+       	li {
+            &::marker {
+                color: rgba(0, 0, 0, 0.15);
+            }
+        }
+	}
+
+
+</style>
