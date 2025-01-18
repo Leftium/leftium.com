@@ -41,6 +41,9 @@ importers:
       mdsvex:
         specifier: ^0.12.3
         version: 0.12.3(svelte@5.18.0)
+      open-props-scss:
+        specifier: ^0.8.0
+        version: 0.8.0
       prettier:
         specifier: ^3.4.2
         version: 3.4.2
@@ -1199,6 +1202,9 @@ packages:
 
   once@1.4.0:
     resolution: {integrity: sha512-lNaJgI+2Q5URQBkccEKHTQOPaXdUxnZZElQTZY0MFUAuaEqe1E+Nyvgdz/aIyNi6Z9MzO5dv1H8n58/GELp3+w==}
+
+  open-props-scss@0.8.0:
+    resolution: {integrity: sha512-+y3nOEd+CEkpeMPADoaL11PYVH9OM4D7OLB6qKm65sOkpLMdtts2CQ457glRwpYi3A3jtfujBLrMErNSeaDQDA==}
 
   optionator@0.9.4:
     resolution: {integrity: sha512-6IpQ7mKUxRcZNLIObR0hz7lxsapSSIYNZJwXPGeF0mTVqGKFIXj1DQcMoT22S3ROcLyY/rz0PWaWZ9ayWmad9g==}
@@ -2700,6 +2706,8 @@ snapshots:
   once@1.4.0:
     dependencies:
       wrappy: 1.0.2
+
+  open-props-scss@0.8.0: {}
 
   optionator@0.9.4:
     dependencies:

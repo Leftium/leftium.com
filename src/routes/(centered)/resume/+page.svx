@@ -5,7 +5,7 @@
 ## Selected Experience
 
 ###  Freelance Consultant *2013–Present*
-#### Seoul, Korea & Minneapolis, MN
+#### *Seoul, Korea & Minneapolis, MN*
 - Web app design & development (Gallaudet University)
 - Software development (HomeSpotter)
 - UX analysis and design (Igloo Security)
@@ -44,13 +44,12 @@
 
 </main>
 
-<style lang="postcss">
+<style lang="scss">
+    @use 'open-props-scss' as *;
+
 	main.resume {
 		max-width: 800px;
-		margin: 2rem auto;
-
-		--font-size: 0.9rem;
-		--font-size: 1.1rem;
+		margin: $size-7 auto;
 	}
 
 	h1,
@@ -59,26 +58,31 @@
 	h4,
 	ul,
     li {
-		margin-top: 0em;
-		//margin-bottom: 0em;
+ 		margin-block: 0;
+        font-size: $font-size-1;
 	}
 
+    h1,
     h3,
     h4 {
         em {
-            font-size: 80%;
-            font-weight: 500;
+            font-size: $font-size-1;
+            font-weight: $font-weight-5;
 			opacity: 0.6;
+            font-style: normal;
         }
     }
 
 	h1 {
-		/* Title: Name + email */
-		text-align: center;
+		// Title: name, email
+        font-size: $font-size-6;
+		text-align: end;
 	}
 
 	h2 {
-		/* Section */
+		// Section
+        margin-top: $size-3;
+        font-size: $font-size-5;
 		opacity: 0.4;
 
 		text-align: end;
@@ -86,28 +90,20 @@
 	}
 
 	h3 {
-		/* Job Title */
-        margin-bottom: 0;
-		em {
-			/* Date */
-		}
+		// Job title, date
+        margin-top: $size-3;
+        font-size: $font-size-3;
 	}
 
 	h4 {
-		/* Company */
-        margin-bottom: 0;
-        em {
-			/* Location */
-		}
+		// Company, location
+        font-size: $font-size-2;
 	}
 
 	ul {
-		padding-left: 22px;
-
-       	li {
-            &::marker {
-                color: rgba(0, 0, 0, 0.15);
-            }
+		padding-left: $size-px-5;
+        li::marker {
+            color: rgba(0, 0, 0, 0.15);
         }
 	}
 
