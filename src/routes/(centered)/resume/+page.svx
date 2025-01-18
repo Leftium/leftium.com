@@ -1,7 +1,7 @@
 <main class=resume>
 
 # John Kim Murphy
-www.leftum.com | john@leftium.com
+www.leftium.com | john@leftium.com
 
 ## Selected Experience
 
@@ -12,7 +12,7 @@ www.leftum.com | john@leftium.com
 - UX analysis and design (Igloo Security)
 
 ###  Technology Researcher *2011–2014*
-#### Bluedigm, *Seoul, KR*
+#### Bluedigm *Seoul, KR*
 - Evaluate emerging technologies, with focus on big data and open source
 - Present and train other developers in these technologies
 
