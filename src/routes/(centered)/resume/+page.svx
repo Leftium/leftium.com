@@ -49,7 +49,7 @@
 
 	main.resume {
 		max-width: 800px;
-		margin: $size-7 auto;
+		margin: $size-1 auto;
 	}
 
 	h1,
@@ -70,18 +70,24 @@
             font-weight: $font-weight-5;
 			opacity: 0.6;
             font-style: normal;
+
+            text-wrap: nowrap;
         }
     }
 
 	h1 {
 		// Title: name, email
-        font-size: $font-size-6;
+        font-size: $font-size-8;
 		text-align: end;
 	}
 
+    p {
+        margin-bottom: $size-3;
+        text-align: end;
+    }
+
 	h2 {
 		// Section
-        margin-top: $size-3;
         font-size: $font-size-5;
 		opacity: 0.4;
 
@@ -91,7 +97,6 @@
 
 	h3 {
 		// Job title, date
-        margin-top: $size-3;
         font-size: $font-size-3;
 	}
 
@@ -101,6 +106,7 @@
 	}
 
 	ul {
+        margin-bottom: $size-3;
 		padding-left: $size-px-5;
         li::marker {
             color: rgba(0, 0, 0, 0.15);
