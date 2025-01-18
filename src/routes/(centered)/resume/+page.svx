@@ -79,6 +79,7 @@ www.leftium.com | john@leftium.com
 
 	h1 {
 		// Title: name, email
+        padding-top: $size-3;
         font-size: $font-size-8;
 		text-align: end;
 	}
@@ -108,7 +109,7 @@ www.leftium.com | john@leftium.com
 	}
 
 	ul {
-        margin-bottom: $size-3;
+        padding-bottom: $size-3;
 		padding-left: $size-px-5;
         li::marker {
             color: rgba(0, 0, 0, 0.15);
