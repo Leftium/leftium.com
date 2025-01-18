@@ -49,8 +49,9 @@ www.leftum.com | john@leftium.com
     @use 'open-props-scss' as *;
 
 	main.resume {
-		max-width: 800px;
-		margin: $size-1 auto;
+		max-width: 750px;
+		margin: 0 auto;
+        padding: 0 $size-7;
 	}
 
 	h1,
