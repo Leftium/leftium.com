@@ -1,0 +1,80 @@
+@use 'open-props-scss' as *;
+
+.resume {
+	h1,
+	h2,
+	h3,
+	h4,
+	ul,
+	li {
+		margin-block: 0;
+		font-size: $font-size-1;
+	}
+
+	h1,
+	h3,
+	h4 {
+		em {
+			font-size: $font-size-1;
+			font-weight: $font-weight-5;
+			opacity: 0.5;
+			font-style: normal;
+
+			text-wrap: nowrap;
+		}
+	}
+
+	h1 {
+		// Title: name, email
+		padding-top: $size-3;
+		font-size: $font-size-8;
+		text-align: end;
+	}
+
+	p {
+		margin-bottom: $size-3;
+		text-align: end;
+	}
+
+	h2 {
+		// Section
+		font-size: $font-size-5;
+		opacity: 0.5;
+
+		text-align: end;
+		text-transform: uppercase;
+	}
+
+	h3 {
+		// Job title, date
+		font-size: $font-size-3;
+	}
+
+	h4 {
+		// Company, location
+		font-size: $font-size-2;
+	}
+
+	ul {
+		padding-bottom: $size-3;
+		padding-left: $size-px-5;
+	}
+
+	li::marker {
+		color: rgba(0, 0, 0, 0.15);
+	}
+
+	@mixin dark-marker {
+		li::marker {
+			color: rgba(255, 255, 255, 0.3);
+		}
+	}
+
+	@media only screen and (prefers-color-scheme: dark) {
+		@include dark-marker;
+	}
+
+	[data-theme='dark'] {
+		@include dark-marker;
+	}
+}
