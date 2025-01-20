@@ -1,9 +1,8 @@
 BEGIN:VCARD
 VERSION:3.0
-FN;CHARSET=UTF-8:John Kim Murphy
-N;CHARSET=UTF-8:Murphy;John;Kim;;
+N:Murphy;John;Kim;;
 EMAIL;type=internet:john@leftium.com
-TEL;TYPE=CELL:010.2024.5601
+TEL;TYPE=CELL:(010) 2024-5646
 URL;TYPE=web site:leftium.com
 URL;TYPE=Facebook:facebook.com/Leftium
 URL;TYPE=KakaoTalk (Leftium):qr.kakao.com/talk/jZRvFNjxnQ3I0BGhFKzILKmBbmA-
