@@ -5,15 +5,44 @@
 	h2,
 	h3,
 	h4,
+	h5,
+	h6,
+	dl,
 	ul,
 	li {
 		margin-block: 0;
-		font-size: $font-size-1;
 	}
 
-	h1,
-	h3,
-	h4 {
+	h1 {
+		// Title: name:
+		padding-top: $size-3;
+		font-size: $font-size-8;
+		text-align: end;
+	}
+
+	p {
+		// Web site and email address:
+		margin-bottom: $size-3;
+		text-align: end;
+	}
+
+	h2 {
+		// Section headers (Experience, Education):
+		font-size: $font-size-5;
+		opacity: 0.5;
+
+		text-align: end;
+		text-transform: uppercase;
+	}
+
+	dl dt,
+	dl dd {
+		// Job title, date
+		margin-inline: 0;
+		font-size: $font-size-3;
+		font-weight: $font-weight-7;
+		line-height: 1.2; //$font-lineheight-1;
+
 		em {
 			font-size: $font-size-1;
 			font-weight: $font-weight-5;
@@ -24,33 +53,7 @@
 		}
 	}
 
-	h1 {
-		// Title: name, email
-		padding-top: $size-3;
-		font-size: $font-size-8;
-		text-align: end;
-	}
-
-	p {
-		margin-bottom: $size-3;
-		text-align: end;
-	}
-
-	h2 {
-		// Section
-		font-size: $font-size-5;
-		opacity: 0.5;
-
-		text-align: end;
-		text-transform: uppercase;
-	}
-
-	h3 {
-		// Job title, date
-		font-size: $font-size-3;
-	}
-
-	h4 {
+	dl dd {
 		// Company, location
 		font-size: $font-size-2;
 	}
