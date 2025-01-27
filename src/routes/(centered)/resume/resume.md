@@ -1,5 +1,5 @@
 # John Kim Murphy
-www.leftium.com | john@leftium.com
+Leftium.com | john@leftium.com
 
 
 ## Selected Experience
@@ -35,8 +35,8 @@ Research Scientist _2004_
 
 
 ## Education
-  - University of Minnesota, Institute of Technology, Minneapolis, MN
   - B.S., Computer Science, May 2004
   - Minor, Korean Languages and Literature, May 2004
+  - University of Minnesota, Institute of Technology, Minneapolis, MN
   - Summa cum laude with distinction
   - GPA: 3.8/4.0
