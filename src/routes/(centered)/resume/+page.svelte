@@ -1,12 +1,12 @@
 <script lang="ts">
 	import '$lib/resume.scss';
-    import markdownit from 'markdown-it'
-    import markdownitDeflist from 'markdown-it-deflist'
+	import markdownit from 'markdown-it';
+	import markdownitDeflist from 'markdown-it-deflist';
 
 	import resume from './resume.md?raw';
 
-    const md = markdownit().use(markdownitDeflist)
-    const resumeHtml = md.render(resume)
+	const md = markdownit().use(markdownitDeflist);
+	const resumeHtml = md.render(resume);
 </script>
 
 <main class="resume">
@@ -17,8 +17,7 @@
 	@use 'open-props-scss' as *;
 
 	main.resume {
-		max-width: 750px;
+		max-width: 63ch;
 		margin: 0 auto;
-		padding: 0 $size-7;
 	}
 </style>

@@ -3,54 +3,76 @@
 .resume {
 	h1,
 	h2,
-	h3,
-	h4,
-	h5,
-	h6,
 	dl,
 	ul,
-	li {
+	li,
+	p {
 		margin-block: 0;
+	}
+
+	h1,
+	p,
+	h2 {
+		// Title: name, web & email address, section headers:
+		text-align: end;
+	}
+
+	h2,
+	dl {
+		// Section headers (Experience, Education):
+		// Job title, date
+		margin-top: $size-3;
 	}
 
 	h1 {
 		// Title: name:
-		padding-top: $size-3;
 		font-size: $font-size-8;
-		text-align: end;
-	}
-
-	p {
-		// Web site and email address:
-		margin-bottom: $size-3;
-		text-align: end;
+		color: $stone-12;
 	}
 
 	h2 {
 		// Section headers (Experience, Education):
 		font-size: $font-size-5;
-		opacity: 0.5;
+		color: $stone-6;
 
-		text-align: end;
 		text-transform: uppercase;
 	}
 
-	dl dt,
+	dl dt, // Job title, date
 	dl dd {
-		// Job title, date
+		// Company, location
+
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		flex-wrap: wrap;
+
+		padding-inline: $size-1;
 		margin-inline: 0;
-		font-size: $font-size-3;
+
 		font-weight: $font-weight-7;
-		line-height: 1.2; //$font-lineheight-1;
+		font-size: $font-size-3;
+		line-height: $font-lineheight-1;
 
 		em {
-			font-size: $font-size-1;
+			flex-grow: 1;
+
 			font-weight: $font-weight-5;
-			opacity: 0.5;
+			font-size: $font-size-1;
+
+			color: $stone-5;
+
 			font-style: normal;
 
 			text-wrap: nowrap;
+			text-align: end;
 		}
+	}
+
+	dl dt {
+		// Job title, date
+		color: $stone-0;
+		background: linear-gradient(170deg, blue, 45%, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0));
 	}
 
 	dl dd {
@@ -59,25 +81,38 @@
 	}
 
 	ul {
-		padding-bottom: $size-3;
-		padding-left: $size-px-5;
+		padding-left: $size-px-6;
 	}
 
 	li::marker {
-		color: rgba(0, 0, 0, 0.15);
+		color: $stone-2;
 	}
 
-	@mixin dark-marker {
+	@mixin dark-resume {
+		h1 {
+			color: $stone-1;
+		}
+		h2 {
+			color: $stone-5;
+		}
+
+		dl dt {
+			//background-color: $stone-10;
+			em {
+				color: $stone-7;
+			}
+		}
+
 		li::marker {
-			color: rgba(255, 255, 255, 0.3);
+			color: $stone-9;
 		}
 	}
 
 	@media only screen and (prefers-color-scheme: dark) {
-		@include dark-marker;
+		@include dark-resume;
 	}
 
 	[data-theme='dark'] {
-		@include dark-marker;
+		@include dark-resume;
 	}
 }
