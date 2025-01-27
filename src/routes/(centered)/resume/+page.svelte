@@ -1,10 +1,16 @@
 <script lang="ts">
 	import '$lib/resume.scss';
-	import Resume from './Resume.svx';
+    import markdownit from 'markdown-it'
+    import markdownitDeflist from 'markdown-it-deflist'
+
+	import resume from './resume.md?raw';
+
+    const md = markdownit().use(markdownitDeflist)
+    const resumeHtml = md.render(resume)
 </script>
 
 <main class="resume">
-	<Resume />
+	{@html resumeHtml}
 </main>
 
 <style lang="scss">
