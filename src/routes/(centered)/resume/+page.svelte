@@ -1,14 +1,14 @@
 <script lang="ts">
-	import '$lib/resume.scss';
-	import markdownit from 'markdown-it';
-	import markdownitDeflist from 'markdown-it-deflist';
+	import '$lib/resume.scss'
+	import markdownit from 'markdown-it'
+	import markdownitDeflist from 'markdown-it-deflist'
 
-	import resume from './resume.md?raw';
+	import resume from './resume.md?raw'
 
 	const md = markdownit({
-		linkify: true
-	}).use(markdownitDeflist);
-	const resumeHtml = md.render(resume);
+		linkify: true,
+	}).use(markdownitDeflist)
+	const resumeHtml = md.render(resume)
 </script>
 
 <main class="resume">
