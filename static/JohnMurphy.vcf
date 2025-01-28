@@ -1,9 +1,9 @@
 BEGIN:VCARD
 VERSION:3.0
-N:Murphy;John;Kim;;
+N:Murphy;John;Kim
 EMAIL;type=internet:john@leftium.com
 TEL;TYPE=CELL:(010) 2024-5646
-URL;TYPE=web site:leftium.com
+URL;TYPE=web:leftium.com
 URL;TYPE=Facebook:facebook.com/Leftium
 URL;TYPE=KakaoTalk (Leftium):qr.kakao.com/talk/jZRvFNjxnQ3I0BGhFKzILKmBbmA-
 REV:2023-03-27T10:56:19.464Z
