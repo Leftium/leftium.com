@@ -1,4 +1,4 @@
-![Logo](/leftium.png)
+![Logo](//leftium.com/le.png)
 
 # John Kim Murphy
 Leftium.com | john@leftium.com
