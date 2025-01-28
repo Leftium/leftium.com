@@ -1,3 +1,5 @@
+![Logo](/leftium.png)
+
 # John Kim Murphy
 Leftium.com | john@leftium.com
 
