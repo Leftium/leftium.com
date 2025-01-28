@@ -5,7 +5,9 @@
 
 	import resume from './resume.md?raw';
 
-	const md = markdownit().use(markdownitDeflist);
+	const md = markdownit({
+		linkify: true
+	}).use(markdownitDeflist);
 	const resumeHtml = md.render(resume);
 </script>
 
