@@ -60,8 +60,7 @@
 		align-items: baseline;
 		flex-wrap: wrap;
 
-		padding-inline: $size-2;
-
+		padding-inline: $size-1;
 		margin-inline: 0;
 
 		font-weight: $font-weight-7;
@@ -87,8 +86,6 @@
 		// Job title, date
 		color: $stone-0;
 		background: linear-gradient(170deg, blue, 45%, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0));
-		border-top-left-radius: $radius-conditional-3;
-		border-bottom-left-radius: $radius-conditional-1;
 	}
 
 	dl dd {
@@ -97,7 +94,7 @@
 	}
 
 	ul {
-		padding-left: $size-px-7;
+		padding-left: $size-px-6;
 	}
 
 	li::marker {
