@@ -1,12 +1,5 @@
 @use 'open-props-scss' as *;
 
-@media (min-width: 576px) {
-	.container {
-		padding-right: 1rem;
-		padding-left: 1rem;
-	}
-}
-
 .resume {
 	h1,
 	h2,

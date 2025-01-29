@@ -15,6 +15,13 @@
 		)
 );
 
+@media (min-width: 576px) {
+	.container {
+		padding-right: 1rem;
+		padding-left: 1rem;
+	}
+}
+
 @media only screen {
 	body {
 		background-color: lightgray;
