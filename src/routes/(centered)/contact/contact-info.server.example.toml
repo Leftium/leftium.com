@@ -1,0 +1,32 @@
+
+vcard = '''
+N:홍;길동;
+N:Doe;John;Q.
+
+TEL:+1 212 555 6789
+TEL;TYPE=CELL;:+82 10 5555 6789
+TEL;TYPE=custom type;:+1 212 555 6789
+
+EMAIL:john@example.com
+EMAIL;TYPE=HOME;:john@example.net
+EMAIL;TYPE=custom;:john@example.org
+
+URL:example.com
+URL;TYPE=web:leftium.com
+URL;TYPE=Facebook:facebook.com/zuck
+
+ADR:;;1600 Pennsylvania Avenue NW;Washington;D.C.;20500;USA
+ADR;TYPE=WORK;:;;161 Sajik-ro, Jongno-gu;Seoul;;03045;South Korea
+ADR;TYPE=custom;:;;서울특별시 종로구 사직로 161;서울특별시;;03045;대한민국
+'''
+
+[sets.public]
+tags = ['N:Doe;John;Q.', 'EMAIL:john@example.com']
+
+[sets.us_public]
+tags = ['N:Doe;John;Q.', 'EMAIL:john@example.com']
+secret = ''
+
+[sets.kr_public]
+tags = ['N:Doe;John;Q.', 'EMAIL:john@example.com']
+secret = ''

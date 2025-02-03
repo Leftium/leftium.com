@@ -5,6 +5,8 @@
 	import centerText from 'markdown-it-center-text'
 	import deflist from 'markdown-it-deflist'
 
+	let { data } = $props()
+
 	const html = markdownit({
 		html: true,
 		linkify: true,
@@ -37,6 +39,8 @@
 </script>
 
 <scope-css>{@html html}</scope-css>
+
+<pre>{JSON.stringify(data.contactInfo, null, 4)}</pre>
 
 <style>
 	scope-css {
