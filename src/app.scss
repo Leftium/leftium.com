@@ -15,10 +15,9 @@
 		)
 );
 
-@media (min-width: 576px) {
+@media only screen and (min-width: 576px) {
 	.container {
-		padding-right: 1rem;
-		padding-left: 1rem;
+		padding: 1rem;
 	}
 }
 

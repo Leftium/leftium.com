@@ -18,6 +18,4 @@
     `)
 </script>
 
-<article>
-	{@html html}
-</article>
+{@html html}
