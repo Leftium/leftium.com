@@ -7,22 +7,23 @@
 		linkify: true,
 	}).use(attr).render(undent`
         # John's Site
-        [View John's Resume](/resume){role=button .full}
 
-        ## vCard
+        [View John's resume](/resume){role=button .full}
 
-        [Download vCard as VCF file](/api/vcard){role=button .full download}
-
-        ### QR Code:
-
-        ![](/api/vcard?format=png)
+        [Contact Info](/contact)
     `)
 </script>
 
 <scope-css>{@html html}</scope-css>
 
 <style>
-	scope-css :global(.full) {
-		width: 100%;
+	scope-css {
+		:global(h1) {
+			text-align: center;
+		}
+
+		:global(.full) {
+			width: 100%;
+		}
 	}
 </style>

@@ -9,3 +9,9 @@ declare module 'markdown-it-attrs' {
 	const plugin: Plugin
 	export default plugin
 }
+
+declare module 'markdown-it-center-text' {
+	import { Plugin } from 'markdown-it'
+	const plugin: Plugin
+	export default plugin
+}

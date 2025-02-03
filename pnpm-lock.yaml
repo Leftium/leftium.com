@@ -50,6 +50,9 @@ importers:
       markdown-it-attrs:
         specifier: ^4.3.1
         version: 4.3.1(markdown-it@14.1.0)
+      markdown-it-center-text:
+        specifier: ^1.0.4
+        version: 1.0.4
       markdown-it-deflist:
         specifier: ^3.0.0
         version: 3.0.0
@@ -1195,6 +1198,9 @@ packages:
     engines: {node: '>=6'}
     peerDependencies:
       markdown-it: '>= 9.0.0'
+
+  markdown-it-center-text@1.0.4:
+    resolution: {integrity: sha512-7AA0gek4FYJ6gWB2kdGNx06k3GrlO97nEMY7uovQ70/6MtfqPznrgnKoWO3V4p36m3RT5GeQIFXqBH9Wr4iL/g==}
 
   markdown-it-deflist@3.0.0:
     resolution: {integrity: sha512-OxPmQ/keJZwbubjiQWOvKLHwpV2wZ5I3Smc81OjhwbfJsjdRrvD5aLTQxmZzzePeO0kbGzAo3Krk4QLgA8PWLg==}
@@ -2815,6 +2821,8 @@ snapshots:
   markdown-it-attrs@4.3.1(markdown-it@14.1.0):
     dependencies:
       markdown-it: 14.1.0
+
+  markdown-it-center-text@1.0.4: {}
 
   markdown-it-deflist@3.0.0: {}
 
