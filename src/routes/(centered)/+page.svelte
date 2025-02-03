@@ -11,7 +11,7 @@
 		.use(centerText).render(undent`
         # John's Site
 
-        [View John's resume](/resume){role=button .full}
+        [View John's resume](/resume){role=button} [Download PDF](/John-Kim-Murphy-Resume.pdf){role=button .outline} {.resume role=group}
 
         [Browse John's work](/portfolio){role=button .full}
 
@@ -27,6 +27,11 @@
 	scope-css {
 		:global(h1) {
 			text-align: center;
+		}
+
+		:global(p.resume) {
+			display: grid;
+			grid-template-columns: 1fr auto;
 		}
 
 		:global(.full) {
