@@ -1,4 +1,5 @@
 <script>
+	import { dev } from '$app/environment'
 	import { undent } from '$lib/undent'
 	import markdownit from 'markdown-it'
 	import attr from 'markdown-it-attrs'
@@ -40,7 +41,7 @@
 
 <scope-css>{@html html}</scope-css>
 
-<pre>{JSON.stringify(data.contactInfo, null, 4)}</pre>
+<pre hidden={!dev}>{JSON.stringify(data.contactInfo, null, 4)}</pre>
 
 <style>
 	scope-css {

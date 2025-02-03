@@ -13,7 +13,7 @@
 
         [View John's resume](/resume){role=button .full}
 
-        [Browse John's work (portfolio coming soon...)](/#){role=button .full disabled}
+        [Browse John's work](/portfolio){role=button .full}
 
         [Learn how to work with John (coming soon...)](/#){role=button .full disabled}
 
