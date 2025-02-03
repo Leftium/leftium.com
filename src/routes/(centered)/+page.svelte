@@ -2,17 +2,22 @@
 	import { undent } from '$lib/undent'
 	import markdownit from 'markdown-it'
 	import attr from 'markdown-it-attrs'
+	import centerText from 'markdown-it-center-text'
 
 	const html = markdownit({
 		linkify: true,
-	}).use(attr).render(undent`
+	})
+		.use(attr)
+		.use(centerText).render(undent`
         # John's Site
 
         [View John's resume](/resume){role=button .full}
 
-        [Learn more about John's work (portfolio coming soon...)](/resume){role=button .full disabled}
+        [Browse John's work (portfolio coming soon...)](/#){role=button .full disabled}
 
-        [Contact Info](/contact)
+        [Learn how to work with John (coming soon...)](/#){role=button .full disabled}
+
+        ->[Contact Info](/contact)<-
     `)
 </script>
 
@@ -26,6 +31,10 @@
 
 		:global(.full) {
 			width: 100%;
+		}
+
+		:global(.text-align-center) {
+			text-align: center;
 		}
 	}
 </style>
