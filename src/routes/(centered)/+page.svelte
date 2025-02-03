@@ -3,6 +3,7 @@
 	import markdownit from 'markdown-it'
 
 	const html = markdownit({
+		html: true,
 		linkify: true,
 	}).render(undent`
         # John's Site
