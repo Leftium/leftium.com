@@ -27,7 +27,7 @@
 
         ## If viewing on your phone:
 
-        [Open digital business card (vCard)](/api/vcard){role=button .full download}
+        [Load digital business card (vCard)](/api/vcard){role=button .full download}
 
         ## If viewing on PC scan this QR code:
 

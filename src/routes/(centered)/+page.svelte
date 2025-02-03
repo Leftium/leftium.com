@@ -10,6 +10,8 @@
 
         [View John's resume](/resume){role=button .full}
 
+        [Learn more about John's work (portfolio coming soon...)](/resume){role=button .full disabled}
+
         [Contact Info](/contact)
     `)
 </script>
