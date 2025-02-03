@@ -1,17 +1,17 @@
 <script>
 	import { undent } from '$lib/undent'
 	import markdownit from 'markdown-it'
+	import attr from 'markdown-it-attrs'
 
 	const html = markdownit({
-		html: true,
 		linkify: true,
-	}).render(undent`
+	}).use(attr).render(undent`
         # John's Site
-        - [Resume](/resume)
+        [View John's Resume](/resume){role=button .full}
 
         ## vCard
 
-        <a href="/api/vcard" download><button>Download vCard as VCF file</button></a>
+        [Download vCard as VCF file](/api/vcard){role=button .full download}
 
         ### QR Code:
 
@@ -19,4 +19,10 @@
     `)
 </script>
 
-{@html html}
+<scope-css>{@html html}</scope-css>
+
+<style>
+	scope-css :global(.full) {
+		width: 100%;
+	}
+</style>
