@@ -31,9 +31,9 @@
 
         - https://weather-sense.leftium.com
         - https://hw.leftium.com
-        - https://modu-blues.com
+        - https://viviblues.com
         - https://multi-launch.leftium.com
-        - https://zz.leftium.com
+        - https://zbang.leftium.com
 
         ## Browse my activity on other sites:
 
