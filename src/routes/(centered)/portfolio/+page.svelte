@@ -29,11 +29,11 @@
 
         ## Try using some of my projects:
 
-        - https://weather-sense.leftium.com
-        - https://hw.leftium.com
-        - https://viviblues.com
-        - https://multi-launch.leftium.com
-        - https://zbang.leftium.com
+        - https://weather-sense.leftium.com [(repo)](https://github.com/Leftium/weather-sense)
+        - https://hw.leftium.com [(repo)](https://github.com/Leftium/hckrweb)
+        - https://viviblues.com [(repo)](https://github.com/Leftium/modu-blues.com)
+        - https://multi-launch.leftium.com [(repo)](https://github.com/Leftium/multi-launch)
+        - https://zbang.leftium.com [(repo)](https://github.com/Leftium/zbang)
 
         ## Browse my activity on other sites:
 
