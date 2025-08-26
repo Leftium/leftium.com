@@ -30,11 +30,11 @@
 
 		## Try using some of my projects:
 
-		- weather-sense.leftium.com [(repo)](https://github.com/Leftium/weather-sense)
-		- hw.leftium.com [(repo)](https://github.com/Leftium/hckrweb)
-		- vivibl.com [(repo)](https://github.com/Leftium/modu-blues.com)
-		- multi-launch.leftium.com [(repo)](https://github.com/Leftium/multi-launch)
-		- zbang.leftium.com [(repo)](https://github.com/Leftium/zbang)
+		- weather-sense.leftium.com (view the [source code](https://github.com/Leftium/weather-sense))
+		- hw.leftium.com (view the [source code](https://github.com/Leftium/hckrweb))
+		- vivibl.com (view the [source code](https://github.com/Leftium/modu-blues.com))
+		- multi-launch.leftium.com (view the [source code](https://github.com/Leftium/multi-launch))
+		- zbang.leftium.com (view the [source code](https://github.com/Leftium/zbang))
 
 		## Browse my activity on other sites:
 
