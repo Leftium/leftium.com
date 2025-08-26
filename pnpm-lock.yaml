@@ -14,6 +14,9 @@ importers:
       '@eslint/js':
         specifier: ^9.18.0
         version: 9.19.0
+      '@picocss/pico':
+        specifier: ^2.1.1
+        version: 2.1.1
       '@sveltejs/adapter-vercel':
         specifier: ^5.5.2
         version: 5.5.3(@sveltejs/kit@2.16.1(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.19.3)(vite@5.4.14(@types/node@22.12.0)(sass-embedded@1.83.4)))(svelte@5.19.3)(vite@5.4.14(@types/node@22.12.0)(sass-embedded@1.83.4)))(rollup@4.32.0)
@@ -29,9 +32,6 @@ importers:
       '@types/qrcode':
         specifier: ^1.5.5
         version: 1.5.5
-      '@yohns/picocss':
-        specifier: ^2.2.6
-        version: 2.2.9
       debug:
         specifier: ^4.4.0
         version: 4.4.0
@@ -505,6 +505,9 @@ packages:
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
 
+  '@picocss/pico@2.1.1':
+    resolution: {integrity: sha512-kIDugA7Ps4U+2BHxiNHmvgPIQDWPDU4IeU6TNRdvXQM1uZX+FibqDQT2xUOnnO2yq/LUHcwnGlu1hvf4KfXnMg==}
+
   '@pkgjs/parseargs@0.11.0':
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
@@ -729,10 +732,6 @@ packages:
 
   '@volar/typescript@2.4.11':
     resolution: {integrity: sha512-2DT+Tdh88Spp5PyPbqhyoYavYCPDsqbHLFwcUI9K1NlY1YgUJvujGdrqUp0zWxnW7KWNTr3xSpMuv2WnaTKDAw==}
-
-  '@yohns/picocss@2.2.9':
-    resolution: {integrity: sha512-DaGrRXWl0ZOmQThYDmMBEmY/VAFhqLjQiDqkqvFS3GG8ZHlcQcmSX+nxg6KVHPzy6P/a9gAIXS6ian6eD93KJA==}
-    engines: {node: '>=20'}
 
   abbrev@3.0.0:
     resolution: {integrity: sha512-+/kfrslGQ7TNV2ecmQwMJj/B65g5KVq1/L3SGVZ3tCYGqlzFuFCGBZJtMP99wH3NpEUyAjn0zPdPUg0D+DwrOA==}
@@ -2143,6 +2142,8 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.18.0
 
+  '@picocss/pico@2.1.1': {}
+
   '@pkgjs/parseargs@0.11.0':
     optional: true
 
@@ -2392,8 +2393,6 @@ snapshots:
       '@volar/language-core': 2.4.11
       path-browserify: 1.0.1
       vscode-uri: 3.0.8
-
-  '@yohns/picocss@2.2.9': {}
 
   abbrev@3.0.0: {}
 
