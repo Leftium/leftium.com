@@ -1,5 +1,5 @@
 <script>
-	import { undent } from '$lib/undent'
+	import { undent } from '$lib/tag-functions/undent'
 	import markdownit from 'markdown-it'
 	import attr from 'markdown-it-attrs'
 	import centerText from 'markdown-it-center-text'
