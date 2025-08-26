@@ -31,7 +31,7 @@
 
         - https://weather-sense.leftium.com [(repo)](https://github.com/Leftium/weather-sense)
         - https://hw.leftium.com [(repo)](https://github.com/Leftium/hckrweb)
-        - https://viviblues.com [(repo)](https://github.com/Leftium/modu-blues.com)
+        - https://vivibl.com [(repo)](https://github.com/Leftium/modu-blues.com)
         - https://multi-launch.leftium.com [(repo)](https://github.com/Leftium/multi-launch)
         - https://zbang.leftium.com [(repo)](https://github.com/Leftium/zbang)
 
