@@ -1,45 +1,43 @@
 <script>
 	import { dev } from '$app/environment'
-	import { undent } from '$lib/tag-functions/undent.js'
-	import markdownit from 'markdown-it'
+	import { makeTagFunctionMd } from '$lib/tag-functions/markdown.js'
 	import attr from 'markdown-it-attrs'
 	import centerText from 'markdown-it-center-text'
 	import deflist from 'markdown-it-deflist'
 
 	let { data } = $props()
 
-	const html = markdownit({
-		html: true,
-		linkify: true,
-	})
-		.use(attr)
-		.use(deflist)
-		.use(centerText).render(undent`
-        # How to contact John
-
-        E-mail
-        ~ john@leftium.com
-
-        Phone number
-        ~ Upon request...
-
-        Postal Address
-        ~ Upon request...
-
-        ---
-
-        ## If viewing on your phone:
-
-        [Load digital business card (vCard)](/api/vcard){role=button .full download}
-
-        ## If viewing on PC scan this QR code:
-
-        ->![](/api/vcard?format=png)<-
-
-    `)
+	const md = makeTagFunctionMd({ html: true, linkify: true, typographer: true, breaks: true }, [
+		[attr],
+		[deflist],
+		[centerText],
+	])
 </script>
 
-<scope-css>{@html html}</scope-css>
+<scope-css>
+	{@html md`
+		# How to contact John
+
+		E-mail
+		~ john@leftium.com
+
+		Phone number
+		~ Upon request...
+
+		Postal Address
+		~ Upon request...
+
+		---
+
+		## If viewing on your phone:
+
+		[Load digital business card (vCard)](/api/vcard){role=button .full download}
+
+		## If viewing on PC scan this QR code:
+
+		->![](/api/vcard?format=png)<-
+	`}
+</scope-css>
 
 <pre hidden={!dev}>{JSON.stringify(data.contactInfo, null, 4)}</pre>
 
