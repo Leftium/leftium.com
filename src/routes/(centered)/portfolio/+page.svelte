@@ -30,11 +30,11 @@
 
 		## Try using some of my projects:
 
-		- https://weather-sense.leftium.com [(repo)](https://github.com/Leftium/weather-sense)
-		- https://hw.leftium.com [(repo)](https://github.com/Leftium/hckrweb)
-		- https://vivibl.com [(repo)](https://github.com/Leftium/modu-blues.com)
-		- https://multi-launch.leftium.com [(repo)](https://github.com/Leftium/multi-launch)
-		- https://zbang.leftium.com [(repo)](https://github.com/Leftium/zbang)
+		- weather-sense.leftium.com [(repo)](https://github.com/Leftium/weather-sense)
+		- hw.leftium.com [(repo)](https://github.com/Leftium/hckrweb)
+		- vivibl.com [(repo)](https://github.com/Leftium/modu-blues.com)
+		- multi-launch.leftium.com [(repo)](https://github.com/Leftium/multi-launch)
+		- zbang.leftium.com [(repo)](https://github.com/Leftium/zbang)
 
 		## Browse my activity on other sites:
 
@@ -45,7 +45,7 @@
 
 		## Read older articles I've written on my blog:
 
-		- https://blog.leftium.com
+		- blog.leftium.com
 	`}
 </scope-css>
 
