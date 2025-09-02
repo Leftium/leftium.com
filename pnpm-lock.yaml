@@ -15,8 +15,8 @@ importers:
         specifier: ^9.34.0
         version: 9.34.0
       '@leftium/leftium-logo':
-        specifier: ^0.0.3
-        version: 0.0.3(svelte@5.38.6)
+        specifier: ^0.0.5
+        version: 0.0.5(svelte@5.38.6)
       '@picocss/pico':
         specifier: ^2.1.1
         version: 2.1.1
@@ -269,8 +269,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@eslint-community/eslint-utils@4.7.0':
-    resolution: {integrity: sha512-dyybb3AcajC7uha6CvhdVRJqaKyn7w2YKqKyAN37NKYgZT36w+iRb0Dymmc5qEJ549c/S31cMMSFd75bteCpCw==}
+  '@eslint-community/eslint-utils@4.8.0':
+    resolution: {integrity: sha512-MJQFqrZgcW0UNYLGOuQpey/oTN59vyWwplvCGZztn1cKz9agZPPYpJB7h2OMmuu7VLqkvEjN8feFZJmxNF9D+Q==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     peerDependencies:
       eslint: ^6.0.0 || ^7.0.0 || >=8.0.0
@@ -360,8 +360,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.30':
     resolution: {integrity: sha512-GQ7Nw5G2lTu/BtHTKfXhKHok2WGetd4XYcVKGx00SjAk8GMwgJM3zr6zORiPGuOE+/vkc90KtTosSSvaCjKb2Q==}
 
-  '@leftium/leftium-logo@0.0.3':
-    resolution: {integrity: sha512-24Q+zU2+6McdsgGGDdaE7IlZObALmAJp+zutINrQB31lIa/N/GZ4v5WZ1EvLRKMT53p4rbmnqVoPYcCCXPFyCA==}
+  '@leftium/leftium-logo@0.0.5':
+    resolution: {integrity: sha512-dVivpTmEzj4xaWUB/Tlqhq4ODm8m+a4o1KWchFkZQH4YoXVj4V4gAARxrPEqvU9yCKuhXeBgt1q2FMEKx933gA==}
     peerDependencies:
       svelte: ^5.0.0
 
@@ -1909,7 +1909,7 @@ snapshots:
   '@esbuild/win32-x64@0.25.9':
     optional: true
 
-  '@eslint-community/eslint-utils@4.7.0(eslint@9.34.0)':
+  '@eslint-community/eslint-utils@4.8.0(eslint@9.34.0)':
     dependencies:
       eslint: 9.34.0
       eslint-visitor-keys: 3.4.3
@@ -2002,7 +2002,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@leftium/leftium-logo@0.0.3(svelte@5.38.6)':
+  '@leftium/leftium-logo@0.0.5(svelte@5.38.6)':
     dependencies:
       svelte: 5.38.6
 
@@ -2328,7 +2328,7 @@ snapshots:
 
   '@typescript-eslint/utils@8.42.0(eslint@9.34.0)(typescript@5.9.2)':
     dependencies:
-      '@eslint-community/eslint-utils': 4.7.0(eslint@9.34.0)
+      '@eslint-community/eslint-utils': 4.8.0(eslint@9.34.0)
       '@typescript-eslint/scope-manager': 8.42.0
       '@typescript-eslint/types': 8.42.0
       '@typescript-eslint/typescript-estree': 8.42.0(typescript@5.9.2)
@@ -2548,7 +2548,7 @@ snapshots:
 
   eslint-plugin-svelte@3.11.0(eslint@9.34.0)(svelte@5.38.6):
     dependencies:
-      '@eslint-community/eslint-utils': 4.7.0(eslint@9.34.0)
+      '@eslint-community/eslint-utils': 4.8.0(eslint@9.34.0)
       '@jridgewell/sourcemap-codec': 1.5.5
       eslint: 9.34.0
       esutils: 2.0.3
@@ -2575,7 +2575,7 @@ snapshots:
 
   eslint@9.34.0:
     dependencies:
-      '@eslint-community/eslint-utils': 4.7.0(eslint@9.34.0)
+      '@eslint-community/eslint-utils': 4.8.0(eslint@9.34.0)
       '@eslint-community/regexpp': 4.12.1
       '@eslint/config-array': 0.21.0
       '@eslint/config-helpers': 0.3.1
