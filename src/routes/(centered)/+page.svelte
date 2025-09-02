@@ -1,4 +1,6 @@
 <script>
+	import 'open-props/style'
+
 	import { makeTagFunctionMd } from '$lib/tag-functions/markdown'
 	import { LeftiumLogo } from '@leftium/leftium-logo'
 	import attr from 'markdown-it-attrs'
@@ -20,7 +22,31 @@
 
 <scope-css>
 	{@html md`
-		## John's Site
+	    <center>John-Kim is a...</center>
+
+		## Digital Consultant...
+
+		#### Getting you from point A to point B...
+		
+		- **Point B is where you want to be!** Imagine you had an all-powerful magic wand.\
+		  What would you do? Where would you go? What is the goal/transformation you most desire?
+		- **Point A is your current situation.** John will customize the best route to B.\
+		  This requires understanding *your* specific needs and strengths.
+		
+
+		#### (Often) with expertise in computers/tech...
+		- **John has probably *forgotten* more about computers than most will ever *learn* in a lifetime.** He has...
+		  - Assembled and repaired computers.
+		  - Made web sites that *make other web sites.*
+		  - Improved the secret source code of Microsoft Windows and Office.
+
+		#### But not always!
+		- **One of John's greatest accomplishments was getting a troubled student to finish reading their very first book.**
+		  The student's mother literally teared up because she thought this would be impossible.
+
+		### Learn more...
+
+		---
 
 		[View John's resume](/resume){role=button} [Download PDF](/John-Kim-Murphy-Resume.pdf){role=button .outline} {.resume role=group}
 
@@ -32,7 +58,7 @@
 	`}
 </scope-css>
 
-<style>
+<style lang="css">
 	header {
 		display: flex;
 		flex-wrap: wrap;
@@ -42,11 +68,12 @@
 		gap: 10px;
 		padding: 1rem;
 		border: 1px solid #ddd;
+		margin: auto;
 		margin-bottom: 2rem;
 
-		div {
-			max-width: 36ch;
+		max-width: var(--size-content-3);
 
+		div {
 			h1 {
 				margin-bottom: 0;
 			}
@@ -58,7 +85,12 @@
 	}
 
 	scope-css {
-		:global(h2) {
+		display: block;
+		max-width: var(--size-content-2);
+
+		margin: auto;
+
+		:global(h1), :global(h2) {
 			text-align: center;
 		}
 

@@ -33,6 +33,7 @@
 		"markdown-it-attrs": "^4.3.1",
 		"markdown-it-center-text": "^1.0.4",
 		"markdown-it-deflist": "^3.0.0",
+		"open-props": "^1.7.16",
 		"open-props-scss": "^0.8.0",
 		"prettier": "^3.6.2",
 		"prettier-plugin-svelte": "^3.4.0",
