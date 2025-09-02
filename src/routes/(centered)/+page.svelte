@@ -14,7 +14,7 @@
 </script>
 
 <header>
-	<LeftiumLogo animated={!dev} boundingBox="square" size="6rem" style="margin-right: 1.2rem;" />
+	<LeftiumLogo animated={!dev} boundingBox="square" size="9rem" style="margin-right: 2rem;" />
 	<div>
 		<h1>Leftium</h1>
 		<i>The element of creativity!</i>
