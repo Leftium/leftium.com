@@ -5,6 +5,7 @@
 	import { LeftiumLogo } from '@leftium/leftium-logo'
 	import attr from 'markdown-it-attrs'
 	import centerText from 'markdown-it-center-text'
+	import { dev } from '$app/environment'
 
 	const md = makeTagFunctionMd({ html: true, linkify: true, typographer: true, breaks: true }, [
 		[attr],
@@ -13,7 +14,7 @@
 </script>
 
 <header>
-	<LeftiumLogo animated={false} boundingBox="square" size="6rem" style="margin-right: 1.2rem;" />
+	<LeftiumLogo animated={!dev} boundingBox="square" size="6rem" style="margin-right: 1.2rem;" />
 	<div>
 		<h1>Leftium</h1>
 		<i>The element of creativity!</i>
