@@ -1,5 +1,6 @@
 <script>
 	import { makeTagFunctionMd } from '$lib/tag-functions/markdown'
+	import { LeftiumLogo } from '@leftium/leftium-logo'
 	import attr from 'markdown-it-attrs'
 	import centerText from 'markdown-it-center-text'
 
@@ -9,9 +10,17 @@
 	])
 </script>
 
+<header>
+	<LeftiumLogo animated={false} boundingBox="square" size="6rem" style="margin-right: 1.2rem;" />
+	<div>
+		<h1>Leftium</h1>
+		<i>The element of creativity!</i>
+	</div>
+</header>
+
 <scope-css>
 	{@html md`
-		# John's Site
+		## John's Site
 
 		[View John's resume](/resume){role=button} [Download PDF](/John-Kim-Murphy-Resume.pdf){role=button .outline} {.resume role=group}
 
@@ -24,8 +33,32 @@
 </scope-css>
 
 <style>
+	header {
+		display: flex;
+		flex-wrap: wrap;
+
+		justify-content: center;
+		align-items: center;
+		gap: 10px;
+		padding: 1rem;
+		border: 1px solid #ddd;
+		margin-bottom: 2rem;
+
+		div {
+			max-width: 36ch;
+
+			h1 {
+				margin-bottom: 0;
+			}
+
+			i {
+				opacity: 50%;
+			}
+		}
+	}
+
 	scope-css {
-		:global(h1) {
+		:global(h2) {
 			text-align: center;
 		}
 

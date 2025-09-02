@@ -14,6 +14,9 @@ importers:
       '@eslint/js':
         specifier: ^9.34.0
         version: 9.34.0
+      '@leftium/leftium-logo':
+        specifier: ^0.0.3
+        version: 0.0.3(svelte@5.38.5)
       '@picocss/pico':
         specifier: ^2.1.1
         version: 2.1.1
@@ -353,6 +356,11 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.30':
     resolution: {integrity: sha512-GQ7Nw5G2lTu/BtHTKfXhKHok2WGetd4XYcVKGx00SjAk8GMwgJM3zr6zORiPGuOE+/vkc90KtTosSSvaCjKb2Q==}
+
+  '@leftium/leftium-logo@0.0.3':
+    resolution: {integrity: sha512-24Q+zU2+6McdsgGGDdaE7IlZObALmAJp+zutINrQB31lIa/N/GZ4v5WZ1EvLRKMT53p4rbmnqVoPYcCCXPFyCA==}
+    peerDependencies:
+      svelte: ^5.0.0
 
   '@mapbox/node-pre-gyp@2.0.0':
     resolution: {integrity: sha512-llMXd39jtP0HpQLVI37Bf1m2ADlEb35GYSh1SDSLsBhR+5iCxiNGlT31yqbNtVHygHAtMy6dWFERpU2JgufhPg==}
@@ -1982,6 +1990,10 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
+
+  '@leftium/leftium-logo@0.0.3(svelte@5.38.5)':
+    dependencies:
+      svelte: 5.38.5
 
   '@mapbox/node-pre-gyp@2.0.0':
     dependencies:
