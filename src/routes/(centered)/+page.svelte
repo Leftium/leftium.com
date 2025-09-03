@@ -71,6 +71,7 @@
 		padding: 1rem;
 		border: 1px solid #ddd;
 		margin: auto;
+		margin-top: var(--pico-spacing);
 		margin-bottom: 2rem;
 
 		max-width: var(--size-content-3);
