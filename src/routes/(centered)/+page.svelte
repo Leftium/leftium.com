@@ -23,25 +23,26 @@
 
 <scope-css>
 	{@html md`
-	    <center>John-Kim is a...</center>
+		<center>John-Kim is a...</center>
 
 		## Digital Consultant...
 
 		#### Getting you from point A to point B...
-		
+
 		- **Point B is where you want to be!** Imagine you had an all-powerful magic wand.\
 		  What would you do? Where would you go? What is the goal/transformation you most desire?
 		- **Point A is your current situation.** John will customize the best route to B.\
-		  This requires understanding *your* specific needs and strengths.
-		
+		  This requires understanding _your_ specific needs and strengths.
 
 		#### (Often) with expertise in computers/tech...
-		- **John has probably *forgotten* more about computers than most will ever *learn* in a lifetime.** He has...
-		  - Assembled and repaired computers.
-		  - Made web sites that *make other web sites.*
-		  - Improved the secret source code of Microsoft Windows and Office.
+
+		- **John has probably _forgotten_ more about computers than most will ever _learn_ in a lifetime.** He has...
+		- Assembled and repaired computers.
+		- Made web sites that _make other web sites._
+		- Improved the secret source code of Microsoft Windows and Office.
 
 		#### But not always!
+
 		- **One of John's greatest accomplishments was getting a troubled student to finish reading their very first book.**
 		  The student's mother literally teared up because she thought this would be impossible.
 
@@ -91,7 +92,8 @@
 
 		margin: auto;
 
-		:global(h1), :global(h2) {
+		:global(h1),
+		:global(h2) {
 			text-align: center;
 		}
 
