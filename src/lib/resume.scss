@@ -25,7 +25,8 @@
 		margin-top: $size-3;
 	}
 
-	img, .logo {
+	img,
+	.logo {
 		height: $size-11;
 		float: left;
 	}
@@ -78,7 +79,12 @@
 	dl dt {
 		// Job title, date
 		color: $stone-0;
-		background: linear-gradient(170deg, #0029c1, 45%, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0));
+		background: linear-gradient(
+			170deg,
+			oklch(0.4954 0.2272 264.46) 45%,
+			oklch(0 0 0 / 0),
+			oklch(0 0 0 / 0)
+		);
 	}
 
 	dl dd {
