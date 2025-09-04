@@ -18,6 +18,7 @@
 		# An Unprompted Testimonial
 
 		From [William Albright](https://github.com/ewilliam), a fellow software developer
+
 		_(Minor edits for readability)_
 
 		> **I was burned out. React and JSX were kicking my ass, and I
