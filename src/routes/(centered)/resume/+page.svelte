@@ -20,7 +20,7 @@
 </script>
 
 <accent-box class="screen-only">
-	<span><a href="/John-Kim-Murphy-Resume.pdf" target="_blank">Resume in PDF format</a></span>
+	<span><a href="/John-Kim-Murphy-Resume.pdf" target="_blank">PDF format</a> (Opens in new window)</span>
 </accent-box>
 
 <main class="resume">
