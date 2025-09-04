@@ -42,40 +42,7 @@
 	`}
 </scope-css>
 
-<footer>
-	<LeftiumLogo animated={!dev} boundingBox="square" size="3.75rem" />
-	<div>
-		<h1>Leftium</h1>
-		<i>The element of creativity!</i>
-	</div>
-</footer>
-
 <style lang="css">
-	footer {
-		display: flex;
-		flex-wrap: wrap;
-
-		justify-content: center;
-		align-items: center;
-		gap: var(--size-3);
-		padding: var(--size-3);
-		border: 1px solid var(--pico-muted-border-color);
-		margin: auto;
-		margin-bottom: var(--size-3);
-
-		max-width: var(--size-content-3);
-
-		div {
-			h1 {
-				margin-bottom: 0;
-			}
-
-			i {
-				opacity: 50%;
-			}
-		}
-	}
-
 	scope-css {
 		display: block;
 		max-width: var(--size-content-2);
