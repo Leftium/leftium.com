@@ -1,4 +1,6 @@
 <script>
+	import 'open-props/style'
+
 	import { dev } from '$app/environment'
 	import { makeTagFunctionMd } from '$lib/tag-functions/markdown.js'
 	import attr from 'markdown-it-attrs'
@@ -41,8 +43,12 @@
 
 <pre hidden={!dev}>{JSON.stringify(data.contactInfo, null, 4)}</pre>
 
-<style>
+<style lang="css">
 	scope-css {
+		display: block;
+		max-width: var(--size-content-3);
+		margin: auto;
+
 		:global(.full) {
 			width: 100%;
 		}
