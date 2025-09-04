@@ -18,11 +18,12 @@
 		text-align: end;
 	}
 
-	h2,
-	dl {
-		// Section headers (Experience, Education):
+	dl {	
 		// Job title, date
 		margin-top: $size-2;
+
+		// Clear the floated logo.
+		clear: left;
 	}
 
 	img,
@@ -39,10 +40,13 @@
 
 	h2 {
 		// Section headers (Experience, Education):
+		margin-top: $size-3;
+
 		font-size: $font-size-5;
 		color: $stone-6;
-
+		
 		text-transform: uppercase;
+		
 	}
 
 	dl dt, // Job title, date
@@ -83,11 +87,11 @@
 			120deg,
 			oklch(0.4954 0.2272 264.46) 0%,
 			oklch(0.5989 0.2174 263.95) 50%,
-			oklch(0.5989 0.2174 263.95 ) 55%,
+			oklch(0.5989 0.2174 263.95) 55%,
 			oklch(0.5989 0.2174 263.95 / 75%) 65%,
 			oklch(0.5989 0.2174 263.95 / 50%) 67%,
 			oklch(0.5989 0.2174 263.95 / 0%) 70%,
-			oklch(0.5989 0.2174 263.95 / 0%) ,
+			oklch(0.5989 0.2174 263.95 / 0%)
 		);
 	}
 
