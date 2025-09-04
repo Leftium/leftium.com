@@ -20,7 +20,7 @@
 </script>
 
 <accent-box class="screen-only">
-	<a href="/">Return Home</a><a href="/John-Kim-Murphy-Resume.pdf" target="_blank">Download PDF</a>
+	<span><a href="/John-Kim-Murphy-Resume.pdf" target="_blank">Resume in PDF format</a></span>
 </accent-box>
 
 <main class="resume">
@@ -52,21 +52,5 @@
 	main.resume {
 		max-width: 54ch;
 		margin: 0 auto;
-	}
-
-	/* Hide print version on screen */
-	.print-only {
-		display: none;
-	}
-
-	/* Show appropriate logo version when printing */
-	@media print {
-		:global(.screen-only) {
-			display: none !important;
-		}
-
-		.print-only {
-			display: block;
-		}
 	}
 </style>

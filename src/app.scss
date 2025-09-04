@@ -21,8 +21,22 @@
 	}
 }
 
+/* Hide print version on screen */
+.print-only {
+	display: none;
+}
+
+/* Show appropriate versions when printing */
 @media only print {
 	.container {
 		max-width: 100% !important;
+	}
+
+	.screen-only {
+		display: none !important;
+	}
+
+	.print-only {
+		display: block;
 	}
 }

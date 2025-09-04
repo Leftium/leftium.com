@@ -13,19 +13,8 @@
 	])
 </script>
 
-<header>
-	<LeftiumLogo animated={!dev} boundingBox="square" size="3.75rem" />
-	<div>
-		<h1>Leftium</h1>
-		<i>The element of creativity!</i>
-	</div>
-</header>
-
 <scope-css>
 	{@html md`
-
-		[Resume](/resume){role=button .outline} [Portfolio](/portfolio){role=button .outline} [Contact Info](/contact){role=button .outline} {role=group} 
-
 		<center>John-Kim is a...</center>
 
 		## Digital Consultant...
@@ -53,8 +42,16 @@
 	`}
 </scope-css>
 
+<footer>
+	<LeftiumLogo animated={!dev} boundingBox="square" size="3.75rem" />
+	<div>
+		<h1>Leftium</h1>
+		<i>The element of creativity!</i>
+	</div>
+</footer>
+
 <style lang="css">
-	header {
+	footer {
 		display: flex;
 		flex-wrap: wrap;
 
