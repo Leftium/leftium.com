@@ -23,6 +23,9 @@
 
 <scope-css>
 	{@html md`
+
+		[Resume](/resume){role=button .outline} [Portfolio](/portfolio){role=button .outline} [Contact Info](/contact){role=button .outline} {role=group} 
+
 		<center>John-Kim is a...</center>
 
 		## Digital Consultant...
@@ -47,16 +50,6 @@
 		  The student's mother literally teared up because she thought this would be impossible.
 
 		### Learn more...
-
-		---
-
-		[View John's resume](/resume){role=button} [Download PDF](/John-Kim-Murphy-Resume.pdf){role=button .outline} {.resume role=group}
-
-		[Browse John's work](/portfolio){role=button .full}
-
-		[Learn how to work with John (coming soon...)](/#){role=button .full disabled}
-
-		->[Contact Info](/contact)<-
 	`}
 </scope-css>
 
@@ -69,7 +62,7 @@
 		align-items: center;
 		gap: var(--size-3);
 		padding: var(--size-3);
-		border: 1px solid #ddd;
+		border: 1px solid var(--pico-muted-border-color);
 		margin: auto;
 		margin-bottom: var(--size-3);
 
@@ -94,6 +87,7 @@
 
 		:global(h1),
 		:global(h2) {
+			margin-top: 0;
 			text-align: center;
 		}
 
