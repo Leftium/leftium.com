@@ -22,7 +22,7 @@
 		class="logo"
 		animated={!dev}
 		boundingBox="square"
-		size="7rem"
+		size="8rem"
 		style="margin: 1rem; margin-left: 1.5rem;"
 	/>
 	{@html resumeHtml}
@@ -32,7 +32,7 @@
 	@use 'open-props-scss' as *;
 
 	main.resume {
-		max-width: 63ch;
+		max-width: 54ch;
 		margin: 0 auto;
 	}
 </style>

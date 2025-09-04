@@ -22,18 +22,18 @@
 	dl {
 		// Section headers (Experience, Education):
 		// Job title, date
-		margin-top: $size-3;
+		margin-top: $size-2;
 	}
 
 	img,
 	.logo {
-		height: $size-11;
+		height: 9rem;
 		float: left;
 	}
 
 	h1 {
 		// Title: name:
-		font-size: $font-size-8;
+		font-size: $font-size-7;
 		color: $stone-12;
 	}
 
@@ -80,10 +80,14 @@
 		// Job title, date
 		color: $stone-0;
 		background: linear-gradient(
-			170deg,
-			oklch(0.4954 0.2272 264.46) 45%,
-			oklch(0 0 0 / 0),
-			oklch(0 0 0 / 0)
+			120deg,
+			oklch(0.4954 0.2272 264.46) 0%,
+			oklch(0.5989 0.2174 263.95) 50%,
+			oklch(0.5989 0.2174 263.95 ) 55%,
+			oklch(0.5989 0.2174 263.95 / 75%) 65%,
+			oklch(0.5989 0.2174 263.95 / 50%) 67%,
+			oklch(0.5989 0.2174 263.95 / 0%) 70%,
+			oklch(0.5989 0.2174 263.95 / 0%) ,
 		);
 	}
 
