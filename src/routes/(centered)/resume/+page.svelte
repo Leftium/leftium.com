@@ -27,7 +27,7 @@
 
 <main class="resume">
 	{#if !print}
-		<LeftiumLogo class="logo" animated={!dev} boundingBox="default" size="8.5rem" />
+		<LeftiumLogo class="logo" animated={!dev} boundingBox="cropped" size="8.5rem" />
 	{/if}
 
 	{@html resumeHtml}
