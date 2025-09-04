@@ -18,7 +18,7 @@
 		text-align: end;
 	}
 
-	dl {	
+	dl {
 		// Job title, date
 		margin-top: $size-2;
 
@@ -28,8 +28,11 @@
 
 	img,
 	.logo {
-		height: 9rem;
 		float: left;
+	}
+
+	img {
+		width: 9rem;
 	}
 
 	h1 {
@@ -44,9 +47,8 @@
 
 		font-size: $font-size-5;
 		color: $stone-6;
-		
+
 		text-transform: uppercase;
-		
 	}
 
 	dl dt, // Job title, date
