@@ -19,7 +19,7 @@
 		<ul>
 			<li><a href="/resume">Resume</a></li>
 			<li><a href="/portfolio">Portfolio</a></li>
-			<li><a href="/contact" style="white-space: nowrap;">Contact Info</a></li>
+			<li><a href="/contact">Contact</a></li>
 		</ul>
 	</nav>
 </header>
