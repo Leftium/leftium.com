@@ -14,7 +14,7 @@
 </script>
 
 <header>
-	<LeftiumLogo animated={!dev} boundingBox="square" size="9rem" style="margin-right: 2rem;" />
+	<LeftiumLogo animated={!dev} boundingBox="square" size="3.75rem"/>
 	<div>
 		<h1>Leftium</h1>
 		<i>The element of creativity!</i>
@@ -67,12 +67,11 @@
 
 		justify-content: center;
 		align-items: center;
-		gap: 10px;
-		padding: 1rem;
+		gap: var(--size-3);
+		padding: var(--size-3);
 		border: 1px solid #ddd;
 		margin: auto;
-		margin-top: var(--pico-spacing);
-		margin-bottom: 2rem;
+		margin-bottom: var(--size-3);
 
 		max-width: var(--size-content-3);
 
