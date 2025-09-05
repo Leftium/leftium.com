@@ -2,18 +2,9 @@
 	import 'open-props/style'
 
 	import { favicon, LeftiumLogo } from '@leftium/leftium-logo'
-	import { dev } from '$app/environment'
 	import { page } from '$app/stores'
 
 	let { children } = $props()
-
-	let animated = $state(!dev)
-
-	function handleLogoClick(event: MouseEvent) {
-		event.preventDefault()
-		event.stopPropagation()
-		animated = !animated
-	}
 </script>
 
 <svelte:head>
@@ -26,12 +17,7 @@
 			<li>
 				<div class="brand" class:hidden={$page.url.pathname === '/resume'}>
 					<div class="logo-wrapper">
-						<LeftiumLogo
-							{animated}
-							boundingBox="square"
-							size="3.75rem"
-							on:click={handleLogoClick}
-						/>
+						<LeftiumLogo boundingBox="square" size="3.75rem" />
 					</div>
 					<a href="/" class="brand-text">
 						<h1>Leftium</h1>

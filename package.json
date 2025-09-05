@@ -47,6 +47,6 @@
 		"vite-plugin-toml": "^0.8.4"
 	},
 	"dependencies": {
-		"@leftium/leftium-logo": "^0.0.11"
+		"@leftium/leftium-logo": "^0.0.12"
 	}
 }
