@@ -45,7 +45,7 @@
 	}
 
 	header {
-		background-color: var(--pico-card-sectioning-background-color);
+		background-color: var(--pico-muted-border-color);
 	}
 
 	nav {
@@ -58,11 +58,17 @@
 		ul:first-child {
 			flex: 1 1 100%;
 			justify-content: center;
+			padding-inline-start: 0;
+			margin-inline: 0;
 		}
 
 		ul:last-child {
 			flex: 1 1 100%;
 			justify-content: center;
+			padding-block: 0;
+			margin-bottom: var(--size-2);
+			padding-inline-start: 0;
+			margin-inline: 0;
 		}
 	}
 
@@ -75,6 +81,7 @@
 			ul:last-child {
 				flex: 0 0 auto;
 				justify-content: flex-end;
+				margin-bottom: var(--size-1);
 			}
 		}
 	}
@@ -89,10 +96,10 @@
 		align-items: center;
 		gap: var(--size-3);
 		text-decoration: none;
-		border: 1px solid var(--pico-muted-border-color);
+		border: 1px solid color-mix(in srgb, var(--pico-secondary) 25%, transparent);
 		padding: var(--size-2);
 		border-radius: 0;
-		background-color: var(--pico-card-background-color);
+		background-color: var(--pico-card-sectioning-background-color);
 
 		div {
 			display: flex;
@@ -105,7 +112,6 @@
 			}
 
 			em {
-				color: inherit;
 				opacity: 50%;
 				font-size: 0.85em;
 				font-style: italic;
@@ -123,8 +129,14 @@
 		text-decoration: none;
 	}
 
+	nav ul:last-child li {
+		padding-block: 0;
+		margin-block: 0;
+	}
+
 	nav ul:last-child a {
 		color: #1c4ee0;
 		text-decoration-color: #1c4ee0;
+		padding-block: 0;
 	}
 </style>

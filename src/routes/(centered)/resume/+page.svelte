@@ -44,11 +44,19 @@
 		justify-content: center;
 
 		gap: var(--size-3);
-		padding: var(--size-1);
+		padding-block: var(--size-1);
+		padding-inline: var(--size-3);
 		border: 1px solid var(--pico-muted-border-color);
 		margin-bottom: var(--size-3);
 
 		max-width: var(--size-content-3);
+	}
+
+	@media (min-width: 768px) {
+		accent-box {
+			padding-inline: var(--size-1);
+			width: calc(var(--size-content-3) - var(--size-3) * 2);
+		}
 	}
 
 	main.resume {

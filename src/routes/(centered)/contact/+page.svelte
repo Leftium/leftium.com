@@ -46,7 +46,7 @@
 <style lang="css">
 	scope-css {
 		display: block;
-		max-width: var(--size-content-3);
+		max-width: var(--size-content-2);
 		margin: auto;
 
 		:global(.full) {
