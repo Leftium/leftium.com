@@ -70,4 +70,16 @@
 	:global(.text-align-center) {
 		text-align: center;
 	}
+
+	:global(blockquote) {
+		background-color: var(--pico-card-sectioning-background-color);
+		padding: var(--size-2) var(--size-3);
+		-border-radius: var(--radius-2);
+		-border-left: 4px solid var(--pico-primary);
+		margin: var(--size-4) 0;
+
+		:global(p:last-child) {
+			margin-bottom: 0 !important;
+		}
+	}
 </style>
