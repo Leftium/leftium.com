@@ -24,7 +24,7 @@
 	<nav class="container">
 		<ul>
 			<li>
-				<a href="/" class="brand">
+				<a href="/" class="brand" class:hidden={$page.url.pathname === '/resume'}>
 					<div class="logo-wrapper">
 						<LeftiumLogo
 							{animated}
@@ -71,6 +71,7 @@
 		margin-bottom: var(--size-3);
 		flex-wrap: wrap;
 		padding-inline: var(--size-3);
+		transition: all 0.3s ease;
 
 		ul:first-child {
 			flex: 1 1 100%;
@@ -117,6 +118,11 @@
 		padding: var(--size-2);
 		border-radius: 0;
 		background-color: var(--pico-card-sectioning-background-color);
+		max-height: 120px;
+		overflow: hidden;
+		transition:
+			max-height 0.5s ease-in-out,
+			opacity 0.4s ease-in-out;
 
 		div {
 			display: flex;
@@ -146,8 +152,19 @@
 		color: rgba(128, 128, 128, 1) !important;
 	}
 
+	.brand {
+		transition:
+			max-height 0.5s ease-in-out,
+			opacity 0.4s ease-in-out;
+	}
+
 	.brand:hover {
 		text-decoration: none;
+	}
+
+	.hidden {
+		max-height: 0;
+		opacity: 0;
 	}
 
 	@media (max-width: 767px) {
