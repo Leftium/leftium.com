@@ -83,10 +83,16 @@
 
 	scope-css :global(h1) {
 		margin-bottom: 0;
+		text-align: center;
 	}
 
 	scope-css :global(h1 + p.text-align-center) {
 		margin: 0;
 		padding: 0;
+	}
+
+	scope-css :global(h1 ~ div.text-align-center) {
+		font-size: 0.75em;
+		opacity: 0.7;
 	}
 </style>
