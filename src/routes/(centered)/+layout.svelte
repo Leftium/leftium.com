@@ -24,7 +24,7 @@
 	<nav class="container">
 		<ul>
 			<li>
-				<a href="/" class="brand" class:hidden={$page.url.pathname === '/resume'}>
+				<div class="brand" class:hidden={$page.url.pathname === '/resume'}>
 					<div class="logo-wrapper">
 						<LeftiumLogo
 							{animated}
@@ -33,11 +33,11 @@
 							on:click={handleLogoClick}
 						/>
 					</div>
-					<div>
+					<a href="/" class="brand-text">
 						<h1>Leftium</h1>
 						<em>The element of creativity!</em>
-					</div>
-				</a>
+					</a>
+				</div>
 			</li>
 		</ul>
 		<ul>
@@ -124,7 +124,8 @@
 			max-height 0.5s ease-in-out,
 			opacity 0.4s ease-in-out;
 
-		div {
+		div,
+		.brand-text {
 			display: flex;
 			flex-direction: column;
 			line-height: 1.2;
@@ -144,11 +145,19 @@
 				font-style: italic;
 			}
 		}
+
+		.brand-text {
+			text-decoration: none;
+			color: inherit;
+		}
 	}
 
 	.brand:link em,
 	.brand:visited em,
-	.brand:hover em {
+	.brand:hover em,
+	.brand-text:link em,
+	.brand-text:visited em,
+	.brand-text:hover em {
 		color: rgba(128, 128, 128, 1) !important;
 	}
 
@@ -158,7 +167,8 @@
 			opacity 0.4s ease-in-out;
 	}
 
-	.brand:hover {
+	.brand:hover,
+	.brand-text:hover {
 		text-decoration: none;
 	}
 
