@@ -182,7 +182,8 @@
 		color: #1c4ee0;
 		text-decoration: none;
 		padding-block: 0;
-		transition: text-shadow 0.3s ease;
+		font-weight: 400;
+		transition: all 0.3s ease;
 
 		@media (prefers-color-scheme: dark) {
 			color: #3973ff;
@@ -190,12 +191,26 @@
 	}
 
 	nav ul:last-child a.active {
-		text-shadow: 0 0 16px rgba(28, 78, 224, 0.7);
+		font-weight: 600;
+		text-shadow: 0 0 20px rgba(28, 78, 224, 0.9);
+		transform: scale(1.02);
 	}
 
 	@media (prefers-color-scheme: dark) {
 		nav ul:last-child a.active {
-			text-shadow: 0 0 16px rgba(57, 115, 255, 0.7);
+			text-shadow: 0 0 20px rgba(57, 115, 255, 0.9);
+		}
+	}
+
+	@media (max-width: 767px) {
+		nav ul:last-child a.active {
+			text-shadow: 0 0 24px rgba(28, 78, 224, 1);
+		}
+
+		@media (prefers-color-scheme: dark) {
+			nav ul:last-child a.active {
+				text-shadow: 0 0 24px rgba(57, 115, 255, 1);
+			}
 		}
 	}
 
