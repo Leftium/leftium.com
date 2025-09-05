@@ -21,7 +21,7 @@
 	`}
 
 	<div class="testimonial-container">
-		<a href="https://github.com/ewilliam" class="william-attribution">
+		<a href="https://github.com/ewilliam" class="william-attribution" target="_blank">
 			{@html md`
 				![](/william.jpg){.william-photo}
 			`}
