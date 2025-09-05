@@ -15,20 +15,20 @@ importers:
         specifier: ^9.34.0
         version: 9.34.0
       '@leftium/leftium-logo':
-        specifier: ^0.0.8
-        version: 0.0.8(svelte@5.38.6)
+        specifier: ^0.0.9
+        version: 0.0.9(svelte@5.38.6)
       '@picocss/pico':
         specifier: ^2.1.1
         version: 2.1.1
       '@sveltejs/adapter-vercel':
         specifier: ^5.10.2
-        version: 5.10.2(@sveltejs/kit@2.37.0(@sveltejs/vite-plugin-svelte@6.1.4(svelte@5.38.6)(vite@7.1.4(@types/node@24.3.0)(sass-embedded@1.92.0)(sass@1.92.0)))(svelte@5.38.6)(vite@7.1.4(@types/node@24.3.0)(sass-embedded@1.92.0)(sass@1.92.0)))(rollup@4.50.0)
+        version: 5.10.2(@sveltejs/kit@2.37.0(@sveltejs/vite-plugin-svelte@6.1.4(svelte@5.38.6)(vite@7.1.4(@types/node@24.3.1)(sass-embedded@1.92.0)(sass@1.92.0)))(svelte@5.38.6)(vite@7.1.4(@types/node@24.3.1)(sass-embedded@1.92.0)(sass@1.92.0)))(rollup@4.50.0)
       '@sveltejs/kit':
         specifier: ^2.37.0
-        version: 2.37.0(@sveltejs/vite-plugin-svelte@6.1.4(svelte@5.38.6)(vite@7.1.4(@types/node@24.3.0)(sass-embedded@1.92.0)(sass@1.92.0)))(svelte@5.38.6)(vite@7.1.4(@types/node@24.3.0)(sass-embedded@1.92.0)(sass@1.92.0))
+        version: 2.37.0(@sveltejs/vite-plugin-svelte@6.1.4(svelte@5.38.6)(vite@7.1.4(@types/node@24.3.1)(sass-embedded@1.92.0)(sass@1.92.0)))(svelte@5.38.6)(vite@7.1.4(@types/node@24.3.1)(sass-embedded@1.92.0)(sass@1.92.0))
       '@sveltejs/vite-plugin-svelte':
         specifier: ^6.1.4
-        version: 6.1.4(svelte@5.38.6)(vite@7.1.4(@types/node@24.3.0)(sass-embedded@1.92.0)(sass@1.92.0))
+        version: 6.1.4(svelte@5.38.6)(vite@7.1.4(@types/node@24.3.1)(sass-embedded@1.92.0)(sass@1.92.0))
       '@types/markdown-it':
         specifier: ^14.1.2
         version: 14.1.2
@@ -103,7 +103,7 @@ importers:
         version: 0.5.0(typescript@5.9.2)
       vite:
         specifier: ^7.1.4
-        version: 7.1.4(@types/node@24.3.0)(sass-embedded@1.92.0)(sass@1.92.0)
+        version: 7.1.4(@types/node@24.3.1)(sass-embedded@1.92.0)(sass@1.92.0)
       vite-plugin-toml:
         specifier: ^0.8.4
         version: 0.8.4(rollup@4.50.0)
@@ -356,8 +356,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.30':
     resolution: {integrity: sha512-GQ7Nw5G2lTu/BtHTKfXhKHok2WGetd4XYcVKGx00SjAk8GMwgJM3zr6zORiPGuOE+/vkc90KtTosSSvaCjKb2Q==}
 
-  '@leftium/leftium-logo@0.0.8':
-    resolution: {integrity: sha512-ahXMW0GcIM+EA1VcFqX4RTTRwjwc9qKsjgMVFNeFMsQwvkE4afk6aQc+MSiRjrhvUa3nJTi9NSQFMl4CbsAk4w==}
+  '@leftium/leftium-logo@0.0.9':
+    resolution: {integrity: sha512-aux+kbC63yn3YNwZ6WWgBlsnHXaFXmkHWtnPrKYQLTjaFGGybeYPvqwlxbU1njrWqe2yaSvKvOubSMSPaQJlnw==}
     peerDependencies:
       svelte: ^5.0.0
 
@@ -470,8 +470,8 @@ packages:
   '@polka/url@1.0.0-next.29':
     resolution: {integrity: sha512-wwQAWhWSuHaag8c4q/KN/vCoeOJYshAIvMQwD4GpSb3OiZklFfvAgmj0VCBBImRpuF/aFgIRzllXlVX93Jevww==}
 
-  '@rollup/pluginutils@5.2.0':
-    resolution: {integrity: sha512-qWJ2ZTbmumwiLFomfzTyt5Kng4hwPi9rwCYN4SHb6eaRU1KNO4ccxINHr/VhH4GgPlt1XfSTLX2LBTme8ne4Zw==}
+  '@rollup/pluginutils@5.3.0':
+    resolution: {integrity: sha512-5EdhGZtnu3V88ces7s53hhfK5KSASnJZv8Lulpc04cWO3REESroJXg73DFsOmgbU2BhwV0E20bu2IDZb3VKW4Q==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
@@ -643,8 +643,8 @@ packages:
   '@types/mdurl@2.0.0':
     resolution: {integrity: sha512-RGdgjQUZba5p6QEFAVx2OGb8rQDL/cPRG7GiedRzMcJ1tYnUANBncjbSB1NRGwbvjcPeikRABz2nshyPk1bhWg==}
 
-  '@types/node@24.3.0':
-    resolution: {integrity: sha512-aPTXCrfwnDLj4VvXrm+UUCQjNEvJgNA8s5F1cvwQU+3KNltTOkBm1j30uNLyqqPNe7gE3KFzImYoZEfLhp4Yow==}
+  '@types/node@24.3.1':
+    resolution: {integrity: sha512-3vXmQDXy+woz+gnrTvuvNrPzekOi+Ds0ReMxw0LzBiK3a+1k0kQn9f2NWk+lgD4rJehFUmYy2gMhJ2ZI+7YP9g==}
 
   '@types/qrcode@1.5.5':
     resolution: {integrity: sha512-CdfBi/e3Qk+3Z/fXYShipBT13OJ2fDO2Q2w5CIP5anLTLIndQG9z6P1cnm+8zCWSpm5dnxMFd/uREtb0EXuQzg==}
@@ -1996,7 +1996,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@leftium/leftium-logo@0.0.8(svelte@5.38.6)':
+  '@leftium/leftium-logo@0.0.9(svelte@5.38.6)':
     dependencies:
       svelte: 5.38.6
 
@@ -2093,7 +2093,7 @@ snapshots:
 
   '@polka/url@1.0.0-next.29': {}
 
-  '@rollup/pluginutils@5.2.0(rollup@4.50.0)':
+  '@rollup/pluginutils@5.3.0(rollup@4.50.0)':
     dependencies:
       '@types/estree': 1.0.8
       estree-walker: 2.0.2
@@ -2170,9 +2170,9 @@ snapshots:
     dependencies:
       acorn: 8.15.0
 
-  '@sveltejs/adapter-vercel@5.10.2(@sveltejs/kit@2.37.0(@sveltejs/vite-plugin-svelte@6.1.4(svelte@5.38.6)(vite@7.1.4(@types/node@24.3.0)(sass-embedded@1.92.0)(sass@1.92.0)))(svelte@5.38.6)(vite@7.1.4(@types/node@24.3.0)(sass-embedded@1.92.0)(sass@1.92.0)))(rollup@4.50.0)':
+  '@sveltejs/adapter-vercel@5.10.2(@sveltejs/kit@2.37.0(@sveltejs/vite-plugin-svelte@6.1.4(svelte@5.38.6)(vite@7.1.4(@types/node@24.3.1)(sass-embedded@1.92.0)(sass@1.92.0)))(svelte@5.38.6)(vite@7.1.4(@types/node@24.3.1)(sass-embedded@1.92.0)(sass@1.92.0)))(rollup@4.50.0)':
     dependencies:
-      '@sveltejs/kit': 2.37.0(@sveltejs/vite-plugin-svelte@6.1.4(svelte@5.38.6)(vite@7.1.4(@types/node@24.3.0)(sass-embedded@1.92.0)(sass@1.92.0)))(svelte@5.38.6)(vite@7.1.4(@types/node@24.3.0)(sass-embedded@1.92.0)(sass@1.92.0))
+      '@sveltejs/kit': 2.37.0(@sveltejs/vite-plugin-svelte@6.1.4(svelte@5.38.6)(vite@7.1.4(@types/node@24.3.1)(sass-embedded@1.92.0)(sass@1.92.0)))(svelte@5.38.6)(vite@7.1.4(@types/node@24.3.1)(sass-embedded@1.92.0)(sass@1.92.0))
       '@vercel/nft': 0.30.1(rollup@4.50.0)
       esbuild: 0.25.9
     transitivePeerDependencies:
@@ -2180,11 +2180,11 @@ snapshots:
       - rollup
       - supports-color
 
-  '@sveltejs/kit@2.37.0(@sveltejs/vite-plugin-svelte@6.1.4(svelte@5.38.6)(vite@7.1.4(@types/node@24.3.0)(sass-embedded@1.92.0)(sass@1.92.0)))(svelte@5.38.6)(vite@7.1.4(@types/node@24.3.0)(sass-embedded@1.92.0)(sass@1.92.0))':
+  '@sveltejs/kit@2.37.0(@sveltejs/vite-plugin-svelte@6.1.4(svelte@5.38.6)(vite@7.1.4(@types/node@24.3.1)(sass-embedded@1.92.0)(sass@1.92.0)))(svelte@5.38.6)(vite@7.1.4(@types/node@24.3.1)(sass-embedded@1.92.0)(sass@1.92.0))':
     dependencies:
       '@standard-schema/spec': 1.0.0
       '@sveltejs/acorn-typescript': 1.0.5(acorn@8.15.0)
-      '@sveltejs/vite-plugin-svelte': 6.1.4(svelte@5.38.6)(vite@7.1.4(@types/node@24.3.0)(sass-embedded@1.92.0)(sass@1.92.0))
+      '@sveltejs/vite-plugin-svelte': 6.1.4(svelte@5.38.6)(vite@7.1.4(@types/node@24.3.1)(sass-embedded@1.92.0)(sass@1.92.0))
       '@types/cookie': 0.6.0
       acorn: 8.15.0
       cookie: 0.6.0
@@ -2197,26 +2197,26 @@ snapshots:
       set-cookie-parser: 2.7.1
       sirv: 3.0.2
       svelte: 5.38.6
-      vite: 7.1.4(@types/node@24.3.0)(sass-embedded@1.92.0)(sass@1.92.0)
+      vite: 7.1.4(@types/node@24.3.1)(sass-embedded@1.92.0)(sass@1.92.0)
 
-  '@sveltejs/vite-plugin-svelte-inspector@5.0.1(@sveltejs/vite-plugin-svelte@6.1.4(svelte@5.38.6)(vite@7.1.4(@types/node@24.3.0)(sass-embedded@1.92.0)(sass@1.92.0)))(svelte@5.38.6)(vite@7.1.4(@types/node@24.3.0)(sass-embedded@1.92.0)(sass@1.92.0))':
+  '@sveltejs/vite-plugin-svelte-inspector@5.0.1(@sveltejs/vite-plugin-svelte@6.1.4(svelte@5.38.6)(vite@7.1.4(@types/node@24.3.1)(sass-embedded@1.92.0)(sass@1.92.0)))(svelte@5.38.6)(vite@7.1.4(@types/node@24.3.1)(sass-embedded@1.92.0)(sass@1.92.0))':
     dependencies:
-      '@sveltejs/vite-plugin-svelte': 6.1.4(svelte@5.38.6)(vite@7.1.4(@types/node@24.3.0)(sass-embedded@1.92.0)(sass@1.92.0))
+      '@sveltejs/vite-plugin-svelte': 6.1.4(svelte@5.38.6)(vite@7.1.4(@types/node@24.3.1)(sass-embedded@1.92.0)(sass@1.92.0))
       debug: 4.4.1
       svelte: 5.38.6
-      vite: 7.1.4(@types/node@24.3.0)(sass-embedded@1.92.0)(sass@1.92.0)
+      vite: 7.1.4(@types/node@24.3.1)(sass-embedded@1.92.0)(sass@1.92.0)
     transitivePeerDependencies:
       - supports-color
 
-  '@sveltejs/vite-plugin-svelte@6.1.4(svelte@5.38.6)(vite@7.1.4(@types/node@24.3.0)(sass-embedded@1.92.0)(sass@1.92.0))':
+  '@sveltejs/vite-plugin-svelte@6.1.4(svelte@5.38.6)(vite@7.1.4(@types/node@24.3.1)(sass-embedded@1.92.0)(sass@1.92.0))':
     dependencies:
-      '@sveltejs/vite-plugin-svelte-inspector': 5.0.1(@sveltejs/vite-plugin-svelte@6.1.4(svelte@5.38.6)(vite@7.1.4(@types/node@24.3.0)(sass-embedded@1.92.0)(sass@1.92.0)))(svelte@5.38.6)(vite@7.1.4(@types/node@24.3.0)(sass-embedded@1.92.0)(sass@1.92.0))
+      '@sveltejs/vite-plugin-svelte-inspector': 5.0.1(@sveltejs/vite-plugin-svelte@6.1.4(svelte@5.38.6)(vite@7.1.4(@types/node@24.3.1)(sass-embedded@1.92.0)(sass@1.92.0)))(svelte@5.38.6)(vite@7.1.4(@types/node@24.3.1)(sass-embedded@1.92.0)(sass@1.92.0))
       debug: 4.4.1
       deepmerge: 4.3.1
       magic-string: 0.30.18
       svelte: 5.38.6
-      vite: 7.1.4(@types/node@24.3.0)(sass-embedded@1.92.0)(sass@1.92.0)
-      vitefu: 1.1.1(vite@7.1.4(@types/node@24.3.0)(sass-embedded@1.92.0)(sass@1.92.0))
+      vite: 7.1.4(@types/node@24.3.1)(sass-embedded@1.92.0)(sass@1.92.0)
+      vitefu: 1.1.1(vite@7.1.4(@types/node@24.3.1)(sass-embedded@1.92.0)(sass@1.92.0))
     transitivePeerDependencies:
       - supports-color
 
@@ -2235,13 +2235,13 @@ snapshots:
 
   '@types/mdurl@2.0.0': {}
 
-  '@types/node@24.3.0':
+  '@types/node@24.3.1':
     dependencies:
       undici-types: 7.10.0
 
   '@types/qrcode@1.5.5':
     dependencies:
-      '@types/node': 24.3.0
+      '@types/node': 24.3.1
 
   '@typescript-eslint/eslint-plugin@8.42.0(@typescript-eslint/parser@8.42.0(eslint@9.34.0)(typescript@5.9.2))(eslint@9.34.0)(typescript@5.9.2)':
     dependencies:
@@ -2339,7 +2339,7 @@ snapshots:
   '@vercel/nft@0.30.1(rollup@4.50.0)':
     dependencies:
       '@mapbox/node-pre-gyp': 2.0.0
-      '@rollup/pluginutils': 5.2.0(rollup@4.50.0)
+      '@rollup/pluginutils': 5.3.0(rollup@4.50.0)
       acorn: 8.15.0
       acorn-import-attributes: 1.9.5(acorn@8.15.0)
       async-sema: 3.1.1
@@ -3293,11 +3293,11 @@ snapshots:
 
   vite-plugin-toml@0.8.4(rollup@4.50.0):
     dependencies:
-      '@rollup/pluginutils': 5.2.0(rollup@4.50.0)
+      '@rollup/pluginutils': 5.3.0(rollup@4.50.0)
       rollup: 4.50.0
       toml-eslint-parser: 0.10.0
 
-  vite@7.1.4(@types/node@24.3.0)(sass-embedded@1.92.0)(sass@1.92.0):
+  vite@7.1.4(@types/node@24.3.1)(sass-embedded@1.92.0)(sass@1.92.0):
     dependencies:
       esbuild: 0.25.9
       fdir: 6.5.0(picomatch@4.0.3)
@@ -3306,14 +3306,14 @@ snapshots:
       rollup: 4.50.0
       tinyglobby: 0.2.14
     optionalDependencies:
-      '@types/node': 24.3.0
+      '@types/node': 24.3.1
       fsevents: 2.3.3
       sass: 1.92.0
       sass-embedded: 1.92.0
 
-  vitefu@1.1.1(vite@7.1.4(@types/node@24.3.0)(sass-embedded@1.92.0)(sass@1.92.0)):
+  vitefu@1.1.1(vite@7.1.4(@types/node@24.3.1)(sass-embedded@1.92.0)(sass@1.92.0)):
     optionalDependencies:
-      vite: 7.1.4(@types/node@24.3.0)(sass-embedded@1.92.0)(sass@1.92.0)
+      vite: 7.1.4(@types/node@24.3.1)(sass-embedded@1.92.0)(sass@1.92.0)
 
   vscode-uri@3.1.0: {}
 
