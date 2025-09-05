@@ -77,13 +77,16 @@
 		max-width: var(--size-content-2);
 	}
 
-	:global {
-		h1 {
-			margin-bottom: 0;
-		}
-	}
-
 	:global(.text-align-center) {
 		text-align: center;
+	}
+
+	scope-css :global(h1) {
+		margin-bottom: 0;
+	}
+
+	scope-css :global(h1 + p.text-align-center) {
+		margin: 0;
+		padding: 0;
 	}
 </style>
