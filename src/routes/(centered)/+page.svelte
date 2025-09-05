@@ -67,6 +67,7 @@
 		:global(h1),
 		:global(h2) {
 			margin-top: 0;
+			margin-bottom: var(--size-1);
 			text-align: center;
 		}
 
