@@ -24,18 +24,18 @@
 	`}
 
 	<div class="testimonial-container">
-		<div class="william-attribution">
+		<a href="https://github.com/ewilliam" class="william-attribution">
 			{@html md`
 				![](/william.jpg){.william-photo}
 			`}
 			<div>
 				{@html md`
-					[William Albright](https://github.com/ewilliam){.william-name}
+					William Albright{.william-name}
 
 					software developer{.william-title}
 				`}
 			</div>
-		</div>
+		</a>
 
 		{@html md`
 			> **I was burned out.** React and JSX were kicking my ass, and I

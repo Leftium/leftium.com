@@ -65,6 +65,8 @@
 	align-items: center;
 	gap: var(--size-2);
 	margin-bottom: var(--size-2);
+	text-decoration: none;
+	color: inherit;
 }
 
 .william-attribution p {
@@ -73,16 +75,13 @@
 }
 
 .william-photo {
-	width: 60px;
-	height: 60px;
+	width: var(--size-9);
+	aspect-ratio: 1;
 	border-radius: 50%;
-	object-fit: cover;
 	border: 2px solid hsl(from var(--pico-secondary) h s l / 0.4);
-	flex: none;
 }
 
 .william-name {
-	text-decoration: none;
 	color: #1c4ee0;
 	font-weight: 600;
 	transition: text-shadow 0.3s ease;
@@ -93,6 +92,8 @@
 	opacity: 0.8;
 	margin-top: -0.2rem;
 	white-space: nowrap;
+	color: inherit;
+	transition: text-shadow 0.3s ease;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -102,12 +103,14 @@
 }
 
 @media (hover: hover) {
-	.william-name:hover {
+	.william-attribution:hover .william-name,
+	.william-attribution:hover .william-title {
 		text-shadow: 0 0 16px rgba(28, 78, 224, 0.7);
 	}
 
 	@media (prefers-color-scheme: dark) {
-		.william-name:hover {
+		.william-attribution:hover .william-name,
+		.william-attribution:hover .william-title {
 			text-shadow: 0 0 16px rgba(57, 115, 255, 0.7);
 		}
 	}
