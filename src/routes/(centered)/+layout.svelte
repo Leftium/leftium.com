@@ -3,6 +3,7 @@
 
 	import { favicon, LeftiumLogo } from '@leftium/leftium-logo'
 	import { dev } from '$app/environment'
+	import { page } from '$app/stores'
 
 	let { children } = $props()
 
@@ -40,10 +41,10 @@
 			</li>
 		</ul>
 		<ul>
-			<li><a href="/">Home</a></li>
-			<li><a href="/resume">Resume</a></li>
-			<li><a href="/portfolio">Portfolio</a></li>
-			<li><a href="/contact">Contact</a></li>
+			<li><a href="/" class:active={$page.url.pathname === '/'}>Home</a></li>
+			<li><a href="/resume" class:active={$page.url.pathname === '/resume'}>Resume</a></li>
+			<li><a href="/portfolio" class:active={$page.url.pathname === '/portfolio'}>Portfolio</a></li>
+			<li><a href="/contact" class:active={$page.url.pathname === '/contact'}>Contact</a></li>
 		</ul>
 	</nav>
 </header>
@@ -166,12 +167,40 @@
 
 	nav ul:last-child a {
 		color: #1c4ee0;
-		text-decoration-color: #1c4ee0;
+		text-decoration: none;
 		padding-block: 0;
+		transition: text-shadow 0.3s ease;
 
 		@media (prefers-color-scheme: dark) {
 			color: #3973ff;
-			text-decoration-color: #3973ff;
+		}
+	}
+
+	nav ul:last-child a.active {
+		text-shadow: 0 0 16px rgba(28, 78, 224, 0.7);
+	}
+
+	@media (prefers-color-scheme: dark) {
+		nav ul:last-child a.active {
+			text-shadow: 0 0 16px rgba(57, 115, 255, 0.7);
+		}
+	}
+
+	nav ul:last-child a:visited,
+	nav ul:last-child a:focus,
+	nav ul:last-child a:active {
+		text-decoration: none;
+	}
+
+	@media (hover: hover) {
+		nav ul:last-child a:hover {
+			text-shadow: 0 0 16px rgba(28, 78, 224, 0.7);
+		}
+	}
+
+	@media (hover: hover) and (prefers-color-scheme: dark) {
+		nav ul:last-child a:hover {
+			text-shadow: 0 0 16px rgba(57, 115, 255, 0.7);
 		}
 	}
 </style>
