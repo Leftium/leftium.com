@@ -21,7 +21,8 @@
 
 <accent-box class="screen-only">
 	<span>
-		<a href="/John-Kim-Murphy-Resume.pdf" target="_blank">PDF format</a> (Opens in new window)
+		<a href="/John-Kim-Murphy-Resume.pdf" target="_blank">PDF format</a>
+		<span class="opens-in-new">(Opens in new window)</span>
 	</span>
 </accent-box>
 
@@ -50,6 +51,11 @@
 		margin-bottom: var(--size-3);
 
 		max-width: var(--size-content-3);
+	}
+
+	.opens-in-new {
+		font-size: 0.75em;
+		opacity: 0.7;
 	}
 
 	@media (min-width: 768px) {
