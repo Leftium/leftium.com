@@ -16,13 +16,13 @@
 <scope-css>
 	{@html md`
 		# An Unprompted Testimonial
+		
+		->From [William Albright](https://github.com/ewilliam), a fellow software developer<-
+		-> _(slightly edited, for readability)_ <-
 
-		From [William Albright](https://github.com/ewilliam), a fellow software developer
-
-		_(Minor edits for readability)_
-
-		> **I was burned out. React and JSX were kicking my ass, and I
-		> questioned whether web development was for me.** My mental
+	
+		> **I was burned out.** React and JSX were kicking my ass, and I
+		> questioned whether web development was for me. My mental
 		> model kept me stuck in the backend; I couldn't replicate the
 		> frontends I admired on the web.
 		>
@@ -60,5 +60,15 @@
 		margin: auto;
 
 		max-width: var(--size-content-2);
+	}
+
+	:global {
+		h1 {
+			margin-bottom: 0;
+		}
+	}
+
+	:global(.text-align-center) {
+		text-align: center;
 	}
 </style>

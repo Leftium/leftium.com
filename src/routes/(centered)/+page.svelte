@@ -2,12 +2,10 @@
 	import 'open-props/style'
 
 	import { makeTagFunctionMd } from '$lib/tag-functions/markdown'
-	import { LeftiumLogo } from '@leftium/leftium-logo'
 	import attr from 'markdown-it-attrs'
 	import centerText from 'markdown-it-center-text'
-	import { dev } from '$app/environment'
 
-	const md = makeTagFunctionMd({ html: true, linkify: true, typographer: true, breaks: true }, [
+	const md = makeTagFunctionMd({ html: true, linkify: true, typographer: true, breaks: false }, [
 		[attr],
 		[centerText],
 	])
@@ -15,30 +13,33 @@
 
 <scope-css>
 	{@html md`
-		<center>John-Kim is a...</center>
+		# Need a digital consultant?
 
-		## Digital Consultant...
+		- A _consultant_ helps get you get from point A to point B.
+		- A _digital_ consultant has expertise in computers/tech.
 
-		#### Getting you from point A to point B...
+		[Learn more...](/digital-consulting){role=button .outline .full}
 
-		- **Point B is where you want to be!** Imagine you had an all-powerful magic wand.\
-		  What would you do? Where would you go? What is the goal/transformation you most desire?
-		- **Point A is your current situation.** John will customize the best route to B.\
-		  This requires understanding _your_ specific needs and strengths.
+		---
 
-		#### (Often) with expertise in computers/tech...
+		# A heart-felt testimonial
 
-		- **John has probably _forgotten_ more about computers than most will ever _learn_ in a lifetime.** He has...
-		- Assembled and repaired computers.
-		- Made web sites that _make other web sites._
-		- Improved the secret source code of Microsoft Windows and Office.
+		->From [William Albright](https://github.com/ewilliam),<br>
+		a fellow software developer:<-
 
-		#### But not always!
+		> **I was burned out.** React and JSX were kicking my ass, and I
+		> questioned whether web development was for me...
+		>
+		> Then John [showed] me that complex UI could be unlocked by the right data structures...
+		> [He] inspired me to read more technical material...
+		> **[He] helped shift my perspective on frontend development...**
+		>
+		> And finally—John's lack of ego, his willingness to
+		> collaborate with my team regardless of skill level—it
+		> humbled me...
+		> **I’ve become a better builder because of John!**
 
-		- **One of John's greatest accomplishments was getting a troubled student to finish reading their very first book.**
-		  The student's mother literally teared up because she thought this would be impossible.
-
-		### Learn more...
+		->Read William's [full testimonial](/testimonials)!<-
 	`}
 </scope-css>
 
