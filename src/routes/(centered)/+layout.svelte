@@ -109,6 +109,10 @@
 			h1 {
 				margin-bottom: 0;
 				color: #1c4ee0;
+
+				@media (prefers-color-scheme: dark) {
+					color: #3973ff;
+				}
 			}
 
 			em {
@@ -138,5 +142,10 @@
 		color: #1c4ee0;
 		text-decoration-color: #1c4ee0;
 		padding-block: 0;
+
+		@media (prefers-color-scheme: dark) {
+			color: #3973ff;
+			text-decoration-color: #3973ff;
+		}
 	}
 </style>
