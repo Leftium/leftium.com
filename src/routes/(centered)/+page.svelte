@@ -21,24 +21,38 @@
 		[Learn more...](/digital-consulting){role=button .outline .full}
 
 		---
+	`}
 
-		# A heart-felt testimonial
+	<div class="testimonial-container">
+		<div class="william-attribution">
+			{@html md`
+				![](/william.jpg){.william-photo}
+			`}
+			<div>
+				{@html md`
+					[William Albright](https://github.com/ewilliam){.william-name}
 
-		->From [William Albright](https://github.com/ewilliam),<br>
-		a fellow software developer:<-
+					software developer{.william-title}
+				`}
+			</div>
+		</div>
 
-		> **I was burned out.** React and JSX were kicking my ass, and I
-		> questioned whether web development was for me...
-		>
-		> Then John [showed] me that complex UI could be unlocked by the right data structures...
-		> [He] inspired me to read more technical material...
-		> **[He] helped shift my perspective on frontend development...**
-		>
-		> And finally—John's lack of ego, his willingness to
-		> collaborate with my team regardless of skill level—it
-		> humbled me...
-		> **I’ve become a better builder because of John!**
+		{@html md`
+			> **I was burned out.** React and JSX were kicking my ass, and I
+			> questioned whether web development was for me...
+			>
+			> Then John [showed] me that complex UI could be unlocked by the right data structures...
+			> [He] inspired me to read more technical material...
+			> **[He] helped shift my perspective on frontend development...**
+			>
+			> And finally—John's lack of ego, his willingness to
+			> collaborate with my team regardless of skill level—it
+			> humbled me...
+			> **I've become a better builder because of John!**
+		`}
+	</div>
 
+	{@html md`
 		->Read the [full testimonial](/testimonials)!<-
 	`}
 </scope-css>
@@ -67,18 +81,6 @@
 
 		:global(.text-align-center) {
 			text-align: center;
-		}
-
-		:global(blockquote) {
-			background-color: var(--pico-card-sectioning-background-color);
-			padding: var(--size-2) var(--size-3);
-			-border-radius: var(--radius-2);
-			-border-left: 4px solid var(--pico-primary);
-			margin: var(--size-4) 0;
-
-			:global(p:last-child) {
-				margin-bottom: 0 !important;
-			}
 		}
 	}
 </style>
