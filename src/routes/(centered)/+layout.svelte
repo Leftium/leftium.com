@@ -5,6 +5,14 @@
 	import { dev } from '$app/environment'
 
 	let { children } = $props()
+
+	let animated = $state(!dev)
+
+	function handleLogoClick(event: MouseEvent) {
+		event.preventDefault()
+		event.stopPropagation()
+		animated = !animated
+	}
 </script>
 
 <svelte:head>
@@ -16,7 +24,14 @@
 		<ul>
 			<li>
 				<a href="/" class="brand">
-					<LeftiumLogo animated={!dev} boundingBox="square" size="3.75rem" />
+					<div class="logo-wrapper">
+						<LeftiumLogo
+							{animated}
+							boundingBox="square"
+							size="3.75rem"
+							on:click={handleLogoClick}
+						/>
+					</div>
 					<div>
 						<h1>Leftium</h1>
 						<em>The element of creativity!</em>
@@ -25,6 +40,7 @@
 			</li>
 		</ul>
 		<ul>
+			<li><a href="/">Home</a></li>
 			<li><a href="/resume">Resume</a></li>
 			<li><a href="/portfolio">Portfolio</a></li>
 			<li><a href="/contact">Contact</a></li>
@@ -131,6 +147,16 @@
 
 	.brand:hover {
 		text-decoration: none;
+	}
+
+	@media (max-width: 767px) {
+		.brand {
+			pointer-events: none;
+		}
+
+		.logo-wrapper {
+			pointer-events: auto;
+		}
 	}
 
 	nav ul:last-child li {
