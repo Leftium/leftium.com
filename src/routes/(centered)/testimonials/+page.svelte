@@ -16,11 +16,10 @@
 <scope-css>
 	{@html md`
 		# An Unprompted Testimonial
-		
+
 		->From [William Albright](https://github.com/ewilliam), a fellow software developer<-
 		-> _(slightly edited, for readability)_ <-
 
-	
 		> **I was burned out.** React and JSX were kicking my ass, and I
 		> questioned whether web development was for me. My mental
 		> model kept me stuck in the backend; I couldn't replicate the

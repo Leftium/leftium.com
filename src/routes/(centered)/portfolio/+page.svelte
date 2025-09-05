@@ -32,11 +32,20 @@
 
 		## Try using some of my projects:
 
-		- weather-sense.leftium.com (view the [source code](https://github.com/Leftium/weather-sense))
-		- hw.leftium.com (view the [source code](https://github.com/Leftium/hckrweb))
-		- vivibl.com (view the [source code](https://github.com/Leftium/modu-blues.com))
-		- multi-launch.leftium.com (view the [source code](https://github.com/Leftium/multi-launch))
-		- zbang.leftium.com (view the [source code](https://github.com/Leftium/zbang))
+		weather-sense.leftium.com
+		~ [source code](https://github.com/Leftium/weather-sense)
+
+		hw.leftium.com
+		~ [source code](https://github.com/Leftium/hckrweb)
+
+		vivibl.com
+		~ [source code](https://github.com/Leftium/modu-blues.com)
+
+		multi-launch.leftium.com
+		~ [source code](https://github.com/Leftium/multi-launch)
+
+		zbang.leftium.com
+		~ [source code](https://github.com/Leftium/zbang)
 
 		## Browse my activity on other sites:
 
@@ -53,18 +62,60 @@
 
 <pre hidden={!dev}>{JSON.stringify(data.contactInfo, null, 4)}</pre>
 
-<style>
+<style lang="scss">
+	@use 'open-props-scss' as *;
 	scope-css {
 		display: block;
 		max-width: var(--size-content-2);
 		margin: auto;
 
-		:global(.full) {
-			width: 100%;
-		}
+		:global {
+			.full {
+				width: 100%;
+			}
 
-		:global(.text-align-center) {
-			text-align: center;
+			.text-align-center {
+				text-align: center;
+			}
+
+			// Render definition lists as simple table:
+			dl {
+				display: grid;
+				grid-template-columns: max-content 1fr;
+				max-width: 100%;
+				width: fit-content;
+				margin-block: $size-2;
+				margin-inline: auto;
+				padding: 0;
+				padding-inline: $size-3;
+
+				dt,
+				dd {
+					margin: 0;
+					padding: $size-2 0;
+				}
+
+				dt {
+					font-weight: $font-weight-7;
+					text-align: right;
+					align-self: start;
+					padding-right: $size-3;
+				}
+
+				dt:first-of-type,
+				dt:first-of-type + dd {
+					border-top: none;
+				}
+
+				dd {
+					grid-column: 2;
+				}
+
+				dt,
+				dt + dd {
+					border-top: 1px solid #dcdcdc;
+				}
+			}
 		}
 	}
 </style>
