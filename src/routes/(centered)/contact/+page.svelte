@@ -26,7 +26,7 @@
 		Phone
 		~ Upon request...
 
-		Postal Address
+		Mail
 		~ Upon request...
 
 		## ->If viewing on your phone:<-
