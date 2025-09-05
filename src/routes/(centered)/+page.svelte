@@ -15,7 +15,7 @@
 	{@html md`
 		# Need a digital consultant?
 
-		- A _consultant_ helps get you get from point A to point B.
+		- A _consultant_ helps you get from point A to point B.
 		- A _digital_ consultant has expertise in computers/tech.
 
 		[Learn more...](/digital-consulting){role=button .outline .full}
@@ -39,7 +39,7 @@
 		> humbled me...
 		> **I’ve become a better builder because of John!**
 
-		->Read William's [full testimonial](/testimonials)!<-
+		->Read the [full testimonial](/testimonials)!<-
 	`}
 </scope-css>
 
