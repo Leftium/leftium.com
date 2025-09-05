@@ -133,7 +133,7 @@
 			}
 
 			em {
-				opacity: 50%;
+				opacity: 75%;
 				font-size: 0.85em;
 				font-style: italic;
 			}
