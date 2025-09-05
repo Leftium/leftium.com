@@ -11,8 +11,8 @@
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-<header class="container screen-only">
-	<nav>
+<header class="screen-only">
+	<nav class="container">
 		<ul>
 			<li>
 				<a href="/" class="brand">
@@ -44,13 +44,15 @@
 		padding-bottom: 0%;
 	}
 
+	header {
+		background-color: var(--pico-card-sectioning-background-color);
+	}
+
 	nav {
 		max-width: var(--size-content-3);
 		margin: auto;
-		margin-top: var(--size-3);
 		margin-bottom: var(--size-3);
 		flex-wrap: wrap;
-		border: 1px solid var(--pico-muted-border-color);
 		padding-inline: var(--size-3);
 
 		ul:first-child {
@@ -87,6 +89,10 @@
 		align-items: center;
 		gap: var(--size-3);
 		text-decoration: none;
+		border: 1px solid var(--pico-muted-border-color);
+		padding: var(--size-2);
+		border-radius: 0;
+		background-color: var(--pico-card-background-color);
 
 		div {
 			display: flex;
@@ -119,5 +125,6 @@
 
 	nav ul:last-child a {
 		color: #1c4ee0;
+		text-decoration-color: #1c4ee0;
 	}
 </style>
