@@ -105,7 +105,6 @@
 		border-radius: 0;
 		background-color: var(--pico-card-sectioning-background-color);
 		max-height: 120px;
-		overflow: hidden;
 		transition:
 			max-height 0.5s ease-in-out,
 			opacity 0.4s ease-in-out;
