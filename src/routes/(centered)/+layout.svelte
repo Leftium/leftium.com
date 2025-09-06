@@ -1,7 +1,7 @@
 <script lang="ts">
 	import 'open-props/style'
 
-	import { favicon, LeftiumLogo } from '@leftium/leftium-logo'
+	import { favicon, LeftiumLogo } from '@leftium/logo'
 	import { page } from '$app/stores'
 
 	let { children } = $props()

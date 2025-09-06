@@ -7,10 +7,6 @@ settings:
 importers:
 
   .:
-    dependencies:
-      '@leftium/leftium-logo':
-        specifier: ^0.0.12
-        version: 0.0.12(svelte@5.38.6)
     devDependencies:
       '@eslint/compat':
         specifier: ^1.3.2
@@ -18,6 +14,9 @@ importers:
       '@eslint/js':
         specifier: ^9.34.0
         version: 9.34.0
+      '@leftium/logo':
+        specifier: ^0.0.1
+        version: 0.0.1(svelte@5.38.6)
       '@picocss/pico':
         specifier: ^2.1.1
         version: 2.1.1
@@ -357,8 +356,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.30':
     resolution: {integrity: sha512-GQ7Nw5G2lTu/BtHTKfXhKHok2WGetd4XYcVKGx00SjAk8GMwgJM3zr6zORiPGuOE+/vkc90KtTosSSvaCjKb2Q==}
 
-  '@leftium/leftium-logo@0.0.12':
-    resolution: {integrity: sha512-KsW/uGWBvp4ZAHh4pGLECSWMDecyxSrPan2Yp7on0/nDHC/9OZ2FKWabCHJpKCnWabqGIakYkzpaspIEZNW7og==}
+  '@leftium/logo@0.0.1':
+    resolution: {integrity: sha512-RExDDYpv6qZnvsUkT8slAYgIz7ZcrzvCnMi1EyN3YrVBjkpmQMMzuSAwTT2/9VgSlzBi0CzNLaLy3EPG0RMTWw==}
     peerDependencies:
       svelte: ^5.0.0
 
@@ -1997,7 +1996,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@leftium/leftium-logo@0.0.12(svelte@5.38.6)':
+  '@leftium/logo@0.0.1(svelte@5.38.6)':
     dependencies:
       svelte: 5.38.6
 

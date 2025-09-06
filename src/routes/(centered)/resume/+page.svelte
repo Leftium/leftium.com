@@ -4,7 +4,7 @@
 
 	import markdownit from 'markdown-it'
 	import markdownitDeflist from 'markdown-it-deflist'
-	import { LeftiumLogo } from '@leftium/leftium-logo'
+	import { LeftiumLogo } from '@leftium/logo'
 
 	import resume from './resume.md?raw'
 	import { dev } from '$app/environment'
