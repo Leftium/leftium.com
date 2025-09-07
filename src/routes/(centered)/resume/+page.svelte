@@ -23,7 +23,19 @@
 	const format = $derived(page.url.searchParams.has('text') ? 'text' : 'html')
 </script>
 
-{#snippet buttonPill(variant = '', role = '', ariaLabel = '', dataActive = '', links = [])}
+{#snippet buttonPill(
+	variant = '',
+	role = '',
+	ariaLabel = '',
+	dataActive = '',
+	links: Array<{
+		href: string
+		target?: string
+		active?: boolean
+		ariaCurrent?: 'page'
+		html: string
+	}>,
+)}
 	<div class="switch-container {variant}" {role} aria-label={ariaLabel} data-active={dataActive}>
 		<div class="switch-slider"></div>
 		{#each links as link}
@@ -31,7 +43,7 @@
 				href={link.href}
 				target={link.target || undefined}
 				class:active={link.active}
-				aria-current={link.ariaCurrent || undefined}
+				aria-current={link.ariaCurrent}
 			>
 				{@html link.html}
 			</a>
@@ -169,18 +181,13 @@
 			.switch-slider {
 				width: calc(100% - 8px);
 			}
-
-			.external-icon {
-				font-size: 0.8em;
-				margin-left: 0.25em;
-				opacity: 0.9;
-			}
 		}
 	}
 
 	@media (max-width: 480px) {
 		accent-box {
 			justify-content: flex-start;
+			padding-inline: var(--size-3);
 		}
 	}
 
