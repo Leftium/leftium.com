@@ -2,13 +2,14 @@
 
 
 
+
 # John Kim Murphy
 leftium.com | john@leftium.com
 
 
 ## Selected Experience
 
-Freelance Consultant _2013–now_
+Digital Consultant _2013–now_
   ~ _Seoul, KR & Minneapolis, MN_
   - Design & develop complex web app (Gallaudet Univ.)
   - Develop mobile/web apps (HomeSpotter)
