@@ -97,7 +97,6 @@
 		align-items: center;
 		justify-content: center;
 		padding-block: var(--size-1);
-		padding-inline: var(--size-3);
 		border: 1px solid var(--pico-muted-border-color);
 		margin-bottom: var(--size-3);
 

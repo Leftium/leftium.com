@@ -61,7 +61,7 @@
 		margin: auto;
 		margin-bottom: var(--size-1);
 		flex-wrap: wrap;
-		padding-inline: 0;
+		padding-inline: var(--pico-block-spacing-horizontal);
 		transition: all 0.3s ease;
 
 		ul:first-child {
@@ -103,6 +103,7 @@
 	main {
 		background-color: var(--pico-background-color);
 		min-height: 100vh;
+		max-width: var(--size-content-3);
 	}
 
 	.brand {
