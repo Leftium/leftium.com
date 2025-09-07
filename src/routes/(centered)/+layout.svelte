@@ -59,7 +59,7 @@
 	nav {
 		max-width: var(--size-content-3);
 		margin: auto;
-		margin-bottom: var(--size-3);
+		margin-bottom: var(--size-2);
 		flex-wrap: wrap;
 		padding-inline: 0;
 		transition: all 0.3s ease;
