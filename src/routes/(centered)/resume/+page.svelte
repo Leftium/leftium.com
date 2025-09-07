@@ -15,10 +15,9 @@
 	}).use(markdownitDeflist)
 
 	// Preprocess resume - always remove the image line since we handle logo in Svelte
-	let resumeProcessed = resume.replace('John Kim', 'John&nbsp;Kim')
-	const resumeLines = resumeProcessed.split('\n')
-	resumeProcessed = resumeLines.slice(1).join('\n') // Remove first line (image)
-	const resumeHtml = md.render(resumeProcessed)
+	const resumeHtml = md.render(
+		resume.replace('John Kim', 'John&nbsp;Kim').split('\n').slice(1).join('\n'),
+	)
 
 	// Reactive format based on URL params
 	const format = $derived(page.url.searchParams.has('text') ? 'text' : 'html')
@@ -76,33 +75,36 @@
 
 	accent-box {
 		display: flex;
-		flex-wrap: nowrap;
 		position: relative;
 		align-items: center;
 		justify-content: center;
 		padding-block: var(--size-1);
 		border: 1px solid var(--pico-muted-border-color);
 		margin-bottom: var(--size-3);
-
 		max-width: var(--size-content-3);
-		width: 100%;
 	}
 
 	.switch-container {
+		--switch-padding: 4px;
+		--switch-height: 40px;
+		--switch-radius: 2rem;
+		--switch-max-width: 160px;
+		--switch-min-width: 120px;
+
 		position: relative;
 		display: flex;
 		justify-content: space-evenly;
 		background: var(--pico-muted-border-color);
-		border-radius: 2rem;
-		padding: 4px;
+		border-radius: var(--switch-radius);
+		padding: var(--switch-padding);
 		transition: background-color 0.2s ease;
-		max-width: 160px;
-		height: 40px;
-		min-width: 120px;
+		max-width: var(--switch-max-width);
+		height: var(--switch-height);
+		min-width: var(--switch-min-width);
 
 		.switch-slider {
 			position: absolute;
-			inset: 4px;
+			inset: var(--switch-padding);
 			width: 50%;
 			background: var(--pico-primary);
 			border-radius: inherit;
@@ -140,16 +142,17 @@
 		}
 
 		&.pdf-button {
+			--switch-max-width: 80px;
+			--switch-min-width: 80px;
+
 			position: absolute;
 			right: var(--size-3);
 			top: 50%;
 			transform: translateY(-50%);
-			max-width: 80px;
-			min-width: 80px;
 			background: transparent;
 
 			.switch-slider {
-				width: calc(100% - 8px);
+				width: calc(100% - calc(var(--switch-padding) * 2));
 			}
 
 			.external-icon {
