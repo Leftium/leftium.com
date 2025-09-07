@@ -20,7 +20,7 @@
 
 	dl {
 		// Job title, date
-		margin-top: $size-2;
+		margin-top: $size-1;
 
 		// Clear the floated logo.
 		clear: left;
@@ -102,14 +102,13 @@
 		font-size: $font-size-2;
 	}
 
-
-
 	li::marker {
 		color: $stone-2;
 	}
 
 	ul {
 		padding-left: $size-px-4;
+		margin-bottom: $size-3;
 	}
 
 	@mixin dark-resume {
@@ -149,10 +148,9 @@
 	@media only print {
 		.resume-container.html {
 			max-width: 100% !important;
-			margin-top: 1rem !important;
+			margin-top: 1.25rem !important;
 			margin-bottom: 0 !important;
 			padding-bottom: 0 !important;
-			
 		}
 
 		// Reduce spacing to fit better with default margins
