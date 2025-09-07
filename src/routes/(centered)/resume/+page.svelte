@@ -75,7 +75,11 @@
 			</div>
 		</div>
 	{:else}
-		<pre class="resume-text grid-item" in:receive out:send>{resume}</pre>
+		<div class="grid-item" in:receive out:send>
+			<div class="text-resume-container">
+				<pre class="resume-text">{resume}</pre>
+			</div>
+		</div>
 	{/if}
 </main>
 
@@ -253,7 +257,7 @@
 		font-size: 0.9em;
 		line-height: 1.4;
 
-		padding: var(--size-2);
+		padding: var(--size-2) var(--size-4);
 	}
 
 	main.resume {
@@ -275,6 +279,11 @@
 
 	.html-resume-container {
 		max-width: 45ch;
+		margin: 0 auto;
+	}
+
+	.text-resume-container {
+		max-width: 53ch;
 		margin: 0 auto;
 	}
 </style>
