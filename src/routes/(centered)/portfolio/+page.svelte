@@ -60,8 +60,6 @@
 	`}
 </scope-css>
 
-<pre hidden={!dev}>{JSON.stringify(data.contactInfo, null, 4)}</pre>
-
 <style lang="scss">
 	@use 'open-props-scss' as *;
 	scope-css {
