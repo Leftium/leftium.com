@@ -56,16 +56,16 @@
 	</div>
 </accent-box>
 
-<main class="resume">
+<main class="resume container">
 	{#if format === 'html'}
-		<div class="html-resume-container" transition:fade={{ duration: 200 }}>
+		<div class="resume-container html" transition:fade={{ duration: 200 }}>
 			<LeftiumLogo class="logo screen-only" animated={!dev} boundingBox="square" size="6rem" />
 			<img class="logo print-only" src="/le.svg" alt="Logo" />
 
 			{@html resumeHtml}
 		</div>
 	{:else}
-		<div class="text-resume-container" transition:fade={{ duration: 200 }}>
+		<div class="resume-container" transition:fade={{ duration: 200 }}>
 			<pre class="resume-text">{resume}</pre>
 		</div>
 	{/if}
@@ -174,16 +174,18 @@
 		line-height: 1.4;
 	}
 
-	.html-resume-container,
-	.text-resume-container {
+	.container {
+		position: relative;
+	}
+
+	.resume-container {
+		position: absolute;
+		inset: 0;
 		margin: 0 auto;
-	}
-
-	.html-resume-container {
-		max-width: 45ch;
-	}
-
-	.text-resume-container {
 		max-width: min(53ch, 100%);
+
+		&.html {
+			padding-inline: 4ch;
+		}
 	}
 </style>
