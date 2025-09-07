@@ -18,7 +18,7 @@
 		- A _consultant_ helps you get from point A to point B.
 		- A _digital_ consultant has expertise in computers/tech.
 
-		[Learn more...](/digital-consulting){role=button .outline .full}
+		->[Learn more...](/digital-consulting){role=button .outline}<-
 
 		---
 	`}
@@ -53,7 +53,7 @@
 	</div>
 
 	{@html md`
-		->Read the [full testimonial](/testimonials)!<-
+		->[Read full testimonial...](/testimonials){role=button .outline}<-
 	`}
 </scope-css>
 
@@ -82,6 +82,10 @@
 
 		:global(.text-align-center) {
 			text-align: center;
+		}
+
+		:global([role='button']) {
+			border-radius: 2rem;
 		}
 	}
 </style>
