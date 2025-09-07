@@ -168,6 +168,12 @@
 		}
 	}
 
+	@media (max-width: 480px) {
+		accent-box {
+			justify-content: flex-start;
+		}
+	}
+
 	.resume-text {
 		padding: var(--size-2) var(--size-4);
 		white-space: pre-wrap;
