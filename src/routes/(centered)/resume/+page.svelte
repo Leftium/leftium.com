@@ -67,10 +67,12 @@
 <main class="resume grid-container">
 	{#if format === 'html'}
 		<div class="grid-item" in:receive out:send>
-			<LeftiumLogo class="logo screen-only" animated={!dev} boundingBox="cropped" size="8.5rem" />
-			<img class="logo print-only" src="/le.svg" alt="Logo" />
+			<div class="html-resume-container">
+				<LeftiumLogo class="logo screen-only" animated={!dev} boundingBox="square" size="6rem" />
+				<img class="logo print-only" src="/le.svg" alt="Logo" />
 
-			{@html resumeHtml}
+				{@html resumeHtml}
+			</div>
 		</div>
 	{:else}
 		<pre class="resume-text grid-item" in:receive out:send>{resume}</pre>
@@ -88,7 +90,7 @@
 
 		align-items: center;
 		justify-content: center;
-		gap: var(--size-3);
+		gap: var(--size-5);
 		padding-block: var(--size-1);
 		padding-inline: var(--size-3);
 		border: 1px solid var(--pico-muted-border-color);
@@ -269,5 +271,14 @@
 		grid-column-end: 2;
 		grid-row-start: 1;
 		grid-row-end: 2;
+	}
+
+	.html-resume-container {
+		max-width: 45ch;
+		margin: 0 auto;
+	}
+
+	:global(.logo) {
+		margin-left: var(--size-3);
 	}
 </style>
