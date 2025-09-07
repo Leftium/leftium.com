@@ -1,4 +1,4 @@
-![Logo](https://leftium.com/le.webp)
+![Logo](https://leftium.com/le.svg)
 
 # John Kim Murphy
 Leftium.com | john@leftium.com
