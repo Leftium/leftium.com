@@ -225,16 +225,6 @@
 		}
 	}
 
-	.resume-text {
-		font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-		white-space: pre-wrap;
-
-		font-size: 0.9em;
-		line-height: 1.4;
-
-		padding: var(--size-2);
-	}
-
 	@media (min-width: 768px) {
 		.switch-container {
 			max-width: 180px;
@@ -251,18 +241,10 @@
 	}
 
 	.resume-text {
-		font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-		white-space: pre-wrap;
-
+		padding: var(--size-2) var(--size-4);
+		
 		font-size: 0.9em;
 		line-height: 1.4;
-
-		padding: var(--size-2) var(--size-4);
-	}
-
-	main.resume {
-		max-width: var(--size-content-3);
-		margin: 0 auto;
 	}
 
 	/* CSS Grid setup to prevent transition jumping */
