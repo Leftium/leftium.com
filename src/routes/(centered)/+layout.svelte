@@ -5,6 +5,11 @@
 	import { page } from '$app/stores'
 
 	let { children } = $props()
+
+	// Read resume format from URL for brand visibility
+	const hideBrand = $derived(
+		$page.url.pathname === '/resume' && !$page.url.searchParams.has('text'),
+	)
 </script>
 
 <svelte:head>
@@ -15,7 +20,7 @@
 	<nav class="container">
 		<ul>
 			<li>
-				<div class="brand" class:hidden={$page.url.pathname === '/resume'}>
+				<div class="brand" class:hidden={hideBrand}>
 					<div class="logo-wrapper">
 						<LeftiumLogo boundingBox="square" size="3.75rem" />
 					</div>
@@ -56,7 +61,7 @@
 		margin: auto;
 		margin-bottom: var(--size-3);
 		flex-wrap: wrap;
-		padding-inline: var(--size-3);
+		padding-inline: 0;
 		transition: all 0.3s ease;
 
 		ul:first-child {
@@ -87,6 +92,11 @@
 				justify-content: flex-end;
 				margin-bottom: var(--size-1);
 			}
+		}
+
+		nav ul:first-child li {
+			padding: 0;
+			padding-block: var(--size-1);
 		}
 	}
 
