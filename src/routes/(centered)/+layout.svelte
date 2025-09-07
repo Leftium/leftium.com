@@ -20,9 +20,9 @@
 	<nav class="container">
 		<ul>
 			<li>
-				<div class="brand" class:hidden={hideBrand}>
-					<div class="logo-wrapper">
-						<LeftiumLogo boundingBox="square" size="3.75rem" />
+				<div class="brand">
+					<div class="logo-wrapper" class:hidden={hideBrand}>
+						<LeftiumLogo boundingBox="cropped" size="3.75rem" />
 					</div>
 					<a href="/" class="brand-text">
 						<h1>Leftium</h1>
@@ -108,16 +108,15 @@
 	.brand {
 		display: flex;
 		align-items: center;
-		gap: var(--size-3);
 		text-decoration: none;
 		border: 1px solid color-mix(in srgb, var(--pico-secondary) 25%, transparent);
-		padding: var(--size-2);
 		border-radius: 0;
 		background-color: var(--pico-card-sectioning-background-color);
-		max-height: 120px;
 		transition:
-			max-height 0.5s ease-in-out,
-			opacity 0.4s ease-in-out;
+			transform 0.4s ease-in-out,
+			padding 0.4s ease-in-out;
+		padding-right: var(--size-2);
+		overflow: hidden;
 
 		div,
 		.brand-text {
@@ -144,6 +143,7 @@
 		.brand-text {
 			text-decoration: none;
 			color: inherit;
+			transition: transform 0.4s ease-in-out;
 		}
 	}
 
@@ -156,10 +156,18 @@
 		color: rgba(128, 128, 128, 1) !important;
 	}
 
-	.brand {
+	.logo-wrapper {
+		width: 4.6rem;
+		height: 4.6rem;
+		flex-shrink: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		overflow: hidden;
 		transition:
-			max-height 0.5s ease-in-out,
-			opacity 0.4s ease-in-out;
+			opacity 0.4s ease-in-out,
+			transform 0.4s ease-in-out,
+			margin 0.4s ease-in-out;
 	}
 
 	.brand:hover,
@@ -167,9 +175,14 @@
 		text-decoration: none;
 	}
 
-	.hidden {
-		max-height: 0;
+	.logo-wrapper.hidden {
 		opacity: 0;
+		transform: translateX(-100%);
+		margin-right: -4.6rem;
+	}
+
+	.brand:has(.logo-wrapper.hidden) {
+		padding-left: var(--size-2);
 	}
 
 	@media (max-width: 767px) {
@@ -179,6 +192,10 @@
 
 		.logo-wrapper {
 			pointer-events: auto;
+
+			&.hidden {
+				pointer-events: none;
+			}
 		}
 	}
 
