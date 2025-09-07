@@ -23,6 +23,10 @@
 	const format = $derived(page.url.searchParams.has('text') ? 'text' : 'html')
 </script>
 
+<svelte:head>
+	<title>John-Kim Murphy | Resume</title>
+</svelte:head>
+
 {#snippet buttonPill(
 	variant = '',
 	role = '',
@@ -209,10 +213,13 @@
 		position: absolute;
 		inset: 0;
 		margin: 0 auto;
-		max-width: min(53ch, 100%);
+		max-width: min(56ch, 100%);
 
 		&.html {
-			padding-inline: 4ch;
+			font-family:
+				Trebuchet MS,
+				sans-serif;
+			letter-spacing: 0.03em; /* small tracking increase */
 		}
 	}
 </style>
