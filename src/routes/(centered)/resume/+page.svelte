@@ -6,7 +6,7 @@
 	import markdownitDeflist from 'markdown-it-deflist'
 	import { LeftiumLogo } from '@leftium/logo'
 	import { page } from '$app/state'
-	import { crossfade } from 'svelte/transition'
+	import { fade } from 'svelte/transition'
 	import { dev } from '$app/environment'
 
 	import resume from './resume.md?raw'
@@ -22,14 +22,6 @@
 
 	// Reactive format based on URL params
 	const format = $derived(page.url.searchParams.has('text') ? 'text' : 'html')
-
-	// Setup crossfade transitions for smooth format switching
-	const [send, receive] = crossfade({
-		duration: 300,
-		fallback(node, params) {
-			return { duration: 300, css: (t) => `opacity: ${t}` }
-		},
-	})
 </script>
 
 <accent-box class="screen-only">
@@ -64,21 +56,17 @@
 	</div>
 </accent-box>
 
-<main class="resume grid-container">
+<main class="resume">
 	{#if format === 'html'}
-		<div class="grid-item" in:receive out:send>
-			<div class="html-resume-container">
-				<LeftiumLogo class="logo screen-only" animated={!dev} boundingBox="square" size="6rem" />
-				<img class="logo print-only" src="/le.svg" alt="Logo" />
+		<div class="html-resume-container" transition:fade={{ duration: 200 }}>
+			<LeftiumLogo class="logo screen-only" animated={!dev} boundingBox="square" size="6rem" />
+			<img class="logo print-only" src="/le.svg" alt="Logo" />
 
-				{@html resumeHtml}
-			</div>
+			{@html resumeHtml}
 		</div>
 	{:else}
-		<div class="grid-item" in:receive out:send>
-			<div class="text-resume-container">
-				<pre class="resume-text">{resume}</pre>
-			</div>
+		<div class="text-resume-container" transition:fade={{ duration: 200 }}>
+			<pre class="resume-text">{resume}</pre>
 		</div>
 	{/if}
 </main>
@@ -179,49 +167,11 @@
 		}
 	}
 
-	@media (max-width: 480px) {
-		accent-box {
-			justify-content: flex-start;
-		}
-
-		.switch-container {
-			max-width: 140px;
-			min-width: 100px;
-
-			&.pdf-button {
-				max-width: 76px;
-				min-width: 76px;
-			}
-		}
-	}
-
-	@media (min-width: 768px) {
-		accent-box {
-			padding-inline: var(--size-1);
-		}
-
-		.switch-container {
-			max-width: 180px;
-
-			&.pdf-button {
-				max-width: 90px;
-			}
-		}
-	}
-
 	.resume-text {
 		padding: var(--size-2) var(--size-4);
 		white-space: pre-wrap;
 		font-size: 0.9em;
 		line-height: 1.4;
-	}
-
-	.grid-container {
-		display: grid;
-	}
-
-	.grid-item {
-		grid-area: 1/1;
 	}
 
 	.html-resume-container,
