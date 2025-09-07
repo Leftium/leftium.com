@@ -91,10 +91,7 @@
 	.switch-container {
 		position: relative;
 		display: flex;
-		flex: none;
 		justify-content: space-evenly;
-		gap: 0;
-		margin: 0;
 		background: var(--pico-muted-border-color);
 		border-radius: 2rem;
 		padding: 4px;
@@ -105,12 +102,10 @@
 
 		.switch-slider {
 			position: absolute;
+			inset: 4px;
+			width: 50%;
 			background: var(--pico-primary);
 			border-radius: inherit;
-			width: calc(50% - 4px);
-			height: 32px;
-			top: 4px;
-			left: 4px;
 			transition: transform 0.3s ease;
 			z-index: 1;
 		}
@@ -120,7 +115,6 @@
 		}
 
 		a {
-			cursor: pointer;
 			display: flex;
 			align-items: center;
 			justify-content: center;
@@ -162,7 +156,6 @@
 				font-size: 0.8em;
 				margin-left: 0.25em;
 				opacity: 0.9;
-				display: inline-block;
 			}
 		}
 	}
