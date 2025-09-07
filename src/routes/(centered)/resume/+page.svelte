@@ -82,6 +82,7 @@
 		border: 1px solid var(--pico-muted-border-color);
 		margin-bottom: var(--size-3);
 		max-width: var(--size-content-3);
+		width: 100%;
 	}
 
 	.switch-container {
@@ -93,7 +94,6 @@
 
 		position: relative;
 		display: flex;
-		flex: none;
 		justify-content: space-evenly;
 		gap: 0;
 		margin: 0;
@@ -122,7 +122,6 @@
 		}
 
 		a {
-			cursor: pointer;
 			display: flex;
 			align-items: center;
 			justify-content: center;
@@ -158,14 +157,13 @@
 			background: transparent;
 
 			.switch-slider {
-				width: calc(100% - calc(var(--switch-padding) * 2));
+				width: calc(100% - 8px);
 			}
 
 			.external-icon {
 				font-size: 0.8em;
 				margin-left: 0.25em;
 				opacity: 0.9;
-				display: inline-block;
 			}
 		}
 	}
