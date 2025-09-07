@@ -60,7 +60,7 @@
 		align-items: baseline;
 		flex-wrap: wrap;
 
-		padding-inline: $size-1;
+		padding-inline: $size-px-4;
 		margin-inline: 0;
 
 		font-weight: $font-weight-7;
@@ -102,12 +102,14 @@
 		font-size: $font-size-2;
 	}
 
-	ul {
-		padding-left: $size-px-6;
-	}
+
 
 	li::marker {
 		color: $stone-2;
+	}
+
+	ul {
+		padding-left: $size-px-4;
 	}
 
 	@mixin dark-resume {
@@ -145,12 +147,21 @@
 	}
 
 	@media only print {
-		.html-resume-container {
-			margin-top: 4rem !important;
+		.resume-container.html {
+			max-width: 100% !important;
+			margin-top: 1rem !important;
+			margin-bottom: 0 !important;
+			padding-bottom: 0 !important;
+			
+		}
+
+		// Reduce spacing to fit better with default margins
+		dl {
+			margin-top: $size-1;
 		}
 
 		img {
-			margin-top: -1.2rem;
+			margin-top: -1.5rem;
 			margin-bottom: -2.5rem;
 		}
 	}
