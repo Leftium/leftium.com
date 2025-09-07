@@ -254,7 +254,7 @@
 
 	.resume-text {
 		padding: var(--size-2) var(--size-4);
-
+		white-space: pre-wrap;
 		font-size: 0.9em;
 		line-height: 1.4;
 	}
@@ -277,7 +277,7 @@
 	}
 
 	.text-resume-container {
-		max-width: 53ch;
+		max-width: min(53ch, 100%);
 		margin: 0 auto;
 	}
 </style>
