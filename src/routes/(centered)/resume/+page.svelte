@@ -33,6 +33,7 @@
 </script>
 
 <accent-box class="screen-only">
+	<div class="spacer"></div>
 	<div
 		class="format-toggle switch-container"
 		role="group"
@@ -88,13 +89,12 @@
 
 	accent-box {
 		display: flex;
-		flex-wrap: wrap;
+		flex-wrap: nowrap;
 
 		margin: auto;
 
 		align-items: center;
-		justify-content: center;
-		gap: var(--size-5);
+		justify-content: space-between;
 		padding-block: var(--size-1);
 		padding-inline: var(--size-3);
 		border: 1px solid var(--pico-muted-border-color);
@@ -107,7 +107,7 @@
 	.switch-container {
 		position: relative;
 		display: flex;
-		flex: 1;
+		flex: none;
 		justify-content: space-evenly;
 		gap: 0;
 		margin: 0;
@@ -199,10 +199,22 @@
 		}
 	}
 
+	.spacer {
+		width: 90px;
+		visibility: hidden;
+	}
+
 	@media (max-width: 480px) {
 		accent-box {
-			flex-direction: column;
-			gap: var(--size-2);
+			justify-content: flex-start;
+		}
+
+		.spacer {
+			display: none;
+		}
+
+		.format-toggle {
+			margin-right: auto;
 		}
 
 		.switch-container {
@@ -242,7 +254,7 @@
 
 	.resume-text {
 		padding: var(--size-2) var(--size-4);
-		
+
 		font-size: 0.9em;
 		line-height: 1.4;
 	}
