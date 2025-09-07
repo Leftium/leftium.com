@@ -6,7 +6,7 @@
 	import markdownitDeflist from 'markdown-it-deflist'
 	import { LeftiumLogo } from '@leftium/logo'
 	import { page } from '$app/state'
-	import { fade } from 'svelte/transition'
+	import { fly } from 'svelte/transition'
 	import { dev } from '$app/environment'
 
 	import resume from './resume.md?raw'
@@ -83,14 +83,22 @@
 
 <main class="resume container">
 	{#if format === 'html'}
-		<div class="resume-container html" transition:fade={{ duration: 200 }}>
+		<div
+			class="resume-container html"
+			in:fly={{ x: 50, duration: 200, delay: 200, opacity: 0 }}
+			out:fly={{ x: -50, duration: 400, opacity: 0 }}
+		>
 			<LeftiumLogo class="logo screen-only" animated={!dev} boundingBox="square" size="6rem" />
 			<img class="logo print-only" src="/le.svg" alt="Logo" />
 
 			{@html resumeHtml}
 		</div>
 	{:else}
-		<div class="resume-container" transition:fade={{ duration: 200 }}>
+		<div
+			class="resume-container"
+			in:fly={{ x: -50, duration: 200, delay: 200, opacity: 0 }}
+			out:fly={{ x: 50, duration: 400, opacity: 0 }}
+		>
 			<pre class="resume-text">{resume}</pre>
 		</div>
 	{/if}
