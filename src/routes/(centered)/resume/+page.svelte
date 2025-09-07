@@ -171,25 +171,10 @@
 		transform: translateY(-50%);
 		max-width: 80px;
 		min-width: 80px;
-		justify-content: center;
 		background: transparent;
 
 		.switch-slider {
 			width: calc(100% - 8px);
-			height: 32px;
-			top: 4px;
-			left: 4px;
-			background: var(--pico-primary);
-		}
-
-		a {
-			flex: 1;
-			z-index: 2;
-		}
-
-		a.active {
-			color: var(--pico-primary-inverse);
-			font-weight: 600;
 		}
 
 		.external-icon {
@@ -198,14 +183,6 @@
 			opacity: 0.9;
 			display: inline-block;
 		}
-
-		&:hover .switch-slider {
-			background: var(--pico-primary-hover, color-mix(in srgb, var(--pico-primary) 90%, black));
-		}
-	}
-
-	.spacer {
-		display: none;
 	}
 
 	@media (max-width: 480px) {
