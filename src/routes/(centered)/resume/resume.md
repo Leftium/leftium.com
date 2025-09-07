@@ -1,12 +1,12 @@
 ![Logo](https://leftium.com/le.svg)
 
 # John Kim Murphy
-Leftium.com | john@leftium.com
+leftium.com | john@leftium.com
 
 
 ## Selected Experience
 
-Freelance Consultant _2013–Now_
+Freelance Consultant _2013–now_
   ~ _Seoul, KR & Minneapolis, MN_
   - Design & develop complex web app (Gallaudet Univ.)
   - Develop mobile/web apps (HomeSpotter)
