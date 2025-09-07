@@ -23,36 +23,46 @@
 	const format = $derived(page.url.searchParams.has('text') ? 'text' : 'html')
 </script>
 
-<accent-box class="screen-only">
-	<div
-		class="format-toggle switch-container"
-		role="group"
-		aria-label="Resume format selection"
-		data-active={format}
-	>
+{#snippet buttonPill(variant = '', role = '', ariaLabel = '', dataActive = '', links = [])}
+	<div class="switch-container {variant}" {role} aria-label={ariaLabel} data-active={dataActive}>
 		<div class="switch-slider"></div>
-		<a
-			href="/resume"
-			class:active={format === 'html'}
-			aria-current={format === 'html' ? 'page' : undefined}
-		>
-			HTML
-		</a>
-		<a
-			href="/resume?text"
-			class:active={format === 'text'}
-			aria-current={format === 'text' ? 'page' : undefined}
-		>
-			Text
-		</a>
+		{#each links as link}
+			<a
+				href={link.href}
+				target={link.target || undefined}
+				class:active={link.active}
+				aria-current={link.ariaCurrent || undefined}
+			>
+				{@html link.html}
+			</a>
+		{/each}
 	</div>
+{/snippet}
 
-	<div class="pdf-button switch-container" role="group" aria-label="Download PDF">
-		<div class="switch-slider"></div>
-		<a href="/John-Kim-Murphy-Resume.pdf" target="_blank" class="active">
-			PDF <span class="external-icon" aria-label="opens in new window">↗</span>
-		</a>
-	</div>
+<accent-box class="screen-only">
+	{@render buttonPill('format-toggle', 'group', 'Resume format selection', format, [
+		{
+			href: '/resume',
+			active: format === 'html',
+			ariaCurrent: format === 'html' ? 'page' : undefined,
+			html: 'HTML',
+		},
+		{
+			href: '/resume?text',
+			active: format === 'text',
+			ariaCurrent: format === 'text' ? 'page' : undefined,
+			html: 'Text',
+		},
+	])}
+
+	{@render buttonPill('pdf-button', 'group', 'Download PDF', '', [
+		{
+			href: '/John-Kim-Murphy-Resume.pdf',
+			target: '_blank',
+			active: true,
+			html: 'PDF <span class="external-icon" aria-label="opens in new window">↗</span>',
+		},
+	])}
 </accent-box>
 
 <main class="resume container">
