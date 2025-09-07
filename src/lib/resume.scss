@@ -99,7 +99,7 @@
 
 	dl dd {
 		// Company, location
-		font-size: $font-size-2;
+		font-size: $font-size-1;
 	}
 
 	li::marker {
@@ -109,6 +109,12 @@
 	ul {
 		padding-left: $size-px-4;
 		margin-bottom: $size-3;
+	}
+
+	// Make first item in Education section bold (last h2 + ul combination)
+	h2:last-of-type + ul li:first-child {
+		font-size: $font-size-2;
+		font-weight: $font-weight-9;
 	}
 
 	@mixin dark-resume {
