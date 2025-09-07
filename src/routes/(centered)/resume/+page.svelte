@@ -90,11 +90,12 @@
 	accent-box {
 		display: flex;
 		flex-wrap: nowrap;
+		position: relative;
 
 		margin: auto;
 
 		align-items: center;
-		justify-content: space-between;
+		justify-content: center;
 		padding-block: var(--size-1);
 		padding-inline: var(--size-3);
 		border: 1px solid var(--pico-muted-border-color);
@@ -164,6 +165,10 @@
 
 	/* PDF Button - Single Option Switch */
 	.pdf-button.switch-container {
+		position: absolute;
+		right: var(--size-3);
+		top: 50%;
+		transform: translateY(-50%);
 		max-width: 80px;
 		min-width: 80px;
 		justify-content: center;
@@ -200,8 +205,7 @@
 	}
 
 	.spacer {
-		width: 90px;
-		visibility: hidden;
+		display: none;
 	}
 
 	@media (max-width: 480px) {
@@ -209,31 +213,14 @@
 			justify-content: flex-start;
 		}
 
-		.spacer {
-			display: none;
-		}
-
-		.format-toggle {
-			margin-right: auto;
-		}
-
 		.switch-container {
 			max-width: 140px;
-			height: 36px;
 			min-width: 100px;
-		}
-
-		.switch-slider {
-			height: 28px;
 		}
 
 		.pdf-button.switch-container {
 			max-width: 76px;
 			min-width: 76px;
-
-			.switch-slider {
-				height: 28px;
-			}
 		}
 	}
 
