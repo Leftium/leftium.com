@@ -277,8 +277,4 @@
 		max-width: 45ch;
 		margin: 0 auto;
 	}
-
-	:global(.logo) {
-		margin-left: var(--size-3);
-	}
 </style>

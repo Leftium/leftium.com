@@ -137,4 +137,21 @@
 	[data-theme='dark'] {
 		@include dark-resume;
 	}
+
+	@media only screen {
+		.logo {
+			margin-left: var(--size-3);
+		}
+	}
+
+	@media only print {
+		.html-resume-container {
+			margin-top: 4rem !important;
+		}
+
+		img {
+			margin-top: -1.2rem;
+			margin-bottom: -2.5rem;
+		}
+	}
 }

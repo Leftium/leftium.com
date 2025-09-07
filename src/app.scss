@@ -28,10 +28,6 @@
 
 /* Show appropriate versions when printing */
 @media only print {
-	.container {
-		max-width: 100% !important;
-	}
-
 	.screen-only {
 		display: none !important;
 	}
