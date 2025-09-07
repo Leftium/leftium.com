@@ -33,7 +33,6 @@
 </script>
 
 <accent-box class="screen-only">
-	<div class="spacer"></div>
 	<div
 		class="format-toggle switch-container"
 		role="group"
@@ -91,9 +90,6 @@
 		display: flex;
 		flex-wrap: nowrap;
 		position: relative;
-
-		margin: auto;
-
 		align-items: center;
 		justify-content: center;
 		padding-block: var(--size-1);
@@ -160,27 +156,26 @@
 				font-weight: 600;
 			}
 		}
-	}
 
-	/* PDF Button - Single Option Switch */
-	.pdf-button.switch-container {
-		position: absolute;
-		right: var(--size-3);
-		top: 50%;
-		transform: translateY(-50%);
-		max-width: 80px;
-		min-width: 80px;
-		background: transparent;
+		&.pdf-button {
+			position: absolute;
+			right: var(--size-3);
+			top: 50%;
+			transform: translateY(-50%);
+			max-width: 80px;
+			min-width: 80px;
+			background: transparent;
 
-		.switch-slider {
-			width: calc(100% - 8px);
-		}
+			.switch-slider {
+				width: calc(100% - 8px);
+			}
 
-		.external-icon {
-			font-size: 0.8em;
-			margin-left: 0.25em;
-			opacity: 0.9;
-			display: inline-block;
+			.external-icon {
+				font-size: 0.8em;
+				margin-left: 0.25em;
+				opacity: 0.9;
+				display: inline-block;
+			}
 		}
 	}
 
@@ -192,26 +187,25 @@
 		.switch-container {
 			max-width: 140px;
 			min-width: 100px;
-		}
 
-		.pdf-button.switch-container {
-			max-width: 76px;
-			min-width: 76px;
+			&.pdf-button {
+				max-width: 76px;
+				min-width: 76px;
+			}
 		}
 	}
 
 	@media (min-width: 768px) {
-		.switch-container {
-			max-width: 180px;
-		}
-
-		.pdf-button.switch-container {
-			max-width: 90px;
-		}
-
 		accent-box {
 			padding-inline: var(--size-1);
-			max-width: var(--size-content-3);
+		}
+
+		.switch-container {
+			max-width: 180px;
+
+			&.pdf-button {
+				max-width: 90px;
+			}
 		}
 	}
 
@@ -222,25 +216,24 @@
 		line-height: 1.4;
 	}
 
-	/* CSS Grid setup to prevent transition jumping */
 	.grid-container {
 		display: grid;
 	}
 
 	.grid-item {
-		grid-column-start: 1;
-		grid-column-end: 2;
-		grid-row-start: 1;
-		grid-row-end: 2;
+		grid-area: 1/1;
+	}
+
+	.html-resume-container,
+	.text-resume-container {
+		margin: 0 auto;
 	}
 
 	.html-resume-container {
 		max-width: 45ch;
-		margin: 0 auto;
 	}
 
 	.text-resume-container {
 		max-width: min(53ch, 100%);
-		margin: 0 auto;
 	}
 </style>
