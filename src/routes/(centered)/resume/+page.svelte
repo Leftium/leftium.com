@@ -100,8 +100,9 @@
 		position: relative;
 		align-items: center;
 		justify-content: center;
-		padding-block: var(--size-1);
+		padding: var(--size-1);
 		border: 1px solid var(--pico-muted-border-color);
+		border-radius: 2rem;
 		margin-bottom: var(--size-3);
 		max-width: var(--size-content-3);
 		width: 100%;
@@ -171,12 +172,14 @@
 		&.pdf-button {
 			--switch-max-width: 80px;
 			--switch-min-width: 80px;
+			--switch-radius: 2rem;
 
 			position: absolute;
-			right: var(--size-3);
-			top: 50%;
-			transform: translateY(-50%);
+			right: var(--size-1);
+			top: var(--size-1);
+			bottom: var(--size-1);
 			background: transparent;
+			border-radius: var(--switch-radius);
 
 			.switch-slider {
 				width: calc(100% - 8px);
@@ -187,7 +190,7 @@
 	@media (max-width: 480px) {
 		accent-box {
 			justify-content: flex-start;
-			padding-inline: var(--size-3);
+			padding: var(--size-1);
 		}
 	}
 
