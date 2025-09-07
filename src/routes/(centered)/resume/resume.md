@@ -1,5 +1,7 @@
 ![Logo](https://leftium.com/le.svg)
 
+
+
 # John Kim Murphy
 leftium.com | john@leftium.com
 
@@ -32,7 +34,7 @@ Research Scientist _2004_
   ~ University of Minnesota _Minneapolis, MN_
   - Research and develop location-aware mobile app
   - Develop mLibrary (J2ME GPS app framework)
-  - Train lab members in J2ME and use of mLibrary
+  - Train lab members in use of mLibrary and J2ME
   - Author research paper
 
 
