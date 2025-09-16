@@ -54,7 +54,7 @@
 
 		- It would probably be similar to forcing yourself to be as quiet as me.
 		- I think bad things happen when a person who identifies as one thing is forced to be another.
-		  - When someone who identifies as boy is forced to be a girl.
+		  - When someone who identifies as a boy is forced to be a girl.
 		  - When a left-hander is forced to use their right hand.
 
 		I've never read this it, but multiple people have told me they understood me better after reading [Quiet](https://www.amazon.com/Quiet-Power-Introverts-World-Talking/dp/0307352145) by Susan Cain.
