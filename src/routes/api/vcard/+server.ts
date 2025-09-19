@@ -1,4 +1,4 @@
-import QRCode from 'qrcode'
+import qrcode from 'qrcode-generator'
 
 import { VCARD } from '$env/static/private'
 
@@ -9,15 +9,27 @@ export const GET = async ({ url }) => {
 
 	if (format === 'png') {
 		try {
-			const qrCode = await QRCode.toDataURL(vcard)
-			const base64Image = qrCode.split(',')[1] // Remove the data URL prefix
+			// Generate QR code as PNG data URL
+			const qr = qrcode(0, 'L')
+			qr.addData(vcard)
+			qr.make()
 
-			const buffer = Buffer.from(base64Image, 'base64')
-			return new Response(buffer, {
+			// Get the data URL and extract base64 part
+			const dataUrl = qr.createDataURL()
+			const base64Image = dataUrl.split(',')[1]
+
+			// Convert base64 to Uint8Array (Workers-compatible)
+			const binaryString = atob(base64Image)
+			const bytes = new Uint8Array(binaryString.length)
+			for (let i = 0; i < binaryString.length; i++) {
+				bytes[i] = binaryString.charCodeAt(i)
+			}
+
+			return new Response(bytes, {
 				headers: {
 					'Content-Type': 'image/png',
 					'Content-Disposition': `attachment; filename="john-kim-murphy-qr-vcard.png"`,
-					'Content-Length': buffer.length.toString(),
+					'Content-Length': bytes.length.toString(),
 				},
 			})
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
