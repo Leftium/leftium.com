@@ -1,6 +1,12 @@
 <script lang="ts">
+	import { favicon } from '@leftium/logo'
 	import '../app.scss'
+
 	let { children } = $props()
 </script>
 
-{@render children()}
+<svelte:head>
+	<link rel="icon" href={favicon} />
+</svelte:head>
+
+{@render children?.()}

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import 'open-props/style'
 
-	import { favicon, LeftiumLogo } from '@leftium/logo'
+	import { LeftiumLogo } from '@leftium/logo'
 	import { page } from '$app/stores'
 
 	let { children } = $props()
@@ -11,10 +11,6 @@
 		$page.url.pathname === '/resume' && !$page.url.searchParams.has('text'),
 	)
 </script>
-
-<svelte:head>
-	<link rel="icon" href={favicon} />
-</svelte:head>
 
 <header class="screen-only">
 	<nav class="container">
