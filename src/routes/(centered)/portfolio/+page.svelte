@@ -7,12 +7,18 @@
 	import centerText from 'markdown-it-center-text'
 	import deflist from 'markdown-it-deflist'
 
+	import MarkdownItGitHubAlerts from 'markdown-it-github-alerts'
+	import 'markdown-it-github-alerts/styles/github-colors-light.css'
+	import 'markdown-it-github-alerts/styles/github-colors-dark-media.css'
+	import 'markdown-it-github-alerts/styles/github-base.css'
+
 	let { data } = $props()
 
 	const md = makeTagFunctionMd({ html: true, linkify: true, typographer: true, breaks: true }, [
 		[attr],
 		[deflist],
 		[centerText],
+		[MarkdownItGitHubAlerts],
 	])
 </script>
 
@@ -38,7 +44,7 @@
 		hw.leftium.com
 		~ [source code](https://github.com/Leftium/hckrweb)
 
-		vivibl.com
+		viviblues.com
 		~ [source code](https://github.com/Leftium/modu-blues.com)
 
 		multi-launch.leftium.com
@@ -46,6 +52,9 @@
 
 		zbang.leftium.com
 		~ [source code](https://github.com/Leftium/zbang)
+
+		> [!NOTE]
+		> I designed/developed this entire site! [source code](https://github.com/Leftium/leftium.com)
 
 		## Browse my activity on other sites:
 
