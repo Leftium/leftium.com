@@ -7,29 +7,31 @@ export const GET = async ({ url }) => {
 
 	const vcard = `BEGIN:VCARD\nVERSION:3.0\n${VCARD}\nEND:VCARD`
 
-	if (format === 'png') {
+	if (format === 'svg') {
 		try {
-			// Generate QR code as PNG data URL
+			// Strip PHOTO field from QR data — base64 images are too large for QR codes.
+			// The full vcard (with photo) is still available via the .vcf download.
+			const vcardForQr = vcard
+				.split('\n')
+				.filter((line, i, arr) => {
+					if (line.match(/^PHOTO[;:]/i)) return false
+					// Also skip continuation lines (start with space/tab) after PHOTO
+					if ((line.startsWith(' ') || line.startsWith('\t')) && i > 0 && !arr[i - 1]) return false
+					return true
+				})
+				.join('\n')
+
+			// Generate QR code as SVG (vector, sharp at any size, Workers-compatible)
 			const qr = qrcode(0, 'L')
-			qr.addData(vcard)
+			qr.addData(vcardForQr)
 			qr.make()
 
-			// Get the data URL and extract base64 part
-			const dataUrl = qr.createDataURL()
-			const base64Image = dataUrl.split(',')[1]
+			const svg = qr.createSvgTag({ cellSize: 4, margin: 0 })
 
-			// Convert base64 to Uint8Array (Workers-compatible)
-			const binaryString = atob(base64Image)
-			const bytes = new Uint8Array(binaryString.length)
-			for (let i = 0; i < binaryString.length; i++) {
-				bytes[i] = binaryString.charCodeAt(i)
-			}
-
-			return new Response(bytes, {
+			return new Response(svg, {
 				headers: {
-					'Content-Type': 'image/png',
-					'Content-Disposition': `attachment; filename="john-kim-murphy-qr-vcard.png"`,
-					'Content-Length': bytes.length.toString(),
+					'Content-Type': 'image/svg+xml',
+					'Content-Disposition': `inline; filename="john-kim-murphy-qr-vcard.svg"`,
 				},
 			})
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars

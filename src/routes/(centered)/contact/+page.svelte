@@ -33,7 +33,7 @@
 
 		## -></scope-css>Or scan this QR code:<-
 
-		->![](/api/vcard?format=png)<-
+		->![](/api/vcard?format=svg)<-
 	`}
 </scope-css>
 
