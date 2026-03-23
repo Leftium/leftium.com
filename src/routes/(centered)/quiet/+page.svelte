@@ -11,6 +11,7 @@
 	])
 </script>
 
+<!-- eslint-disable svelte/no-at-html-tags -- developer-authored markdown, not user input -->
 <scope-css>
 	{@html md`
 		_If I shared this page with you, it was because you showed concern about how quiet I am. (It's rare, but often enough to warrant a web page.)_

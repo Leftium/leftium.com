@@ -1,7 +1,6 @@
 <script>
 	import 'open-props/style'
 
-	import { dev } from '$app/environment'
 	import { makeTagFunctionMd } from '$lib/tag-functions/markdown.js'
 	import attr from 'markdown-it-attrs'
 	import centerText from 'markdown-it-center-text'
@@ -12,8 +11,6 @@
 	import 'markdown-it-github-alerts/styles/github-colors-dark-media.css'
 	import 'markdown-it-github-alerts/styles/github-base.css'
 
-	let { data } = $props()
-
 	const md = makeTagFunctionMd({ html: true, linkify: true, typographer: true, breaks: true }, [
 		[attr],
 		[deflist],
@@ -22,6 +19,7 @@
 	])
 </script>
 
+<!-- eslint-disable svelte/no-at-html-tags -- developer-authored markdown, not user input -->
 <scope-css>
 	{@html md`
 		# John-Kim's Portfolio

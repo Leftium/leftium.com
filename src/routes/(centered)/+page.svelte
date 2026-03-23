@@ -11,6 +11,7 @@
 	])
 </script>
 
+<!-- eslint-disable svelte/no-at-html-tags -- developer-authored markdown, not user input -->
 <scope-css>
 	{@html md`
 		# Need a digital consultant?

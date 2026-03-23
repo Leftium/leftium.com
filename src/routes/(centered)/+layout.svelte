@@ -3,6 +3,7 @@
 
 	import { LeftiumLogo } from '@leftium/logo'
 	import { page } from '$app/stores'
+	import { resolve } from '$app/paths'
 
 	let { children } = $props()
 
@@ -20,7 +21,7 @@
 					<div class="logo-wrapper" class:hidden={hideBrand}>
 						<LeftiumLogo boundingBox="cropped" size="3.75rem" />
 					</div>
-					<a href="/" class="brand-text">
+					<a href={resolve('/')} class="brand-text">
 						<h1>Leftium</h1>
 						<em>The element of creativity!</em>
 					</a>
@@ -28,10 +29,18 @@
 			</li>
 		</ul>
 		<ul>
-			<li><a href="/" class:active={$page.url.pathname === '/'}>Home</a></li>
-			<li><a href="/resume" class:active={$page.url.pathname === '/resume'}>Resume</a></li>
-			<li><a href="/portfolio" class:active={$page.url.pathname === '/portfolio'}>Portfolio</a></li>
-			<li><a href="/contact" class:active={$page.url.pathname === '/contact'}>Contact</a></li>
+			<li><a href={resolve('/')} class:active={$page.url.pathname === '/'}>Home</a></li>
+			<li>
+				<a href={resolve('/resume')} class:active={$page.url.pathname === '/resume'}>Resume</a>
+			</li>
+			<li>
+				<a href={resolve('/portfolio')} class:active={$page.url.pathname === '/portfolio'}
+					>Portfolio</a
+				>
+			</li>
+			<li>
+				<a href={resolve('/contact')} class:active={$page.url.pathname === '/contact'}>Contact</a>
+			</li>
 		</ul>
 	</nav>
 </header>

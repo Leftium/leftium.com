@@ -13,6 +13,7 @@
 	])
 </script>
 
+<!-- eslint-disable svelte/no-at-html-tags -- developer-authored markdown, not user input -->
 <scope-css>
 	{@html md`
 		# An Unprompted Testimonial

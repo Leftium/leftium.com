@@ -1,13 +1,10 @@
 <script>
 	import 'open-props/style'
 
-	import { dev } from '$app/environment'
 	import { makeTagFunctionMd } from '$lib/tag-functions/markdown.js'
 	import attr from 'markdown-it-attrs'
 	import centerText from 'markdown-it-center-text'
 	import deflist from 'markdown-it-deflist'
-
-	let { data } = $props()
 
 	const md = makeTagFunctionMd({ html: true, linkify: true, typographer: true, breaks: true }, [
 		[attr],
@@ -16,6 +13,7 @@
 	])
 </script>
 
+<!-- eslint-disable svelte/no-at-html-tags -- developer-authored markdown, not user input -->
 <scope-css>
 	{@html md`
 		# ->How to contact John<-

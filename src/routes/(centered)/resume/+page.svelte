@@ -23,6 +23,7 @@
 	const format = $derived(page.url.searchParams.has('text') ? 'text' : 'html')
 </script>
 
+<!-- eslint-disable svelte/no-at-html-tags -- developer-authored markdown, not user input -->
 <svelte:head>
 	<title>John-Kim Murphy | Resume</title>
 </svelte:head>
@@ -42,7 +43,8 @@
 )}
 	<div class="switch-container {variant}" {role} aria-label={ariaLabel} data-active={dataActive}>
 		<div class="switch-slider"></div>
-		{#each links as link}
+		<!-- eslint-disable svelte/no-navigation-without-resolve -- dynamic href from snippet param -->
+		{#each links as link (link.href)}
 			<a
 				href={link.href}
 				target={link.target || undefined}
