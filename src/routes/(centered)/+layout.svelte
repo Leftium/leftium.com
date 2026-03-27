@@ -188,11 +188,6 @@
 		align-items: center;
 		justify-content: center;
 		overflow: hidden;
-
-		/* Reset nimble's [role=button] margin (0 0.25em 0.25em 0) on logo's interactive div */
-		:global([role='button']) {
-			margin: 0;
-		}
 		transition:
 			opacity 0.4s ease-in-out,
 			transform 0.4s ease-in-out,

@@ -159,13 +159,15 @@
 			transform: translateX(100%);
 		}
 
-		a {
+		a,
+		a:visited {
 			display: flex;
 			align-items: center;
 			justify-content: center;
 			flex: 1;
 			gap: var(--size-1);
 			font-size: 0.9em;
+			color: var(--nc-text);
 			text-decoration: none;
 			padding: var(--size-1) var(--size-2);
 			border-radius: 1.5rem;
@@ -178,10 +180,10 @@
 				color: var(--nc-primary);
 			}
 
-			&.active {
-				color: var(--nc-surface-1);
-				font-weight: 600;
-			}
+		&.active {
+			color: #fff;
+			font-weight: 600;
+		}
 		}
 
 		&.pdf-button {
@@ -231,6 +233,13 @@
 				Trebuchet MS,
 				sans-serif;
 			letter-spacing: 0.03em; /* small tracking increase */
+
+			/* Pico set font-family on headings explicitly (system-ui, not inherited),
+			   so headings rendered in SF Pro rather than Trebuchet MS. Match that. */
+			:global(h1),
+			:global(h2) {
+				font-family: system-ui, sans-serif;
+			}
 		}
 	}
 </style>

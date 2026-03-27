@@ -8,11 +8,28 @@
 	--nc-surface-2: light-dark(#fbfbfc, #1a1e28);
 	--nc-surface-3: light-dark(#e7eaef, #202632);
 	--nc-secondary: light-dark(#5d6b89, #969eaf);
+	--nc-primary: light-dark(#2060df, #8999f9);
 }
 
 /* Fix hr vertical margin: nimble defaults to 2x spacing, Pico used 1x */
 hr {
 	margin: var(--nc-spacing) 0;
+}
+
+/* Match Pico's square list-style, scoped to content areas only.
+   Pico applied this globally but its nav reset removed bullets from nav ul.
+   nimble's nav reset (list-style-type: none on nav ul) uses :where() so it
+   would lose to a global ul li rule. Scope to .resume instead. */
+.resume ul li {
+	list-style: square;
+}
+
+/* Reset nimble's button margin on LeftiumLogo's interactive div.
+   nimble adds margin: 0 0.25em 0.25em 0 to [role="button"] which shifts
+   the logo square relative to its glow/shadow overlays.
+   Fix belongs in @leftium/logo (add margin: 0 to .ripples.square). */
+logo-container [role='button'] {
+	margin: 0;
 }
 
 /* Restore Pico's responsive root font-size scaling (lost when removing Pico's $breakpoints config) */
