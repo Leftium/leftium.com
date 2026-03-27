@@ -83,7 +83,7 @@
 	])}
 </accent-box>
 
-<main class="resume container">
+<main class="resume">
 	{#if format === 'html'}
 		<div class="resume-container html" transition:fly={{ x: 77 }}>
 			<LeftiumLogo class="logo screen-only" animated={!dev} boundingBox="square" size="6rem" />
@@ -107,7 +107,7 @@
 		align-items: center;
 		justify-content: center;
 		padding: var(--size-1);
-		border: 1px solid var(--pico-muted-border-color);
+		border: 1px solid var(--nc-surface-3);
 		border-radius: 2rem;
 		margin-bottom: var(--size-3);
 		max-width: var(--size-content-3);
@@ -118,28 +118,37 @@
 		--switch-padding: 4px;
 		--switch-height: 40px;
 		--switch-radius: 2rem;
-		--switch-max-width: 160px;
-		--switch-min-width: 120px;
+		--switch-max-width: 180px;
+		--switch-min-width: 140px;
 
 		position: relative;
 		display: flex;
 		justify-content: space-evenly;
 		gap: 0;
 		margin: 0;
-		background: var(--pico-muted-border-color);
+		background: var(--nc-surface-3);
 		border-radius: var(--switch-radius);
 		padding: var(--switch-padding);
 		transition: background-color 0.2s ease;
 		max-width: var(--switch-max-width);
 		height: var(--switch-height);
 		min-width: var(--switch-min-width);
+		overflow: hidden;
+
+		/* Suppress nimble [role="group"] dividers and border-radius reset */
+		:global(> * + *::before) {
+			content: none !important;
+		}
+		:global(> *) {
+			border-radius: inherit !important;
+		}
 
 		.switch-slider {
 			position: absolute;
-			background: var(--pico-primary);
+			background: var(--nc-primary);
 			border-radius: inherit;
 			width: calc(50% - 4px);
-			height: 32px;
+			height: calc(100% - 8px);
 			top: 4px;
 			left: 4px;
 			transition: transform 0.3s ease;
@@ -166,11 +175,11 @@
 			background: transparent !important;
 
 			&:hover {
-				color: var(--pico-primary);
+				color: var(--nc-primary);
 			}
 
 			&.active {
-				color: var(--pico-primary-inverse);
+				color: var(--nc-surface-1);
 				font-weight: 600;
 			}
 		}
@@ -207,7 +216,7 @@
 		line-height: 1.4;
 	}
 
-	.container {
+	.resume {
 		position: relative;
 	}
 

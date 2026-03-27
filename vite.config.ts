@@ -4,11 +4,4 @@ import { defineConfig } from 'vite'
 
 export default defineConfig({
 	plugins: [sveltekit(), devtoolsJson()],
-	css: {
-		preprocessorOptions: {
-			scss: {
-				silenceDeprecations: ['if-function'],
-			},
-		},
-	},
 })

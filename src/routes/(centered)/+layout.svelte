@@ -14,7 +14,7 @@
 </script>
 
 <header class="screen-only">
-	<nav class="container">
+	<nav>
 		<ul>
 			<li>
 				<div class="brand">
@@ -45,7 +45,7 @@
 	</nav>
 </header>
 
-<main class="container">
+<main>
 	{@render children()}
 </main>
 
@@ -54,26 +54,42 @@
 	nav,
 	main {
 		padding-top: 0;
-		padding-bottom: 0%;
+		padding-bottom: 0;
 	}
 
 	header {
-		background-color: var(--pico-muted-border-color);
+		background-color: var(--nc-surface-3);
+		/* Break out of nimble body grid to span full viewport width */
+		grid-column: 1 / -1;
+		margin: 0;
 	}
 
 	nav {
+		display: flex;
+		align-items: center;
 		max-width: var(--size-content-3);
 		margin: auto;
-		margin-bottom: var(--size-1);
+		margin-bottom: 0;
 		flex-wrap: wrap;
-		padding-inline: var(--pico-block-spacing-horizontal);
+		padding-inline: var(--nc-spacing);
 		transition: all 0.3s ease;
+
+		ul {
+			display: flex;
+			align-items: center;
+			list-style: none;
+			gap: 1rem;
+			padding: 0;
+			margin: 0;
+		}
+
+		li {
+			margin: 0;
+		}
 
 		ul:first-child {
 			flex: 1 1 100%;
 			justify-content: center;
-			padding-inline-start: 0;
-			margin-inline: 0;
 		}
 
 		ul:last-child {
@@ -81,19 +97,19 @@
 			justify-content: center;
 			padding-block: 0;
 			margin-bottom: var(--size-2);
-			padding-inline-start: 0;
-			margin-inline: 0;
 		}
 	}
 
 	@media (min-width: 768px) {
 		nav {
+			justify-content: space-between;
+
 			ul:first-child {
 				flex: 0 0 auto;
 			}
 
 			ul:last-child {
-				flex: 0 0 auto;
+				flex: 1 1 auto;
 				justify-content: flex-end;
 				margin-bottom: var(--size-1);
 			}
@@ -106,18 +122,20 @@
 	}
 
 	main {
-		background-color: var(--pico-background-color);
+		background-color: var(--nc-surface-1);
+		margin-top: var(--size-1);
 		min-height: 100vh;
 		max-width: var(--size-content-3);
+		padding-inline: var(--nc-spacing);
 	}
 
 	.brand {
 		display: flex;
 		align-items: center;
 		text-decoration: none;
-		border: 1px solid color-mix(in srgb, var(--pico-secondary) 25%, transparent);
+		border: 1px solid color-mix(in srgb, var(--nc-secondary) 25%, transparent);
 		border-radius: 0;
-		background-color: var(--pico-card-sectioning-background-color);
+		background-color: var(--nc-surface-2);
 		transition:
 			transform 0.4s ease-in-out,
 			padding 0.4s ease-in-out;
@@ -170,6 +188,11 @@
 		align-items: center;
 		justify-content: center;
 		overflow: hidden;
+
+		/* Reset nimble's [role=button] margin (0 0.25em 0.25em 0) on logo's interactive div */
+		:global([role='button']) {
+			margin: 0;
+		}
 		transition:
 			opacity 0.4s ease-in-out,
 			transform 0.4s ease-in-out,

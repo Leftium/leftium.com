@@ -1,23 +1,36 @@
-@use '@picocss/pico/scss/pico' with (
-	$theme-color: 'blue',
-	// Breakpoints, viewports and root font size
-	$breakpoints: (
-			xl: (
-				breakpoint: 9999px,
-				viewport: 510px,
-				root-font-size: 106.25%,
-			),
-			xxl: (
-				breakpoint: 9999px,
-				viewport: 510px,
-				root-font-size: 106.25%,
-			),
-		)
-);
+@use '@leftium/nimble.css/scss';
 
-@media only screen and (min-width: 576px) {
-	.container {
-		padding: 1rem;
+/* Override nimble surface colors to match Pico blue theme values.
+   Nimble's surface scale has larger steps between levels than Pico's,
+   causing visible color mismatches (header bg, card bg, switch bg, etc). */
+:root {
+	--nc-surface-1: light-dark(#fff, #13161e);
+	--nc-surface-2: light-dark(#fbfbfc, #1a1e28);
+	--nc-surface-3: light-dark(#e7eaef, #202632);
+	--nc-secondary: light-dark(#5d6b89, #969eaf);
+}
+
+/* Fix hr vertical margin: nimble defaults to 2x spacing, Pico used 1x */
+hr {
+	margin: var(--nc-spacing) 0;
+}
+
+/* Restore Pico's responsive root font-size scaling (lost when removing Pico's $breakpoints config) */
+/* Pico defaults: sm=106.25%, md=112.5%, lg=118.75% */
+/* xl/xxl were disabled via $breakpoints override (breakpoint: 9999px) */
+@media (min-width: 576px) {
+	html {
+		font-size: 106.25%;
+	}
+}
+@media (min-width: 768px) {
+	html {
+		font-size: 112.5%;
+	}
+}
+@media (min-width: 1024px) {
+	html {
+		font-size: 118.75%;
 	}
 }
 
@@ -73,9 +86,9 @@ p:empty {
 
 /* Testimonial styles - shared across pages */
 .testimonial-container {
-	background-color: var(--pico-card-sectioning-background-color);
+	background-color: var(--nc-surface-2);
 	padding: var(--size-2) var(--size-3);
-	border-left: 4px solid var(--pico-blockquote-border-color);
+	border-left: 4px solid var(--nc-surface-3);
 	margin: var(--size-2) 0 var(--size-4) 0;
 }
 
@@ -108,7 +121,7 @@ p:empty {
 	width: var(--size-9);
 	aspect-ratio: 1;
 	border-radius: 50%;
-	border: 2px solid hsl(from var(--pico-secondary) h s l / 0.4);
+	border: 2px solid color-mix(in srgb, var(--nc-secondary) 40%, transparent);
 }
 
 .william-name {
