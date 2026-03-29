@@ -122,8 +122,6 @@
 		background-color: var(--nc-surface-1);
 		margin-top: var(--size-1);
 		min-height: 100vh;
-		max-width: var(--size-content-3);
-		padding-inline: var(--nc-spacing);
 	}
 
 	.brand {
