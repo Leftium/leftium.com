@@ -121,7 +121,7 @@
 	main {
 		background-color: var(--nc-surface-1);
 		margin-top: var(--size-1);
-		min-height: 100vh;
+		min-height: 100dvh;
 	}
 
 	.brand {
