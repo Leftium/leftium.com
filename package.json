@@ -44,6 +44,7 @@
 		"typescript": "^5.9.3",
 		"typescript-eslint": "^8.57.1",
 		"vite": "^8.0.1",
-		"vite-plugin-devtools-json": "^1.0.0"
+		"vite-plugin-devtools-json": "^1.0.0",
+		"web-sentinel": "^0.1.5"
 	}
 }
