@@ -11,6 +11,11 @@
 	--nc-primary: light-dark(#2060df, #8999f9);
 }
 
+/* Remove nimble's top body padding so header sits flush at top of viewport */
+body {
+	padding-block-start: 0;
+}
+
 /* Fix hr vertical margin: nimble defaults to 2x spacing, Pico used 1x */
 hr {
 	margin: var(--nc-spacing) 0;

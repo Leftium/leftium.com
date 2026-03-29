@@ -13,7 +13,7 @@
 	)
 </script>
 
-<header class="screen-only">
+<header class="screen-only bleed-edge">
 	<nav>
 		<ul>
 			<li>
@@ -59,19 +59,16 @@
 
 	header {
 		background-color: var(--nc-surface-3);
-		/* Break out of nimble body grid to span full viewport width */
-		grid-column: 1 / -1;
-		margin: 0;
+		margin-block: 0;
 	}
 
 	nav {
 		display: flex;
 		align-items: center;
-		max-width: var(--size-content-3);
 		margin: auto;
 		margin-bottom: 0;
 		flex-wrap: wrap;
-		padding-inline: var(--nc-spacing);
+		padding-inline: var(--size-1) var(--size-3);
 		transition: all 0.3s ease;
 
 		ul {
@@ -96,7 +93,7 @@
 			flex: 1 1 100%;
 			justify-content: center;
 			padding-block: 0;
-			margin-bottom: var(--size-2);
+			margin-bottom: 0;
 		}
 	}
 
