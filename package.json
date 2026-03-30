@@ -39,11 +39,11 @@
 		"prettier-plugin-svelte": "^3.5.1",
 		"qrcode-generator": "^2.0.4",
 		"sass-embedded": "^1.98.0",
-		"svelte": "^5.54.1",
+		"svelte": "^5.55.1",
 		"svelte-check": "^4.4.5",
 		"typescript": "^5.9.3",
-		"typescript-eslint": "^8.57.1",
-		"vite": "^8.0.1",
+		"typescript-eslint": "^8.58.0",
+		"vite": "^8.0.3",
 		"vite-plugin-devtools-json": "^1.0.0",
 		"web-sentinel": "^0.1.5"
 	}
