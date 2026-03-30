@@ -1,0 +1,183 @@
+.resume {
+	h1,
+	h2,
+	dl,
+	dt,
+	dd,
+	ul,
+	li,
+	p {
+		overflow-wrap: normal;
+		margin-block: 0;
+	}
+
+	h1,
+	p,
+	h2 {
+		/* Title: name, web & email address, section headers: */
+		text-align: end;
+	}
+
+	dl {
+		/* Job title, date */
+		margin-top: var(--size-1);
+
+		/* Clear the floated logo. */
+		clear: left;
+	}
+
+	img,
+	.logo {
+		float: left;
+	}
+
+	img {
+		width: 8.5rem;
+	}
+
+	h1 {
+		/* Title: name: */
+		font-size: var(--font-size-5);
+		color: var(--stone-12);
+	}
+
+	h2 {
+		/* Section headers (Experience, Education): */
+		margin-top: var(--size-3);
+
+		font-size: var(--font-size-4);
+		color: var(--stone-6);
+
+		text-transform: uppercase;
+	}
+
+	/* Job title, date / Company, location */
+	dl dt,
+	dl dd {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		flex-wrap: wrap;
+
+		padding-inline: var(--size-px-4);
+		margin-inline: 0;
+
+		font-weight: var(--font-weight-7);
+		font-size: var(--font-size-3);
+		line-height: var(--font-lineheight-1);
+
+		& em {
+			flex-grow: 1;
+
+			font-weight: var(--font-weight-5);
+			font-size: var(--font-size-1);
+
+			color: var(--stone-5);
+
+			font-style: normal;
+
+			text-wrap: nowrap;
+			text-align: end;
+		}
+	}
+
+	dl dt {
+		/* Job title, date */
+		color: var(--stone-0);
+		background: linear-gradient(
+			120deg,
+			oklch(0.4954 0.2272 264.46) 0%,
+			oklch(0.5989 0.2174 263.95) 50%,
+			oklch(0.5989 0.2174 263.95) 55%,
+			oklch(0.5989 0.2174 263.95 / 75%) 65%,
+			oklch(0.5989 0.2174 263.95 / 50%) 67%,
+			oklch(0.5989 0.2174 263.95 / 0%) 70%,
+			oklch(0.5989 0.2174 263.95 / 0%)
+		);
+	}
+
+	dl dd {
+		/* Company, location */
+		font-size: var(--font-size-1);
+	}
+
+	li::marker {
+		color: var(--stone-2);
+	}
+
+	ul {
+		padding-left: var(--size-px-4);
+		margin-bottom: var(--size-3);
+	}
+
+	/* Make first item in Education section bold (last h2 + ul combination) */
+	h2:last-of-type + ul li:first-child {
+		font-size: var(--font-size-2);
+		font-weight: var(--font-weight-9);
+	}
+
+	@media only screen and (prefers-color-scheme: dark) {
+		h1 {
+			color: var(--stone-1);
+		}
+		h2 {
+			color: var(--stone-5);
+		}
+
+		dl dt {
+			/* background-color: var(--stone-10); */
+			& em {
+				color: var(--stone-7);
+			}
+		}
+
+		li::marker {
+			color: var(--stone-9);
+		}
+	}
+
+	[data-theme='dark'] {
+		h1 {
+			color: var(--stone-1);
+		}
+		h2 {
+			color: var(--stone-5);
+		}
+
+		dl dt {
+			/* background-color: var(--stone-10); */
+			& em {
+				color: var(--stone-7);
+			}
+		}
+
+		li::marker {
+			color: var(--stone-9);
+		}
+	}
+
+	@media only screen {
+		.logo {
+			margin-left: var(--size-3);
+		}
+	}
+
+	@media only print {
+		.resume-container.html {
+			max-width: 100% !important;
+			margin-top: 1.25rem !important;
+			margin-bottom: 0 !important;
+			padding-bottom: 0 !important;
+		}
+
+		/* Reduce spacing to fit better with default margins */
+		dl {
+			margin-top: var(--size-1);
+		}
+
+		img {
+			margin-top: -1.5rem;
+			margin-bottom: -2.5rem;
+		}
+	}
+}

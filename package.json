@@ -34,7 +34,6 @@
 		"markdown-it-deflist": "^3.0.0",
 		"markdown-it-github-alerts": "^1.0.1",
 		"open-props": "^1.7.23",
-		"open-props-scss": "^0.8.0",
 		"prettier": "^3.8.1",
 		"prettier-plugin-svelte": "^3.5.1",
 		"qrcode-generator": "^2.0.4",

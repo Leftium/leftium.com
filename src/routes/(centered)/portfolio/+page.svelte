@@ -80,8 +80,7 @@
 	`}
 </scope-css>
 
-<style lang="scss">
-	@use 'open-props-scss' as *;
+<style>
 	scope-css {
 		display: block;
 		max-width: var(--size-content-2);
@@ -96,28 +95,28 @@
 				text-align: center;
 			}
 
-			// Render definition lists as simple table:
+			/* Render definition lists as simple table: */
 			dl {
 				display: grid;
 				grid-template-columns: max-content 1fr;
 				max-width: 100%;
 				width: fit-content;
-				margin-block: $size-2;
+				margin-block: var(--size-2);
 				margin-inline: auto;
 				padding: 0;
-				padding-inline: $size-3;
+				padding-inline: var(--size-3);
 
 				dt,
 				dd {
 					margin: 0;
-					padding: $size-2 0;
+					padding: var(--size-2) 0;
 				}
 
 				dt {
-					font-weight: $font-weight-7;
+					font-weight: var(--font-weight-7);
 					text-align: right;
 					align-self: start;
-					padding-right: $size-3;
+					padding-right: var(--size-3);
 				}
 
 				dt:first-of-type,

@@ -65,9 +65,6 @@ importers:
       open-props:
         specifier: ^1.7.23
         version: 1.7.23
-      open-props-scss:
-        specifier: ^0.8.0
-        version: 0.8.0
       prettier:
         specifier: ^3.8.1
         version: 3.8.1
@@ -1034,9 +1031,6 @@ packages:
 
   oniguruma-to-es@4.3.5:
     resolution: {integrity: sha512-Zjygswjpsewa0NLTsiizVuMQZbp0MDyM6lIt66OxsF21npUDlzpHi1Mgb/qhQdkb+dWFTzJmFbEWdvZgRho8eQ==}
-
-  open-props-scss@0.8.0:
-    resolution: {integrity: sha512-+y3nOEd+CEkpeMPADoaL11PYVH9OM4D7OLB6qKm65sOkpLMdtts2CQ457glRwpYi3A3jtfujBLrMErNSeaDQDA==}
 
   open-props@1.7.23:
     resolution: {integrity: sha512-+xyrJmxV9QUBFbSwPROYhOg/FLXry+uuPr4R+B5EaE4556Oc18/8ZC/fL5A+/lbRSwNvA0Alh+C0KpyFWLmLZg==}
@@ -2351,8 +2345,6 @@ snapshots:
       oniguruma-parser: 0.12.1
       regex: 6.1.0
       regex-recursion: 6.0.2
-
-  open-props-scss@0.8.0: {}
 
   open-props@1.7.23: {}
 

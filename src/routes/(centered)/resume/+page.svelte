@@ -1,6 +1,6 @@
 <script lang="ts">
 	import 'open-props/style'
-	import '$lib/resume.scss'
+	import '$lib/resume.css'
 
 	import markdownit from 'markdown-it'
 	import markdownitDeflist from 'markdown-it-deflist'
@@ -98,9 +98,7 @@
 	{/if}
 </main>
 
-<style lang="scss">
-	@use 'open-props-scss' as *;
-
+<style>
 	accent-box {
 		display: flex;
 		position: relative;
