@@ -37,26 +37,30 @@
 		## Try using some of my projects:
 
 		### Weather Sense
+
 		- User-friendly, actionable weather forecasts
 		- weather-sense.leftium.com | [github](https://github.com/Leftium/weather-sense)
-		
 
 		### Seeking Orange
+
 		- Hacker News Clients
 		- hn.leftium.com | [github](https://github.com/Leftium/hn)
 		- hw.leftium.com | [github](https://github.com/Leftium/hckrweb)
 
 		### Veneer
+
 		- A thin layer over Google forms & sheets
 		- vivimil.com
 		- veneer.leftium.com
 		- [github](https://github.com/Leftium/veneer)
 
 		### MultiLaunch
+
 		- Bookmarks/start page
 		- multi-launch.leftium.com | [github](https://github.com/Leftium/multi-launch)
 
 		### whizBang
+
 		- Better bang search
 		- zbang.leftium.com | [github](https://github.com/Leftium/zbang)
 

@@ -180,10 +180,10 @@
 				color: var(--nc-primary);
 			}
 
-		&.active {
-			color: #fff;
-			font-weight: 600;
-		}
+			&.active {
+				color: #fff;
+				font-weight: 600;
+			}
 		}
 
 		&.pdf-button {
