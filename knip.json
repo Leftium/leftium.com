@@ -1,6 +1,7 @@
 {
-  "$schema": "https://unpkg.com/knip@6/schema.json",
-  "tags": [
-    "-lintignore"
-  ]
+	"$schema": "https://unpkg.com/knip@6/schema.json",
+	"tags": ["-lintignore"],
+	"ignore": ["src/lib/index.ts"],
+	"ignoreDependencies": ["@leftium/nimble.css"],
+	"ignoreUnresolved": ["./@leftium/nimble\\.css/scss"]
 }
