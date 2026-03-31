@@ -181,3 +181,10 @@
 		}
 	}
 }
+
+/* Suppress nimble's print link expansion (resume has URLs inline already) */
+@media only print {
+	a[href]::after {
+		content: none;
+	}
+}

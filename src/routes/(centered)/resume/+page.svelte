@@ -86,7 +86,13 @@
 <main class="resume">
 	{#if format === 'html'}
 		<div class="resume-container html" transition:fly={{ x: 77 }}>
-			<LeftiumLogo class="logo screen-only" animated={!dev} boundingBox="square" size="6rem" />
+			<LeftiumLogo
+				class="logo screen-only"
+				animated={!dev}
+				boundingBox="square"
+				size="6rem"
+				squircle={true}
+			/>
 			<img class="logo print-only" src="/le.svg" alt="Logo" />
 
 			{@html resumeHtml}

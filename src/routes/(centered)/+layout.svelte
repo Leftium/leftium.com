@@ -19,7 +19,7 @@
 			<li>
 				<div class="brand">
 					<div class="logo-wrapper" class:hidden={hideBrand}>
-						<LeftiumLogo boundingBox="cropped" size="3.75rem" />
+						<LeftiumLogo boundingBox="cropped" size="3.75rem" squircle={true} />
 					</div>
 					<a href={resolve('/')} class="brand-text">
 						<h1>Leftium</h1>
