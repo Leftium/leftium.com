@@ -18,8 +18,8 @@ importers:
         specifier: ^0.4.0
         version: 0.4.0(svelte@5.55.1)
       '@leftium/nimble.css':
-        specifier: ^0.16.0
-        version: 0.16.0
+        specifier: ^0.17.0
+        version: 0.17.0
       '@sveltejs/adapter-auto':
         specifier: ^7.0.1
         version: 7.0.1(@sveltejs/kit@2.55.0(@sveltejs/vite-plugin-svelte@7.0.0(svelte@5.55.1)(vite@8.0.3(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@25.5.0)(jiti@2.6.1)(sass-embedded@1.98.0)(sass@1.98.0)(yaml@2.8.3)))(svelte@5.55.1)(typescript@5.9.3)(vite@8.0.3(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@25.5.0)(jiti@2.6.1)(sass-embedded@1.98.0)(sass@1.98.0)(yaml@2.8.3)))
@@ -201,8 +201,8 @@ packages:
     peerDependencies:
       svelte: ^5.0.0
 
-  '@leftium/nimble.css@0.16.0':
-    resolution: {integrity: sha512-LoUPpUn773UNx1ti1wIY2m/lgCXmnmEtT2P6oa6m9vc9Aagm2qSqeQypz3uZpJH1v5eiuAXLVnn29ozuzj1b+g==}
+  '@leftium/nimble.css@0.17.0':
+    resolution: {integrity: sha512-nX5hcF4hr9EzgHeBMFhfwdE5ddqA8/1OVcbyGJOecsOxG8DqdaT36FoaUSjpCzAZ1xbE9pe83ZRDEd2rYJnHSw==}
 
   '@napi-rs/wasm-runtime@1.1.2':
     resolution: {integrity: sha512-sNXv5oLJ7ob93xkZ1XnxisYhGYXfaG9f65/ZgYuAu3qt7b3NadcOEhLvx28hv31PgX8SZJRYrAIPQilQmFpLVw==}
@@ -1961,7 +1961,7 @@ snapshots:
       svelte: 5.55.1
       tippy.js: 6.3.7
 
-  '@leftium/nimble.css@0.16.0': {}
+  '@leftium/nimble.css@0.17.0': {}
 
   '@napi-rs/wasm-runtime@1.1.2(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)':
     dependencies:
