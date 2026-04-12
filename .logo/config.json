@@ -1,7 +1,7 @@
 {
 	"logo": {
 		"size": 300,
-		"squircle": true,
+		"squircle": false,
 		"boundingBox": "encircled",
 		"background": "transparent"
 	},
