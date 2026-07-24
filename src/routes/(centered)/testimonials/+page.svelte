@@ -21,6 +21,46 @@
 
 	<div class="testimonial-container">
 		<a
+			href="https://github.com/braden-w"
+			class="testimonial-attribution"
+			target="_blank"
+			rel="noreferrer"
+		>
+			{@html md`
+				![](/braden-w.jpg){.testimonial-photo}
+			`}
+			<div>
+				{@html md`
+					Braden Wong{.testimonial-name}
+
+					Founder, Epicenter (YC S25){.testimonial-title}
+				`}
+			</div>
+		</a>
+
+		{@html md`
+			> **John has been one of the most positive and independent forces I've had the
+			> pleasure of working with as an OSS developer.** When we began working
+			> together on Epicenter, an open source project, John was among the earliest
+			> contributors to join. From the very beginning, I was struck by his remarkable
+			> level of independence and his willingness to take on a diverse range of tasks.
+			>
+			> What has impressed me most about John is his ability to be **both highly
+			> independent and an exceptional team player.** He has served as a unifying
+			> force across our maintainer team, fostering collaboration and communication
+			> among members. John has engaged in conversations with other maintainers,
+			> helping to organize and categorize issues with remarkable efficiency.
+			>
+			> **I have yet to encounter another open source developer who demonstrates
+			> John's level of initiative** when it comes to triaging issues and maintaining
+			> an active presence in community forums. His contributions have been
+			> invaluable, and I'm grateful for the dedication and organizational skill he
+			> brings to every aspect of the project.
+		`}
+	</div>
+
+	<div class="testimonial-container">
+		<a
 			href="https://github.com/ewilliam"
 			class="testimonial-attribution"
 			target="_blank"
@@ -71,46 +111,6 @@
 			> collaborate with my team regardless of skill level—it
 			> humbled me. Killed off whatever diva energy I had left. **I've
 			> become a better builder because of John!**
-		`}
-	</div>
-
-	<div class="testimonial-container">
-		<a
-			href="https://github.com/braden-w"
-			class="testimonial-attribution"
-			target="_blank"
-			rel="noreferrer"
-		>
-			{@html md`
-				![](/braden-w.jpg){.testimonial-photo}
-			`}
-			<div>
-				{@html md`
-					Braden Wong{.testimonial-name}
-
-					Founder, Epicenter (YC S25){.testimonial-title}
-				`}
-			</div>
-		</a>
-
-		{@html md`
-			> **John has been one of the most positive and independent forces I've had the
-			> pleasure of working with as an OSS developer.** When we began working
-			> together on Epicenter, an open source project, John was among the earliest
-			> contributors to join. From the very beginning, I was struck by his remarkable
-			> level of independence and his willingness to take on a diverse range of tasks.
-			>
-			> What has impressed me most about John is his ability to be **both highly
-			> independent and an exceptional team player.** He has served as a unifying
-			> force across our maintainer team, fostering collaboration and communication
-			> among members. John has engaged in conversations with other maintainers,
-			> helping to organize and categorize issues with remarkable efficiency.
-			>
-			> **I have yet to encounter another open source developer who demonstrates
-			> John's level of initiative** when it comes to triaging issues and maintaining
-			> an active presence in community forums. His contributions have been
-			> invaluable, and I'm grateful for the dedication and organizational skill he
-			> brings to every aspect of the project.
 		`}
 	</div>
 </scope-css>

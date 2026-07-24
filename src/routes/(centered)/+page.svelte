@@ -1,28 +1,62 @@
 <script>
 	import 'open-props/style'
 
+	import { resolve } from '$app/paths'
 	import { makeTagFunctionMd } from '$lib/tag-functions/markdown'
 	import attr from 'markdown-it-attrs'
-	import centerText from 'markdown-it-center-text'
 
 	const md = makeTagFunctionMd({ html: true, linkify: true, typographer: true, breaks: false }, [
 		[attr],
-		[centerText],
 	])
 </script>
 
 <!-- eslint-disable svelte/no-at-html-tags -- developer-authored markdown, not user input -->
 <scope-css>
-	{@html md`
-		# Need a digital consultant?
+	<section class="consulting-intro">
+		<h1>Stuck? Working on something important?</h1>
+		<p>
+			Some problems don't fit neatly into people, products, or technology. I'm a full-stack
+			SvelteKit developer who obsesses over UX and finds unconventional solutions. I work across
+			boundaries to find what is blocking the outcome and build a way forward.
+		</p>
+		<h2 class="consulting-action">
+			<a href={resolve('/digital-consulting')} role="button" class="outline">
+				See what I can do for you
+			</a>
+		</h2>
+		<hr />
+	</section>
 
-		- A _consultant_ helps you get from point A to point B.
-		- A _digital_ consultant has expertise in computers/tech.
+	<div class="testimonial-container">
+		<a
+			href="https://github.com/braden-w"
+			class="testimonial-attribution"
+			target="_blank"
+			rel="noreferrer"
+		>
+			{@html md`
+				![](/braden-w.jpg){.testimonial-photo}
+			`}
+			<div>
+				{@html md`
+					Braden Wong{.testimonial-name}
 
-		->[Learn more...](/digital-consulting){role=button .outline}<-
+					Founder, Epicenter (YC S25){.testimonial-title}
+				`}
+			</div>
+		</a>
 
-		---
-	`}
+		{@html md`
+			> John has been one of the most positive and independent forces I've had the
+			> pleasure of working with as an OSS developer.
+			>
+			> What has impressed me most about John is his ability to be **both highly
+			> independent and an exceptional team player.**
+			>
+			> I have yet to encounter another open source developer who demonstrates
+			> John's level of initiative...
+		`}
+	</div>
 
 	<div class="testimonial-container">
 		<a
@@ -58,9 +92,9 @@
 		`}
 	</div>
 
-	{@html md`
-		->[Read full testimonial...](/testimonials){role=button .outline}<-
-	`}
+	<p class="testimonial-action">
+		<a href={resolve('/testimonials')} role="button" class="outline">Read the full testimonials</a>
+	</p>
 </scope-css>
 
 <style lang="css">
@@ -77,21 +111,16 @@
 			text-align: center;
 		}
 
-		:global(p.resume) {
-			display: grid;
-			grid-template-columns: 1fr auto;
-		}
-
-		:global(.full) {
-			width: 100%;
-		}
-
-		:global(.text-align-center) {
+		.testimonial-action {
 			text-align: center;
 		}
 
 		:global([role='button']) {
 			border-radius: 2rem;
+		}
+
+		.consulting-action {
+			margin-block: var(--size-6);
 		}
 	}
 </style>
