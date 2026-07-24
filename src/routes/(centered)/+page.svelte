@@ -25,15 +25,20 @@
 	`}
 
 	<div class="testimonial-container">
-		<a href="https://github.com/ewilliam" class="william-attribution" target="_blank">
+		<a
+			href="https://github.com/ewilliam"
+			class="testimonial-attribution"
+			target="_blank"
+			rel="noreferrer"
+		>
 			{@html md`
-				![](/william.jpg){.william-photo}
+				![](/william.jpg){.testimonial-photo}
 			`}
 			<div>
 				{@html md`
-					William Albright{.william-name}
+					William Albright{.testimonial-name}
 
-					software developer{.william-title}
+					software developer{.testimonial-title}
 				`}
 			</div>
 		</a>

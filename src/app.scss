@@ -125,7 +125,7 @@ p:empty {
 	margin-bottom: 0 !important;
 }
 
-.william-attribution {
+.testimonial-attribution {
 	display: flex;
 	align-items: center;
 	gap: var(--size-2);
@@ -134,25 +134,25 @@ p:empty {
 	color: inherit;
 }
 
-.william-attribution p {
+.testimonial-attribution p {
 	margin: 0;
 	line-height: 1.1;
 }
 
-.william-photo {
+.testimonial-photo {
 	width: var(--size-9);
 	aspect-ratio: 1;
 	border-radius: 50%;
 	border: 2px solid color-mix(in srgb, var(--nc-secondary) 40%, transparent);
 }
 
-.william-name {
+.testimonial-name {
 	color: #1c4ee0;
 	font-weight: 600;
 	transition: text-shadow 0.3s ease;
 }
 
-.william-title {
+.testimonial-title {
 	font-size: 0.9em;
 	opacity: 0.8;
 	margin-top: -0.2rem;
@@ -161,21 +161,26 @@ p:empty {
 	transition: text-shadow 0.3s ease;
 }
 
+.testimonial-note {
+	font-size: 0.8em;
+	opacity: 0.7;
+}
+
 @media (prefers-color-scheme: dark) {
-	.william-name {
+	.testimonial-name {
 		color: #3973ff;
 	}
 }
 
 @media (hover: hover) {
-	.william-attribution:hover .william-name,
-	.william-attribution:hover .william-title {
+	.testimonial-attribution:hover .testimonial-name,
+	.testimonial-attribution:hover .testimonial-title {
 		text-shadow: 0 0 16px rgba(28, 78, 224, 0.7);
 	}
 
 	@media (prefers-color-scheme: dark) {
-		.william-attribution:hover .william-name,
-		.william-attribution:hover .william-title {
+		.testimonial-attribution:hover .testimonial-name,
+		.testimonial-attribution:hover .testimonial-title {
 			text-shadow: 0 0 16px rgba(57, 115, 255, 0.7);
 		}
 	}
