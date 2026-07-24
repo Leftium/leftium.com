@@ -13,26 +13,38 @@
 
 <div class="consulting">
 	<header class="hero">
-		<p class="eyebrow">Stuck? Meet your new</p>
-		<h1>Secret Weapon</h1>
+		<p class="eyebrow">Stuck? Meet your new secret weapon.</p>
+		<h1>A Different Kind of Digital Consultant</h1>
+		<p class="promise">Getting you from where you are to where you want to be.</p>
 
 		<ul class="perspectives">
 			<li>
-				<strong>Look closer.</strong> I notice friction and human needs others overlook.
+				<strong>Look closer</strong>
+				<span>I notice friction and human needs others overlook.</span>
 			</li>
 			<li>
-				<strong>Look wider.</strong> I connect ideas from domains that rarely meet.
+				<strong>Look wider</strong>
+				<span>I connect ideas from domains that rarely meet.</span>
 			</li>
 			<li>
-				<strong>Look further.</strong> I see what will feel obvious later.
+				<strong>Look further</strong>
+				<span>I see what will feel obvious later.</span>
 			</li>
 		</ul>
 	</header>
 
+	<section aria-labelledby="situations-heading">
+		<h2 id="situations-heading">When digital consulting helps</h2>
+		<ul>
+			<li>You know where you want to go, but not how to get there.</li>
+			<li>The obvious solutions have not worked.</li>
+			<li>The problem crosses people, products, and technology.</li>
+			<li>You need someone who can investigate the problem and build the solution.</li>
+		</ul>
+	</section>
+
 	<section aria-labelledby="superpowers-heading">
-		<div class="section-intro">
-			<h2 id="superpowers-heading">My superpowers</h2>
-		</div>
+		<h2 id="superpowers-heading">My superpowers</h2>
 
 		<ul class="superpowers">
 			<li>
@@ -60,9 +72,7 @@
 	</section>
 
 	<section aria-labelledby="work-heading">
-		<div class="section-intro">
-			<h2 id="work-heading">Selected work</h2>
-		</div>
+		<h2 id="work-heading">Selected work</h2>
 
 		<ul class="project-list">
 			<li>
@@ -111,10 +121,8 @@
 		</p>
 	</section>
 
-	<section class="testimonial" aria-labelledby="testimonial-heading">
-		<div class="section-intro">
-			<h2 id="testimonial-heading">What it's like to work with me</h2>
-		</div>
+	<section aria-labelledby="testimonial-heading">
+		<h2 id="testimonial-heading">What it's like to work with me</h2>
 
 		<blockquote>
 			<p>
@@ -129,7 +137,7 @@
 		</p>
 	</section>
 
-	<section class="invitation" aria-labelledby="invitation-heading">
+	<section aria-labelledby="invitation-heading">
 		<h2 id="invitation-heading">What are you stuck on?</h2>
 		<p>
 			You may know exactly what is blocking you. Or you may only know that something important is
@@ -147,13 +155,11 @@
 
 <style>
 	.consulting {
-		max-width: var(--size-content-2);
-		margin-inline: auto;
 		padding-block: var(--size-6);
 	}
 
 	h1 {
-		font-size: clamp(var(--font-size-5), 7vw, var(--font-size-7));
+		font-size: clamp(var(--font-size-4), 4.5vw, var(--font-size-6));
 		line-height: var(--font-lineheight-1);
 	}
 
@@ -162,18 +168,50 @@
 	}
 
 	.eyebrow {
+		max-width: var(--size-content-2);
+		margin-inline: auto;
 		margin-bottom: 0;
-		font-size: var(--font-size-2);
-		font-weight: var(--font-weight-7);
+		font-size: var(--font-size-1);
+		font-weight: var(--font-weight-6);
+		opacity: 0.65;
 	}
 
 	.eyebrow + h1 {
 		margin-top: 0;
 	}
 
+	.promise {
+		max-width: var(--size-content-2);
+		margin-inline: auto;
+		font-size: var(--font-size-3);
+		font-weight: var(--font-weight-6);
+		line-height: var(--font-lineheight-2);
+	}
+
 	.perspectives {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: var(--size-2);
 		margin-top: var(--size-6);
-		text-align: left;
+	}
+
+	.perspectives li {
+		padding: var(--size-3) var(--size-4);
+		border-radius: var(--radius-3);
+		background: var(--nc-surface-2);
+	}
+
+	.perspectives strong {
+		display: block;
+		font-size: var(--font-size-2);
+		text-align: center;
+	}
+
+	.perspectives span {
+		display: block;
+		margin-top: var(--size-2);
+		font-size: var(--font-size-0);
+		text-align: center;
 	}
 
 	.perspectives,
@@ -183,6 +221,8 @@
 	}
 
 	section {
+		max-width: var(--size-content-2);
+		margin-inline: auto;
 		margin-top: var(--size-8);
 	}
 
@@ -197,5 +237,11 @@
 	.superpowers,
 	.project-list {
 		margin-top: var(--size-4);
+	}
+
+	@media (max-width: 47.999rem) {
+		.perspectives {
+			grid-template-columns: 1fr;
+		}
 	}
 </style>
