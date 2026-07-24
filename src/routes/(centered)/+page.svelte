@@ -24,72 +24,73 @@
 				See what I can do for you
 			</a>
 		</h2>
-		<hr />
 	</section>
 
-	<div class="testimonial-container">
-		<a
-			href="https://github.com/braden-w"
-			class="testimonial-attribution"
-			target="_blank"
-			rel="noreferrer"
-		>
-			{@html md`
-				![](/braden-w.jpg){.testimonial-photo}
-			`}
-			<div>
+	<div class="testimonials">
+		<div class="testimonial-container">
+			<a
+				href="https://github.com/braden-w"
+				class="testimonial-attribution"
+				target="_blank"
+				rel="noreferrer"
+			>
 				{@html md`
-					Braden Wong{.testimonial-name}
-
-					Founder, Epicenter (YC S25){.testimonial-title}
+					![](/braden-w.jpg){.testimonial-photo}
 				`}
-			</div>
-		</a>
+				<div>
+					{@html md`
+						Braden Wong{.testimonial-name}
 
-		{@html md`
-			> John has been one of the most positive and independent forces I've had the
-			> pleasure of working with as an OSS developer.
-			>
-			> What has impressed me most about John is his ability to be **both highly
-			> independent and an exceptional team player.**
-			>
-			> I have yet to encounter another open source developer who demonstrates
-			> John's level of initiative...
-		`}
-	</div>
+						Founder, Epicenter (YC S25){.testimonial-title}
+					`}
+				</div>
+			</a>
 
-	<div class="testimonial-container">
-		<a
-			href="https://github.com/ewilliam"
-			class="testimonial-attribution"
-			target="_blank"
-			rel="noreferrer"
-		>
 			{@html md`
-				![](/william.jpg){.testimonial-photo}
+				> John has been one of the most positive and independent forces I've had the
+				> pleasure of working with as an OSS developer.
+				>
+				> What has impressed me most about John is his ability to be **both highly
+				> independent and an exceptional team player.**
+				>
+				> I have yet to encounter another open source developer who demonstrates
+				> John's level of initiative...
 			`}
-			<div>
+		</div>
+
+		<div class="testimonial-container">
+			<a
+				href="https://github.com/ewilliam"
+				class="testimonial-attribution"
+				target="_blank"
+				rel="noreferrer"
+			>
 				{@html md`
-					William Albright{.testimonial-name}
-
-					software developer{.testimonial-title}
+					![](/william.jpg){.testimonial-photo}
 				`}
-			</div>
-		</a>
+				<div>
+					{@html md`
+						William Albright{.testimonial-name}
 
-		{@html md`
-			> **I was burned out.** React and JSX were kicking my ass, and I
-			> questioned whether web development was for me...
-			>
-			> Then John [showed] me that complex UI could be unlocked by the right data structures...
-			> [He] inspired me to read more technical material...
-			> **[He] helped shift my perspective on frontend development...**
-			>
-			> And finally—John's lack of ego, his willingness to
-			> collaborate with my team regardless of skill level—it
-			> humbled me...
-			> **I've become a better builder because of John!**
-		`}
+						software developer{.testimonial-title}
+					`}
+				</div>
+			</a>
+
+			{@html md`
+				> **I was burned out.** React and JSX were kicking my ass, and I
+				> questioned whether web development was for me...
+				>
+				> Then John [showed] me that complex UI could be unlocked by the right data structures...
+				> [He] inspired me to read more technical material...
+				> **[He] helped shift my perspective on frontend development...**
+				>
+				> And finally—John's lack of ego, his willingness to
+				> collaborate with my team regardless of skill level—it
+				> humbled me...
+				> **I've become a better builder because of John!**
+			`}
+		</div>
 	</div>
 
 	<p class="testimonial-action">
@@ -112,7 +113,26 @@
 		}
 
 		.testimonial-action {
+			margin-block-start: var(--size-6);
 			text-align: center;
+		}
+
+		.testimonials {
+			display: grid;
+			gap: var(--size-4);
+			width: min(
+				calc(100vw - var(--size-6)),
+				calc(var(--size-content-2) + var(--size-content-2) + var(--size-4))
+			);
+			margin-inline: 50%;
+			transform: translateX(-50%);
+		}
+
+		.testimonial-container {
+			width: 100%;
+			max-width: var(--size-content-2);
+			margin: 0;
+			justify-self: center;
 		}
 
 		:global([role='button']) {
@@ -121,6 +141,17 @@
 
 		.consulting-action {
 			margin-block: var(--size-6);
+		}
+
+		.consulting-intro :global(h1) {
+			margin-block-start: var(--size-6);
+			margin-block-end: var(--size-3);
+		}
+
+		@media (min-width: 768px) {
+			.testimonials {
+				grid-template-columns: repeat(2, minmax(0, 1fr));
+			}
 		}
 	}
 </style>
