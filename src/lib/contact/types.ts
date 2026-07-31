@@ -30,6 +30,7 @@ export type ContactField = {
 	requiredForVCard?: boolean
 	link?: string
 	vcard: ContactVCard
+	qrAsAddress?: boolean
 }
 
 export type ContactSet = {
@@ -55,7 +56,7 @@ export type ContactProfile = {
 }
 
 export type ContactAuthorization =
-	{ mode: 'public' } | { mode: 'visitor'; fieldIds: Iterable<string> } | { mode: 'owner' }
+	{ mode: 'public' } | { mode: 'visitor'; fieldIds: Iterable<string> } | { mode: 'admin' }
 
 export type ContactPhotoSource = ContactPhoto
 

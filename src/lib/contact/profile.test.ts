@@ -42,6 +42,37 @@ function parseProfile() {
 }
 
 describe('parseContactProfileToml', () => {
+	it('parses an explicit QR address override only for custom fields', () => {
+		const profile = parseContactProfileToml(`
+[profile]
+name = "Example Person"
+
+[public]
+email = "hello@example.com"
+
+[private.custom]
+bank = { value = "Bank account: Example Bank 123", vcard_property = "NOTE", qr_as_address = true }
+`)
+
+		expect(profile.fields.find(({ id }) => id === 'private.custom.bank')).toMatchObject({
+			vcard: { property: 'NOTE' },
+			qrAsAddress: true,
+		})
+
+		expect(() =>
+			parseContactProfileToml(`
+[profile]
+name = "Example Person"
+
+[public]
+email = "hello@example.com"
+
+[private.phone]
+mobile = { value = "+1 212 555 6789", qr_as_address = true }
+`),
+		).toThrow(/qr_as_address is only valid for custom fields/)
+	})
+
 	it('expands terse fields, sets, requests, and profile defaults', () => {
 		const profile = parseProfile()
 
@@ -176,7 +207,7 @@ missing = ["phone.unknown"]
 })
 
 describe('selectContactFields', () => {
-	it('filters public, visitor, owner, and requested selections', () => {
+	it('filters public, visitor, admin, and requested selections', () => {
 		const profile = parseProfile()
 		const publicIds = selectContactFields(profile, { mode: 'public' }).map(({ id }) => id)
 		expect(publicIds).toEqual(['profile.name', 'profile.photo', 'public.email', 'public.url'])
@@ -187,9 +218,9 @@ describe('selectContactFields', () => {
 		}).map(({ id }) => id)
 		expect(visitorIds).toEqual([...publicIds, 'private.phone.korea'])
 
-		expect(selectContactFields(profile, { mode: 'owner' })).toHaveLength(profile.fields.length)
+		expect(selectContactFields(profile, { mode: 'admin' })).toHaveLength(profile.fields.length)
 
-		const requestedIds = selectContactFields(profile, { mode: 'owner' }, [
+		const requestedIds = selectContactFields(profile, { mode: 'admin' }, [
 			'private.email.work',
 		]).map(({ id }) => id)
 		expect(requestedIds).toEqual(['profile.name', 'private.email.work'])

@@ -1,4 +1,5 @@
-import { selectContactFields } from '$lib/contact/profile'
+import { resolveAdminAccess } from '$lib/contact/admin-auth.server'
+import { ContactProfileError, selectContactFields } from '$lib/contact/profile'
 import { buildVCard, buildVCardQrSvg, contactFilename, ContactQrError } from '$lib/contact/vcard'
 import { loadContactProfile } from '../../(centered)/contact/contact-profile.server'
 
@@ -9,14 +10,38 @@ const contactHeaders = {
 	Vary: 'Cookie',
 }
 
-export const GET: RequestHandler = async ({ url }) => {
+export const GET: RequestHandler = async ({ cookies, url }) => {
 	const profile = loadContactProfile()
-	const fields = selectContactFields(profile, { mode: 'public' })
+	const adminAccess = await resolveAdminAccess(cookies)
+	const requestedIds =
+		adminAccess.authorization.mode === 'admin' && url.searchParams.has('field')
+			? url.searchParams.getAll('field')
+			: undefined
+	const authorization =
+		adminAccess.authorization.mode === 'admin' && requestedIds
+			? adminAccess.authorization
+			: ({ mode: 'public' } as const)
+	let fields
+
+	try {
+		fields = selectContactFields(profile, authorization, requestedIds)
+	} catch (error) {
+		if (error instanceof ContactProfileError) {
+			return new Response(error.message, {
+				status: 400,
+				headers: {
+					...contactHeaders,
+					'Content-Type': 'text/plain; charset=utf-8',
+				},
+			})
+		}
+		throw error
+	}
 	const format = url.searchParams.get('format')?.toLowerCase() ?? 'vcf'
 
 	if (format === 'svg') {
 		try {
-			const vcard = buildVCard(fields, { includePhoto: false })
+			const vcard = buildVCard(fields, { includePhoto: false, representation: 'qr' })
 			const svg = buildVCardQrSvg(vcard)
 
 			return new Response(svg, {

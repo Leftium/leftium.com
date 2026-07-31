@@ -17,6 +17,9 @@ url = "https://example.com/about?a=1,b=2"
 street = "123 Example St; Suite 4"
 city = "Example City"
 country = "Example Country"
+
+[private.custom]
+bank = { value = "Bank account: Example Bank 123", label = "Bank account", vcard_property = "NOTE", qr_as_address = true }
 	`,
 	{
 		resolvePhoto: () => ({
@@ -44,10 +47,22 @@ describe('buildVCard', () => {
 
 	it('omits photo structurally for QR data', () => {
 		const fields = selectContactFields(profile, { mode: 'public' })
-		const vcard = buildVCard(fields, { includePhoto: false })
+		const vcard = buildVCard(fields, { includePhoto: false, representation: 'qr' })
 
 		expect(vcard).not.toContain('PHOTO')
 		expect(buildVCardQrSvg(vcard)).toContain('<svg')
+	})
+
+	it('keeps a standard bank note in downloads and uses an address in QR vCards', () => {
+		const fields = selectContactFields(profile, { mode: 'admin' }, ['private.custom.bank'])
+		const downloadedVcard = buildVCard(fields)
+		const qrVcard = buildVCard(fields, { includePhoto: false, representation: 'qr' })
+
+		expect(downloadedVcard).toContain('NOTE:Bank account: Example Bank 123\r\n')
+		expect(downloadedVcard).not.toContain('ADR;TYPE=OTHER')
+		expect(qrVcard).toContain('ADR;TYPE=OTHER:;;Bank account: Example Bank 123;;;;\r\n')
+		expect(qrVcard).not.toContain('NOTE:Bank account')
+		expect(buildVCardQrSvg(qrVcard)).toContain('<svg')
 	})
 })
 

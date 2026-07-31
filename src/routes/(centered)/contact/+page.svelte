@@ -45,6 +45,10 @@
 			alt={`QR code containing ${data.contact.displayName}'s public contact details`}
 		/>
 	</section>
+
+	<footer>
+		<a class="admin-link" href={resolve('/contact/admin')}>Admin</a>
+	</footer>
 </main>
 
 <style>
@@ -90,10 +94,17 @@
 	.button {
 		display: inline-block;
 		padding: var(--size-2) var(--size-4);
+		border: 1px solid var(--blue-9);
 		border-radius: var(--radius-2);
-		background: var(--link);
-		color: var(--gray-0);
+		background: var(--blue-8);
+		color: white;
+		font-weight: var(--font-weight-6);
 		text-decoration: none;
+		box-shadow: var(--shadow-2);
+	}
+
+	.button:hover {
+		background: var(--blue-9);
 	}
 
 	img {
@@ -101,5 +112,14 @@
 		width: min(100%, 24rem);
 		height: auto;
 		margin: var(--size-3) auto 0;
+	}
+
+	footer {
+		margin-top: var(--size-8);
+	}
+
+	.admin-link {
+		color: var(--gray-6);
+		font-size: var(--font-size-0);
 	}
 </style>

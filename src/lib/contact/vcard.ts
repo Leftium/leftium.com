@@ -1,9 +1,10 @@
-import qrcode from 'qrcode-generator'
+import { buildQrSvg } from '$lib/qr'
 
 import type { ContactAddress, ContactField, ContactPhoto } from './types'
 
 export type BuildVCardOptions = {
 	includePhoto?: boolean
+	representation?: 'download' | 'qr'
 }
 
 export class ContactQrError extends Error {
@@ -15,7 +16,7 @@ export class ContactQrError extends Error {
 
 export function buildVCard(
 	fields: ContactField[],
-	{ includePhoto = true }: BuildVCardOptions = {},
+	{ includePhoto = true, representation = 'download' }: BuildVCardOptions = {},
 ): string {
 	const name = fields.find((field) => field.kind === 'name')
 	if (!name || typeof name.value !== 'string') {
@@ -31,7 +32,7 @@ export function buildVCard(
 
 	for (const field of fields) {
 		if (field.kind === 'name' || (!includePhoto && field.kind === 'photo')) continue
-		lines.push(serializeField(field))
+		lines.push(serializeField(field, representation))
 	}
 
 	lines.push('END:VCARD')
@@ -40,10 +41,7 @@ export function buildVCard(
 
 export function buildVCardQrSvg(vcard: string): string {
 	try {
-		const qr = qrcode(0, 'L')
-		qr.addData(vcard)
-		qr.make()
-		return qr.createSvgTag({ cellSize: 4, margin: 0 })
+		return buildQrSvg(vcard)
 	} catch (error) {
 		throw new ContactQrError(
 			'The selected contact details are too large to fit in a QR code. Select fewer fields.',
@@ -63,7 +61,14 @@ export function contactFilename(displayName: string, suffix: string): string {
 	return `${slug}${suffix}`
 }
 
-function serializeField(field: ContactField): string {
+function serializeField(field: ContactField, representation: 'download' | 'qr'): string {
+	if (representation === 'qr' && field.qrAsAddress) {
+		if (typeof field.value !== 'string') {
+			throw new Error(`Field "${field.id}" has an unsupported QR address value`)
+		}
+		return `ADR;TYPE=OTHER:;;${escapeVCardText(field.value)};;;;`
+	}
+
 	const parameters = field.vcard.types?.length
 		? `;TYPE=${field.vcard.types.map(escapeParameter).join(',')}`
 		: ''

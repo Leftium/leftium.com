@@ -20,6 +20,11 @@ city = "Seoul"
 postal_code = "03045"
 country = "South Korea"
 
+# Some iPhone QR imports drop NOTE fields. This keeps the downloaded vCard note
+# while representing the same value as an "Other" address in QR vCards.
+[private.custom]
+bank = { value = "Bank account: Example Bank 123", label = "Bank account", vcard_property = "NOTE", qr_as_address = true }
+
 [sets]
 korea = ["phone.korea", "address.korea"]
 business = ["email.work", "phone.us"]

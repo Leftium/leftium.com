@@ -25,6 +25,42 @@ npm run dev
 npm run dev -- --open
 ```
 
+### Admin contact access
+
+Copy `src/routes/(centered)/contact/contact-info.server.example.toml` to
+`contact-info.server.toml` in the same directory, then replace the redacted values. The private
+file is ignored by Git and required for production builds; development falls back to the example.
+
+The admin controls live at `/contact/admin`. Generate an access key and a separate
+session-signing secret:
+
+**The login form accepts the generated `admin_...` access key. It does not accept the SHA-256
+digest or session secret stored in `.env`.**
+
+```sh
+node <<'NODE'
+const { createHash, randomBytes } = require('node:crypto')
+
+const accessKey = `admin_${randomBytes(24).toString('base64url')}`
+const accessKeyDigest = createHash('sha256').update(accessKey).digest('hex')
+const sessionSecret = randomBytes(32).toString('base64url')
+
+console.log('\n=== ADMIN ACCESS KEY: SAVE THIS AND ENTER IT IN THE LOGIN FORM ===\n')
+console.log(accessKey)
+console.log('\n=== COPY THESE VALUES TO .env ===\n')
+console.log(`CONTACT_ADMIN_KEY_SHA256=${accessKeyDigest}`)
+console.log(`CONTACT_ADMIN_SESSION_SECRET=${sessionSecret}`)
+console.log('CONTACT_ADMIN_SESSION_VERSION=1')
+console.log('\nRestart the development server after updating .env.\n')
+NODE
+```
+
+The access key is printed once. Store it in a password manager. Keep the session secret separate
+from the access key, and do not commit either value.
+
+Restart the development server after updating `.env`, then follow the small "Admin" link at the
+bottom of `/contact` or open `/contact/admin` directly.
+
 ## Building
 
 To create a production version of your app:

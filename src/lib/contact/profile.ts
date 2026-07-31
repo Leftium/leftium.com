@@ -121,7 +121,7 @@ export function selectContactFields(
 	const authorizedIds = new Set<string>()
 
 	for (const field of profile.fields) {
-		if (field.public || authorization.mode === 'owner') authorizedIds.add(field.id)
+		if (field.public || authorization.mode === 'admin') authorizedIds.add(field.id)
 	}
 
 	if (authorization.mode === 'visitor') {
@@ -224,8 +224,15 @@ function parseField(
 			: expectNonEmptyString(fieldSource.type, `${id}.type`).toUpperCase()
 	const inferredType = alias ? knownVCardTypes.get(alias.toLowerCase()) : undefined
 	const types = explicitType || inferredType ? [explicitType ?? inferredType!] : undefined
+	const qrAsAddress =
+		fieldSource.qr_as_address === undefined
+			? false
+			: expectBoolean(fieldSource.qr_as_address, `${id}.qr_as_address`)
 
 	if (kind === 'address') {
+		if (qrAsAddress) {
+			throw new ContactProfileError(`${id}.qr_as_address is only valid for custom fields`)
+		}
 		const address = parseAddress(fieldSource, id)
 		return {
 			id,
@@ -236,6 +243,10 @@ function parseField(
 			shareable,
 			vcard: { property: 'ADR', types },
 		}
+	}
+
+	if (qrAsAddress && kind !== 'custom') {
+		throw new ContactProfileError(`${id}.qr_as_address is only valid for custom fields`)
 	}
 
 	const value = expectNonEmptyString(fieldSource.value, `${id}.value`)
@@ -257,6 +268,7 @@ function parseField(
 		shareable,
 		link,
 		vcard: { property, types },
+		qrAsAddress: qrAsAddress || undefined,
 	}
 }
 
