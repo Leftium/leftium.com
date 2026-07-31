@@ -34,6 +34,7 @@
 
 	function applySelection(fieldIds: string[]) {
 		qrError = ''
+		grantCopyStatus = ''
 		selectedFieldIds = [...new Set(fieldIds.filter((id) => selectableIds.has(id)))]
 	}
 
@@ -83,6 +84,14 @@
 		return parameters.toString()
 	}
 
+	function sameFieldIds(left: string[] | undefined, right: string[]) {
+		return (
+			left !== undefined &&
+			left.length === right.length &&
+			left.every((fieldId, index) => fieldId === right[index])
+		)
+	}
+
 	async function showQrError(failedUrl: string) {
 		try {
 			const response = await fetch(failedUrl)
@@ -125,7 +134,10 @@
 					value={field.id}
 					bind:group={selectedFieldIds}
 					disabled={!field.shareable}
-					onchange={() => (qrError = '')}
+					onchange={() => {
+						qrError = ''
+						grantCopyStatus = ''
+					}}
 				/>
 				<span class:has-value={revealedFieldId === field.id} class="field-details">
 					<label class="field-name" for={`contact-field-${index}`}>
@@ -189,7 +201,7 @@
 
 	<section class="grant-sharing" aria-labelledby="grant-sharing-heading">
 		<h2 id="grant-sharing-heading">Share selected private details by link</h2>
-		<p>The link can be claimed for seven days and grants this browser access for 24 hours.</p>
+		<p>The link can be claimed for seven days and grants access until the link expires.</p>
 		<form method="POST" action="?/createGrantLink" use:enhance>
 			{#each selectedPrivateFieldIds as fieldId (fieldId)}
 				<input type="hidden" name="field" value={fieldId} />
@@ -199,7 +211,7 @@
 			>
 		</form>
 
-		{#if form?.action === 'createGrantLink' && 'grantLink' in form}
+		{#if form?.action === 'createGrantLink' && 'grantLink' in form && sameFieldIds(form.grantFieldIds, selectedPrivateFieldIds)}
 			<div class="generated-grant">
 				<label for="visitor-grant-link">Visitor link, claimable for {form.expiresInDays} days</label
 				>
@@ -218,6 +230,8 @@
 					<p class="copy-status" aria-live="polite">{grantCopyStatus}</p>
 				{/if}
 			</div>
+		{:else if form?.action === 'createGrantLink' && 'grantLink' in form}
+			<p class="form-error">The selection changed. Create a new visitor link.</p>
 		{:else if form?.action === 'createGrantLink' && 'unauthorized' in form}
 			<p class="form-error">Your admin session is no longer valid. Log in again.</p>
 		{:else if form?.action === 'createGrantLink' && 'unavailable' in form}

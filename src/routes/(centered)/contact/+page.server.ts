@@ -62,6 +62,7 @@ export const actions = {
 		const profile = loadContactProfile()
 		const formData = await request.formData()
 		const submittedToken = formData.get('token')
+		const now = new Date()
 		let config
 
 		try {
@@ -71,22 +72,25 @@ export const actions = {
 			return fail(503, { action: 'claimGrant', unavailable: true })
 		}
 
-		const grantedFieldIds = await verifyContactGrantToken(submittedToken, config, profile)
-		if (!grantedFieldIds) {
+		const grant = await verifyContactGrantToken(submittedToken, config, profile, now)
+		if (!grant) {
 			return fail(400, { action: 'claimGrant', invalid: true })
 		}
 
-		const currentAccess = await resolveVisitorAccess(cookies, profile)
-		const currentFieldIds =
-			currentAccess.authorization.mode === 'visitor'
-				? [...currentAccess.authorization.fieldIds]
-				: []
-		const sessionToken = await createVisitorSessionToken(
+		const currentAccess = await resolveVisitorAccess(cookies, profile, now)
+		const fieldExpirations = new Map(
+			currentAccess.fieldGrants.map(({ fieldId, expiresAt }) => [fieldId, expiresAt]),
+		)
+		for (const fieldId of grant.fieldIds) {
+			fieldExpirations.set(fieldId, Math.max(fieldExpirations.get(fieldId) ?? 0, grant.expiresAt))
+		}
+		const session = await createVisitorSessionToken(
 			config,
 			profile,
-			new Set([...currentFieldIds, ...grantedFieldIds]),
+			[...fieldExpirations].map(([fieldId, expiresAt]) => ({ fieldId, expiresAt })),
+			now,
 		)
-		setVisitorSessionCookie(cookies, sessionToken, config)
+		setVisitorSessionCookie(cookies, session.token, config, session.expiresAt, now)
 
 		return { action: 'claimGrant', granted: true }
 	},

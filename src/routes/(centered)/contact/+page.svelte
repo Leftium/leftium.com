@@ -23,10 +23,18 @@
 		const token = fragment.get('grant')
 		if (!token) return
 
-		replaceState(resolve('/contact'), page.state ?? {})
+		clearGrantFragment()
 		claimToken = token
 		await tick()
 		claimForm?.requestSubmit()
+	}
+
+	function clearGrantFragment() {
+		try {
+			replaceState(resolve('/contact'), page.state ?? {})
+		} catch {
+			// A fresh page can mount before SvelteKit's router is ready. A successful claim also clears it.
+		}
 	}
 </script>
 

@@ -30,7 +30,7 @@ In scope:
 - Arbitrary admin field selection.
 - Direct vCard QR and vCard download generation from the admin's selection.
 - Signed, seven-day visitor access links.
-- Signed, 24-hour visitor sessions.
+- Signed visitor sessions capped by each source grant's seven-day expiration.
 - Authorized text, link, vCard, and QR representations.
 - A `mailto:` request containing a plain-text bracket checklist of contact methods.
 - Admin-side parsing of a pasted request email into an editable suggested field selection.
@@ -56,8 +56,8 @@ Out of scope:
 - [`qr.ts`](../src/lib/qr.ts) encodes QR input as UTF-8 bytes so non-ASCII contact text survives scanning.
 - [`admin-auth.server.ts`](../src/lib/contact/admin-auth.server.ts) implements high-entropy access-key verification, one-year admin sessions, and 10-minute bootstrap tokens with distinct token claims.
 - Focused profile, vCard, QR, and admin-auth tests cover the implemented domain and token boundaries.
-- Signed seven-day visitor grants, fragment claiming, unioned 24-hour visitor sessions, and granted
-  page/vCard/QR representations are implemented. Request email and request import remain.
+- Signed seven-day visitor grants, resilient fragment claiming, grant-capped visitor sessions, and
+  granted page/vCard/QR representations are implemented. Request email and request import remain.
 - [`wrangler.toml`](../wrangler.toml) establishes Cloudflare Workers as an intended deployment target.
 
 ## Terminology
@@ -67,8 +67,8 @@ Out of scope:
 - **Contact field**: One independently renderable and shareable value, such as a personal email address, Korean mobile number, or mailing address.
 - **Required identity field**: A field, such as the display name, that is added when necessary to produce a useful or valid contact artifact.
 - **Set**: A named admin preset containing contact field IDs. A set initializes the admin's checkboxes but does not restrict later edits.
-- **Grant**: A signed bearer token authorizing a specific list of private contact field IDs until its claim deadline.
-- **Visitor session**: A signed cookie containing the field IDs granted to the current browser.
+- **Grant**: A signed bearer token authorizing a specific list of private contact field IDs until its expiration.
+- **Visitor session**: A signed cookie containing the field IDs granted to the current browser and each field's grant expiration.
 - **Direct artifact**: A vCard file or QR code generated for the admin's exact current selection. Its contact values are delivered directly and cannot expire after being scanned or saved.
 - **Request method**: A public, value-free label such as "Email", "Phone", or "Postal mail" included in the visitor's email checklist, with optional default field IDs used only to initialize the admin's selection.
 - **Request import**: Client-side parsing of a pasted request email. It recognizes checked method labels and suggests fields but never authorizes or sends anything by itself.
@@ -83,7 +83,7 @@ Out of scope:
 | Admin session lifetime   | Taste under constraints | One year                                                                     | This is a single-admin personal site, and avoiding frequent reauthentication is worth the lost-device risk.                                          |
 | Grant storage            | Design coherence        | Stateless signed token                                                       | Links can carry field IDs and expiration without carrying contact values or requiring a database.                                                    |
 | Grant claim lifetime     | Taste under constraints | Seven days                                                                   | Email recipients have time to open the link without making the bearer capability effectively permanent.                                              |
-| Visitor session lifetime | Taste under constraints | 24 hours after claim                                                         | A recipient can revisit and download the contact data without reopening the email link.                                                              |
+| Visitor session lifetime | Design coherence        | Until each source grant expires                                              | Claiming or reclaiming a link never extends its authority, while a recipient can revisit without reopening the link.                                 |
 | Authoring format         | Evidence                | Minimal server-only TOML shorthand parsed into the internal TypeScript model | The file should state contact facts once; IDs, labels, visibility, links, vCard properties, and request mappings are inferred from their TOML paths. |
 | Photo handling           | Design coherence        | Embed the configured photo in downloaded vCards and omit it from QR vCards   | This preserves the current full-card behavior without exceeding practical QR payload size.                                                           |
 | QR note compatibility    | Evidence                | Allow custom fields to opt into `ADR;TYPE=OTHER` only in QR vCards           | iPhone Camera drops `NOTE` values but imports an `OTHER` address. Downloads keep the configured property, including `NOTE`.                          |
@@ -285,7 +285,9 @@ admin direct artifact
 Additional rules:
 
 - A grant contains private field IDs selected by the admin. Public fields do not need to be included in its scope.
-- Claiming another valid grant unions its private field IDs with the current visitor session and starts a new 24-hour session for the combined scope.
+- Claiming another valid grant unions its private field IDs with the current visitor session. Each
+  field retains the latest expiration of a grant that explicitly authorized that field, so claiming
+  a newer grant does not renew unrelated older fields.
 - Invalid, expired, incorrectly signed, or incompatible tokens add no authorization. A previously
   valid visitor session remains effective; otherwise access is public-only.
 - Client-supplied field IDs never expand a visitor's authorized scope.
@@ -393,9 +395,9 @@ https://leftium.com/contact#grant=<signed-token>
 On mount, the contact page:
 
 1. Reads the fragment.
-2. Posts the token to the grant-claim action.
-3. Receives the visitor cookie after successful verification.
-4. Removes the fragment with `history.replaceState`.
+2. Removes the fragment with `history.replaceState` when the router is ready.
+3. Posts the token to the grant-claim action even if fragment cleanup races router initialization.
+4. Receives the visitor cookie after successful verification.
 5. Refreshes the page data.
 
 Do not use top-level `await` in the page module. Grant claiming belongs in `onMount` or another function.
@@ -408,10 +410,14 @@ The visitor cookie contains:
 
 - A visitor-only token type or audience.
 - Profile ID and version.
-- The granted private field IDs.
-- Issued-at and 24-hour expiration timestamps.
+- The granted private field IDs and each source grant's expiration.
+- An issued-at timestamp and a token expiration equal to the latest included field expiration.
 
-It uses the same cookie protections as the admin cookie, with a 24-hour `Max-Age`. It must not be accepted as an admin session even if the same underlying token library is used.
+It uses the same cookie protections as the admin cookie. Its `Max-Age` reaches only the latest
+included field expiration and cannot exceed seven days. Verification removes individually expired
+fields, and no claim or session refresh may move a field past the expiration of a grant that
+authorized it. The token must not be accepted as an admin session even if the same underlying token
+library is used.
 
 ## vCard and QR Output
 
@@ -627,7 +633,7 @@ Do not remove the old construction path until the new public vCard and QR behavi
 - [x] Add seven-day grant signing and strict verification.
 - [x] Claim fragment tokens through an `onMount`-initiated POST.
 - [x] Remove the fragment and refresh filtered page data after claim.
-- [x] Add the 24-hour visitor cookie and scope-union behavior.
+- [x] Add grant-capped visitor cookies with per-field scope-union behavior.
 - [x] Render granted text, links, vCard, and QR from the same effective field set.
 
 ### Phase 5: Request Email and Import
@@ -663,7 +669,7 @@ Do not remove the old construction path until the new public vCard and QR behavi
 - **Expired or invalid grant**: Remove or ignore the fragment, preserve any valid existing visitor
   session, and show a generic message.
 - **Old profile version**: Reject the grant or visitor cookie and retain public access.
-- **Multiple grants**: Union valid private scopes and issue a fresh 24-hour visitor cookie.
+- **Multiple grants**: Union valid private scopes while retaining each field's latest explicit grant expiration.
 - **Empty grant selection**: Do not create a link.
 - **Lost admin device**: Rotate the admin-session secret or session version to invalidate all admin cookies.
 - **Admin access-key rotation**: Change the stored digest. Rotate the session secret as well when existing sessions must be invalidated.
@@ -692,13 +698,13 @@ Do not remove the old construction path until the new public vCard and QR behavi
 - [x] QR payloads preserve UTF-8 contact text.
 - [x] The admin can produce a vCard and direct vCard QR containing exactly the checked fields plus required identity fields, subject to the QR photo exclusion.
 - [x] The admin can copy a signed link for the checked private fields.
-- [x] Opening a valid link grants only those fields and persists them for 24 hours.
+- [x] Opening a valid link grants only those fields until that link's expiration; reclaiming it does not extend access.
 - [x] Expired, modified, wrongly typed, or incompatible tokens do not reveal private data.
 - [x] Visitor text, link, vCard, and QR output agree on the effective authorized field set.
 - [ ] The request action opens an email draft containing every configured request-method label as a bracket-only checklist item.
 - [ ] Pasting an email with checked methods suggests the configured default fields, reports unmatched entries, sends no pasted content to the server, and leaves the admin in control of the final selection.
 - [x] No database or email provider is required.
-- [ ] Key setup, rotation, and recovery behavior are documented.
+- [x] Key setup, rotation, and recovery behavior are documented.
 
 ## Deferred Work
 

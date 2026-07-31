@@ -7,7 +7,6 @@ import { parseContactProfileToml } from './profile'
 import {
 	clearVisitorSessionCookie,
 	CONTACT_GRANT_LIFETIME_DAYS,
-	CONTACT_VISITOR_LIFETIME_HOURS,
 	createContactGrantToken,
 	createVisitorSessionToken,
 	parseVisitorAuthConfig,
@@ -64,15 +63,12 @@ describe('contact grant tokens', () => {
 	it('signs only private shareable fields for seven days', async () => {
 		const config = createConfig()
 		const fieldIds = ['private.phone.mobile', 'private.email.personal']
-		const token = await createContactGrantToken(config, profile, fieldIds, now)
+		const grant = await createContactGrantToken(config, profile, fieldIds, now)
 
-		expect(await verifyContactGrantToken(token, config, profile, now)).toEqual([
-			'private.email.personal',
-			'private.phone.mobile',
-		])
+		expect(await verifyContactGrantToken(grant.token, config, profile, now)).toEqual(grant)
 		expect(
 			await verifyContactGrantToken(
-				token,
+				grant.token,
 				config,
 				profile,
 				new Date(now.getTime() + CONTACT_GRANT_LIFETIME_DAYS * 24 * 60 * 60 * 1000),
@@ -102,7 +98,7 @@ describe('contact grant tokens', () => {
 		const visitor = await createVisitorSessionToken(
 			config,
 			profile,
-			['private.email.personal'],
+			[{ fieldId: 'private.email.personal', expiresAt: grant.expiresAt }],
 			now,
 		)
 		const admin = await createAdminSessionToken(
@@ -116,11 +112,11 @@ describe('contact grant tokens', () => {
 		)
 		const changedProfile = { ...profile, version: profile.version + 1 }
 
-		expect(await verifyContactGrantToken(`${grant}x`, config, profile, now)).toBeNull()
-		expect(await verifyContactGrantToken(grant, config, changedProfile, now)).toBeNull()
-		expect(await verifyContactGrantToken(visitor, config, profile, now)).toBeNull()
+		expect(await verifyContactGrantToken(`${grant.token}x`, config, profile, now)).toBeNull()
+		expect(await verifyContactGrantToken(grant.token, config, changedProfile, now)).toBeNull()
+		expect(await verifyContactGrantToken(visitor.token, config, profile, now)).toBeNull()
 		expect(await verifyContactGrantToken(admin, config, profile, now)).toBeNull()
-		expect(await verifyVisitorSessionToken(grant, config, profile, now)).toBeNull()
+		expect(await verifyVisitorSessionToken(grant.token, config, profile, now)).toBeNull()
 		expect(await verifyVisitorSessionToken(admin, config, profile, now)).toBeNull()
 	})
 
@@ -145,34 +141,88 @@ describe('contact grant tokens', () => {
 })
 
 describe('visitor session tokens', () => {
-	it('lasts 24 hours and cannot be used as a grant', async () => {
+	it('never extends access beyond the original grant expiration', async () => {
 		const config = createConfig()
-		const token = await createVisitorSessionToken(config, profile, ['private.email.personal'], now)
+		const grant = await createContactGrantToken(config, profile, ['private.email.personal'], now)
+		const lateClaim = new Date(now.getTime() + 6 * 24 * 60 * 60 * 1000)
+		const verifiedGrant = await verifyContactGrantToken(grant.token, config, profile, lateClaim)
 
-		expect(await verifyVisitorSessionToken(token, config, profile, now)).toEqual([
-			'private.email.personal',
-		])
-		expect(await verifyContactGrantToken(token, config, profile, now)).toBeNull()
+		expect(verifiedGrant).not.toBeNull()
+		const session = await createVisitorSessionToken(
+			config,
+			profile,
+			verifiedGrant!.fieldIds.map((fieldId) => ({
+				fieldId,
+				expiresAt: verifiedGrant!.expiresAt,
+			})),
+			lateClaim,
+		)
+
+		expect(session.expiresAt).toBe(grant.expiresAt)
 		expect(
 			await verifyVisitorSessionToken(
-				token,
+				session.token,
 				config,
 				profile,
-				new Date(now.getTime() + CONTACT_VISITOR_LIFETIME_HOURS * 60 * 60 * 1000),
+				new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000),
+			),
+		).toBeNull()
+	})
+
+	it('keeps each field authorized only until its grant expires', async () => {
+		const config = createConfig()
+		const nowSeconds = Math.floor(now.getTime() / 1000)
+		const session = await createVisitorSessionToken(
+			config,
+			profile,
+			[
+				{ fieldId: 'private.email.personal', expiresAt: nowSeconds + 24 * 60 * 60 },
+				{ fieldId: 'private.phone.mobile', expiresAt: nowSeconds + 7 * 24 * 60 * 60 },
+			],
+			now,
+		)
+
+		expect(await verifyVisitorSessionToken(session.token, config, profile, now)).toEqual(session)
+		expect(await verifyContactGrantToken(session.token, config, profile, now)).toBeNull()
+		expect(
+			await verifyVisitorSessionToken(
+				session.token,
+				config,
+				profile,
+				new Date(now.getTime() + 2 * 24 * 60 * 60 * 1000),
+			),
+		).toEqual({
+			token: session.token,
+			fieldGrants: [{ fieldId: 'private.phone.mobile', expiresAt: nowSeconds + 7 * 24 * 60 * 60 }],
+			expiresAt: session.expiresAt,
+		})
+		expect(
+			await verifyVisitorSessionToken(
+				session.token,
+				config,
+				profile,
+				new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000),
 			),
 		).toBeNull()
 	})
 
 	it.each([true, false])(
-		'sets and clears a protected 24-hour cookie with secure=%s',
+		'sets and clears a protected grant-capped cookie with secure=%s',
 		(secureCookies) => {
 			const calls: unknown[][] = []
+			const expiresAt = Math.floor(now.getTime() / 1000) + 6 * 60 * 60
 			const cookies = {
 				set: (...arguments_: unknown[]) => calls.push(['set', ...arguments_]),
 				delete: (...arguments_: unknown[]) => calls.push(['delete', ...arguments_]),
 			} as unknown as Cookies
 
-			setVisitorSessionCookie(cookies, 'signed-token', { ...createConfig(), secureCookies })
+			setVisitorSessionCookie(
+				cookies,
+				'signed-token',
+				{ ...createConfig(), secureCookies },
+				expiresAt,
+				now,
+			)
 			clearVisitorSessionCookie(cookies, secureCookies)
 
 			expect(calls).toEqual([
@@ -185,7 +235,7 @@ describe('visitor session tokens', () => {
 						secure: secureCookies,
 						sameSite: 'lax',
 						path: '/',
-						maxAge: 24 * 60 * 60,
+						maxAge: 6 * 60 * 60,
 					},
 				],
 				['delete', 'contact_visitor', { path: '/', secure: secureCookies }],

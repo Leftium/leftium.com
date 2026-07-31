@@ -133,20 +133,21 @@ export const actions = {
 			return fail(503, { action: 'createGrantLink', unavailable: true })
 		}
 
-		let token
+		let grant
 		try {
-			token = await createContactGrantToken(config, profile, fieldIds)
+			grant = await createContactGrantToken(config, profile, fieldIds)
 		} catch (error) {
 			if (!(error instanceof TypeError)) throw error
 			return fail(400, { action: 'createGrantLink', invalidSelection: true })
 		}
 
 		const grantUrl = new URL(resolve('/contact'), url.origin)
-		grantUrl.hash = new URLSearchParams({ grant: token }).toString()
+		grantUrl.hash = new URLSearchParams({ grant: grant.token }).toString()
 
 		return {
 			action: 'createGrantLink',
 			grantLink: grantUrl.toString(),
+			grantFieldIds: grant.fieldIds,
 			expiresInDays: CONTACT_GRANT_LIFETIME_DAYS,
 		}
 	},
