@@ -1,95 +1,105 @@
-<script>
+<script lang="ts">
 	import 'open-props/style'
 
-	import { makeTagFunctionMd } from '$lib/tag-functions/markdown.js'
-	import attr from 'markdown-it-attrs'
-	import centerText from 'markdown-it-center-text'
-	import deflist from 'markdown-it-deflist'
+	import { resolve } from '$app/paths'
 
-	const md = makeTagFunctionMd({ html: true, linkify: true, typographer: true, breaks: true }, [
-		[attr],
-		[deflist],
-		[centerText],
-	])
+	import type { PageProps } from './$types'
+
+	let { data }: PageProps = $props()
 </script>
 
-<!-- eslint-disable svelte/no-at-html-tags -- developer-authored markdown, not user input -->
-<scope-css>
-	{@html md`
-		# ->How to contact John<-
+<svelte:head>
+	<title>Contact {data.contact.displayName}</title>
+</svelte:head>
 
-		Email
-		~ john@leftium.com
+<main class="contact">
+	<h1>How to contact {data.contact.displayName.split(' ')[0]}</h1>
 
-		Phone
-		~ Upon request...
+	<dl>
+		{#each data.contact.fields as field (field.id)}
+			<dt>{field.label}</dt>
+			<dd>
+				{#if field.href}
+					<a href={field.href} rel="external">{field.value}</a>
+				{:else}
+					{field.value}
+				{/if}
+			</dd>
+		{/each}
+	</dl>
 
-		Mail
-		~ Upon request...
+	{#if data.contact.requestMethods.length > 0}
+		<p class="request-note">
+			More contact details are available upon request:
+			{data.contact.requestMethods.map(({ label }) => label).join(', ')}.
+		</p>
+	{/if}
 
-		## ->If viewing on your phone:<-
+	<section aria-labelledby="contact-card-heading">
+		<h2 id="contact-card-heading">Digital business card</h2>
+		<a class="button" href={resolve('/api/vcard')} data-sveltekit-reload download>Download vCard</a>
 
-		->[Load digital business card (vCard)](/api/vcard){role=button download}<-
-
-		## -></scope-css>Or scan this QR code:<-
-
-		->![](/api/vcard?format=svg)<-
-	`}
-</scope-css>
+		<h2>Or scan this QR code</h2>
+		<img
+			src={resolve('/api/vcard?format=svg')}
+			alt={`QR code containing ${data.contact.displayName}'s public contact details`}
+		/>
+	</section>
+</main>
 
 <style>
-	scope-css {
-		display: block;
+	.contact {
 		max-width: var(--size-content-2);
 		margin: auto;
+		text-align: center;
+	}
 
-		:global {
-			.full {
-				width: 100%;
-			}
+	dl {
+		display: grid;
+		grid-template-columns: max-content 1fr;
+		width: fit-content;
+		max-width: 100%;
+		margin: var(--size-5) auto;
+		padding: 0 var(--size-3);
+		text-align: left;
+	}
 
-			.text-align-center {
-				text-align: center;
-			}
+	dt,
+	dd {
+		margin: 0;
+		padding: var(--size-2) 0;
+		border-top: 1px solid #dcdcdc;
+	}
 
-			/* Render definition lists as simple table: */
-			dl {
-				display: grid;
-				grid-template-columns: max-content 1fr;
-				max-width: 100%;
-				width: fit-content;
-				margin-block: var(--size-2);
-				margin-inline: auto;
-				padding: 0;
-				padding-inline: var(--size-3);
+	dt:first-of-type,
+	dt:first-of-type + dd {
+		border-top: none;
+	}
 
-				dt,
-				dd {
-					margin: 0;
-					padding: var(--size-2) 0;
-				}
+	dt {
+		padding-right: var(--size-3);
+		font-weight: var(--font-weight-7);
+		text-align: right;
+	}
 
-				dt {
-					font-weight: var(--font-weight-7);
-					text-align: right;
-					align-self: start;
-					padding-right: var(--size-3);
-				}
+	.request-note {
+		max-width: var(--size-content-1);
+		margin-inline: auto;
+	}
 
-				dt:first-of-type,
-				dt:first-of-type + dd {
-					border-top: none;
-				}
+	.button {
+		display: inline-block;
+		padding: var(--size-2) var(--size-4);
+		border-radius: var(--radius-2);
+		background: var(--link);
+		color: var(--gray-0);
+		text-decoration: none;
+	}
 
-				dd {
-					grid-column: 2;
-				}
-
-				dt,
-				dt + dd {
-					border-top: 1px solid #dcdcdc;
-				}
-			}
-		}
+	img {
+		display: block;
+		width: min(100%, 24rem);
+		height: auto;
+		margin: var(--size-3) auto 0;
 	}
 </style>

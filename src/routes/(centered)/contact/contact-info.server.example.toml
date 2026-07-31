@@ -1,32 +1,25 @@
+[profile]
+name = "Example Person"
+photo = "../../../../static/icon-192.png"
 
-vcard = '''
-N:홍;길동;
-N:Doe;John;Q.
+[public]
+email = "hello@example.com"
+url = "https://example.com"
 
-TEL:+1 212 555 6789
-TEL;TYPE=CELL;:+82 10 5555 6789
-TEL;TYPE=custom type;:+1 212 555 6789
+[private.email]
+personal = "person@example.net"
+work = "person@work.example"
 
-EMAIL:john@example.com
-EMAIL;TYPE=HOME;:john@example.net
-EMAIL;TYPE=custom;:john@example.org
+[private.phone]
+korea = "+82 10 5555 6789"
+us = { value = "+1 212 555 6789", label = "US mobile", type = "cell" }
 
-URL:example.com
-URL;TYPE=web:leftium.com
-URL;TYPE=Facebook:facebook.com/zuck
+[private.address.korea]
+street = "161 Sajik-ro, Jongno-gu"
+city = "Seoul"
+postal_code = "03045"
+country = "South Korea"
 
-ADR:;;1600 Pennsylvania Avenue NW;Washington;D.C.;20500;USA
-ADR;TYPE=WORK;:;;161 Sajik-ro, Jongno-gu;Seoul;;03045;South Korea
-ADR;TYPE=custom;:;;서울특별시 종로구 사직로 161;서울특별시;;03045;대한민국
-'''
-
-[sets.public]
-tags = ['N:Doe;John;Q.', 'EMAIL:john@example.com']
-
-[sets.us_public]
-tags = ['N:Doe;John;Q.', 'EMAIL:john@example.com']
-secret = ''
-
-[sets.kr_public]
-tags = ['N:Doe;John;Q.', 'EMAIL:john@example.com']
-secret = ''
+[sets]
+korea = ["phone.korea", "address.korea"]
+business = ["email.work", "phone.us"]

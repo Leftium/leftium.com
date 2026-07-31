@@ -13,7 +13,8 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "eslint . && prettier --check .",
 		"format": "prettier --write .",
-		"knip": "knip"
+		"knip": "knip",
+		"test": "vitest run"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^2.1.0",
@@ -48,7 +49,11 @@
 		"typescript-eslint": "^8.65.0",
 		"vite": "^8.1.5",
 		"vite-plugin-devtools-json": "^1.1.0",
+		"vitest": "^4.1.10",
 		"web-sentinel": "^0.1.5"
 	},
-	"packageManager": "pnpm@11.3.0"
+	"packageManager": "pnpm@11.3.0",
+	"dependencies": {
+		"smol-toml": "^1.7.1"
+	}
 }
