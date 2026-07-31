@@ -17,12 +17,13 @@
 	let loginLinkInput = $state<HTMLInputElement>()
 
 	onMount(() => {
-		void claimBootstrapLink()
+		const timeout = window.setTimeout(() => void claimBootstrapLink())
+		return () => window.clearTimeout(timeout)
 	})
 
 	async function claimBootstrapLink() {
 		if (location.hash === '#signed-in') {
-			replaceState(resolve('/contact/admin'), page.state)
+			clearBootstrapFragment()
 			return
 		}
 
@@ -30,10 +31,18 @@
 		const token = fragment.get('login')
 		if (!token) return
 
-		replaceState(resolve('/contact/admin'), page.state)
+		clearBootstrapFragment()
 		claimToken = token
 		await tick()
 		claimForm?.requestSubmit()
+	}
+
+	function clearBootstrapFragment() {
+		try {
+			replaceState(resolve('/contact/admin'), page.state ?? {})
+		} catch {
+			// A fresh page can mount before SvelteKit's router is ready. The claim redirect also clears it.
+		}
 	}
 
 	async function copyLoginLink(loginLink: string | undefined) {
