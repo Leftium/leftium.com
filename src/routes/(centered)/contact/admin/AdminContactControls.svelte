@@ -7,6 +7,7 @@
 	import type { ActionData, PageData } from './$types'
 
 	let { contact, form }: { contact: PageData['contact']; form: ActionData | null } = $props()
+	type QrTarget = { kind: 'selection' } | { kind: 'field'; label: string; url: string }
 
 	const selectableIds = $derived(new Set(contact.allFieldIds))
 	const privateFieldIds = $derived(
@@ -19,6 +20,8 @@
 	let revealedFieldId = $state<string | null>(null)
 	let copyResult = $state<{ fieldId: string; status: 'copied' | 'failed' } | null>(null)
 	let grantCopyStatus = $state('')
+	let qrDialog = $state<HTMLDialogElement>()
+	let qrTarget = $state<QrTarget | null>(null)
 	let grantDialog = $state<HTMLDialogElement>()
 	let grantLinkInput = $state<HTMLInputElement>()
 
@@ -49,6 +52,20 @@
 	const vcardQuery = $derived(buildArtifactQuery())
 	const qrQuery = $derived(buildArtifactQuery('svg'))
 	const qrUrl = $derived(resolve(`/api/vcard?${qrQuery}`))
+	const activeQrUrl = $derived(qrTarget?.kind === 'field' ? qrTarget.url : qrUrl)
+	const activeQrHeading = $derived(
+		qrTarget?.kind === 'field' ? `${qrTarget.label} QR code` : 'Selected contact QR code',
+	)
+	const activeQrAlt = $derived(
+		qrTarget?.kind === 'field'
+			? `QR code for ${qrTarget.label}`
+			: `QR code containing the selected contact details for ${contact.displayName}`,
+	)
+	const activeQrDescription = $derived(
+		qrTarget?.kind === 'field'
+			? `Scan to use ${qrTarget.label}.`
+			: `Scan to add the selected contact details for ${contact.displayName}.`,
+	)
 
 	function applySelection(fieldIds: string[]) {
 		qrError = ''
@@ -95,12 +112,13 @@
 		applySelection(set.fieldIds)
 	}
 
-	function openQrDialog(event: MouseEvent) {
-		const dialog = document.querySelector<HTMLDialogElement>('#admin-contact-qr-dialog')
-		if (!dialog || typeof dialog.showModal !== 'function') return
+	function openQrDialog(event: MouseEvent, target: QrTarget) {
+		if (!qrDialog || typeof qrDialog.showModal !== 'function') return
 
 		event.preventDefault()
-		if (!dialog.open) dialog.showModal()
+		qrError = ''
+		qrTarget = target
+		if (!qrDialog.open) qrDialog.showModal()
 	}
 
 	function closeDialogOnBackdrop(event: MouseEvent) {
@@ -165,6 +183,11 @@
 		return parameters.toString()
 	}
 
+	function buildFieldQrUrl(fieldId: string) {
+		const parameters = new SvelteURLSearchParams({ field: fieldId })
+		return resolve(`/api/contact-qr?${parameters}`)
+	}
+
 	function sameFieldIds(left: string[] | undefined, right: string[]) {
 		if (left === undefined || left.length !== right.length) return false
 
@@ -176,15 +199,20 @@
 	async function showQrError(failedUrl: string) {
 		try {
 			const response = await fetch(failedUrl)
-			if (failedUrl !== qrUrl) return
+			if (failedUrl !== activeQrUrl) return
 
 			qrError =
 				response.status === 422
 					? await response.text()
-					: 'The QR code could not be generated. Try selecting fewer fields.'
+					: qrTarget?.kind === 'field'
+						? 'The QR code could not be generated. Try again.'
+						: 'The QR code could not be generated. Try selecting fewer fields.'
 		} catch {
-			if (failedUrl === qrUrl) {
-				qrError = 'The QR code could not be generated. Try selecting fewer fields.'
+			if (failedUrl === activeQrUrl) {
+				qrError =
+					qrTarget?.kind === 'field'
+						? 'The QR code could not be generated. Try again.'
+						: 'The QR code could not be generated. Try selecting fewer fields.'
 			}
 		}
 	}
@@ -237,7 +265,7 @@
 				<span class="field-actions">
 					<button
 						type="button"
-						class="field-action value-toggle"
+						class="field-action"
 						aria-label={`${revealedFieldId === field.id ? 'Hide' : 'Show'} ${field.label} value`}
 						aria-pressed={revealedFieldId === field.id}
 						onclick={() => toggleFieldValue(field.id)}
@@ -261,6 +289,21 @@
 								: 'Retry'
 							: 'Copy'}
 					</button>
+					{#if field.qrEligible}
+						<a
+							class="field-action"
+							href={buildFieldQrUrl(field.id)}
+							rel="external"
+							data-sveltekit-reload
+							onclick={(event) =>
+								openQrDialog(event, {
+									kind: 'field',
+									label: field.label,
+									url: event.currentTarget.href,
+								})}
+							aria-label={`Show ${field.label} QR code`}>QR</a
+						>
+					{/if}
 				</span>
 			</div>
 		{/each}
@@ -271,8 +314,12 @@
 			<a class="button" href={resolve(`/api/vcard?${vcardQuery}`)} data-sveltekit-reload download
 				>Download selected vCard</a
 			>
-			<a class="button" href={qrUrl} rel="external" data-sveltekit-reload onclick={openQrDialog}
-				>QR code</a
+			<a
+				class="button"
+				href={qrUrl}
+				rel="external"
+				data-sveltekit-reload
+				onclick={(event) => openQrDialog(event, { kind: 'selection' })}>QR code</a
 			>
 		{:else}
 			<p>Select at least one contact field to create a vCard or QR code.</p>
@@ -297,19 +344,22 @@
 	<dialog
 		id="admin-contact-qr-dialog"
 		aria-labelledby="admin-contact-qr-heading"
+		bind:this={qrDialog}
 		onclick={closeDialogOnBackdrop}
+		onclose={() => (qrTarget = null)}
 	>
-		<h2 id="admin-contact-qr-heading">Selected contact QR code</h2>
-		{#if hasSelection}
+		<h2 id="admin-contact-qr-heading">{activeQrHeading}</h2>
+		{#if qrTarget && (qrTarget.kind === 'field' || hasSelection)}
 			<img
 				class:failed={qrError}
-				src={qrUrl}
-				alt={`QR code containing the selected contact details for ${contact.displayName}`}
-				onerror={(event) => void showQrError(event.currentTarget.getAttribute('src') ?? qrUrl)}
+				src={activeQrUrl}
+				alt={activeQrAlt}
+				onerror={(event) =>
+					void showQrError(event.currentTarget.getAttribute('src') ?? activeQrUrl)}
 			/>
 			{#if qrError}<p class="qr-error" aria-live="polite">{qrError}</p>{/if}
 		{/if}
-		<p>Scan to add the selected contact details for {contact.displayName}.</p>
+		<p>{activeQrDescription}</p>
 		<form method="dialog">
 			<button class="button" type="submit">Close</button>
 		</form>
@@ -473,18 +523,37 @@
 	}
 
 	.field-action {
+		box-sizing: border-box;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		inline-size: 4rem;
+		min-block-size: 1.75rem;
 		padding: 0 var(--size-2);
+		border: 1px solid var(--gray-5);
+		border-radius: var(--radius-2);
+		background: var(--gray-0);
+		color: inherit;
+		font: inherit;
 		font-size: var(--font-size-0);
-	}
-
-	.value-toggle {
-		inline-size: 3.5rem;
+		line-height: 1.25;
+		text-decoration: none;
+		cursor: pointer;
 	}
 
 	@media (max-width: 30rem) {
+		.field-row {
+			grid-template-columns: auto minmax(0, 1fr);
+		}
+
 		.field-details.has-value {
 			grid-template-columns: minmax(0, 1fr);
 			gap: 0;
+		}
+
+		.field-actions {
+			grid-column: 2;
+			justify-content: flex-start;
 		}
 	}
 

@@ -15,6 +15,7 @@ import {
 	formatContactFieldValue,
 	selectContactFields,
 } from '$lib/contact/profile'
+import { isContactFieldQrEligible } from '$lib/contact/field-qr'
 import {
 	CONTACT_GRANT_LIFETIME_DAYS,
 	createContactGrantToken,
@@ -45,6 +46,7 @@ export const load: PageServerLoad = async ({ cookies, setHeaders }) => {
 							: formatContactFieldValue(field),
 					public: field.public,
 					shareable: field.shareable,
+					qrEligible: isContactFieldQrEligible(field),
 				}))
 		: []
 

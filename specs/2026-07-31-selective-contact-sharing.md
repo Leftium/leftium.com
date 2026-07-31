@@ -51,7 +51,7 @@ Out of scope:
 - [`+page.svelte`](<../src/routes/(centered)/contact/+page.svelte>) keeps vCard and QR actions directly below the page title, opens QR output in a labeled dismissible native dialog with a direct-link fallback, groups unavailable field labels in a centered responsive layout of up to four columns, offers email and copy request-template actions without another section heading, and keeps a small link to `/contact/admin`.
 - [`contact-info.server.example.toml`](<../src/routes/(centered)/contact/contact-info.server.example.toml>) documents concise public and private fields, the bank preset, named sets, and the optional `qr_as_address` compatibility override. Local development can load an ignored private TOML file; deployments load the same TOML text from the `CONTACT_INFO_TOML` runtime secret.
 - [`/contact/admin`](<../src/routes/(centered)/contact/admin/+page.svelte>) provides access-key login, bottom-aligned mobile-login and logout actions, a modal 10-minute mobile-login result, and the full-width field-selection interface. The public-page link is centered below the session actions.
-- [`AdminContactControls.svelte`](<../src/routes/(centered)/contact/admin/AdminContactControls.svelte>) keeps selected vCard, QR, and visitor-link actions together below the field list, enhances QR and visitor-link results into labeled native dialogs, and provides dense field rows, wrapping labels, named presets, and arbitrary checkbox edits. Field values are hidden by default, with per-field reveal and copy actions; revealing one field hides the previous value. `All` toggles every shareable field, `Public` toggles public fields without disturbing private selections, and `Korea` and `US` toggle only their corresponding private regional fields. The sharing actions sit above the separator from the bottom session actions, and oversized QR selections show an actionable error without disabling vCard download.
+- [`AdminContactControls.svelte`](<../src/routes/(centered)/contact/admin/AdminContactControls.svelte>) keeps selected vCard, QR, and visitor-link actions together below the field list, enhances QR and visitor-link results into labeled native dialogs, and provides dense field rows, wrapping labels, named presets, and arbitrary checkbox edits. Field values are hidden by default, with per-field reveal, copy, and native QR actions; revealing one field hides the previous value. `All` toggles every shareable field, `Public` toggles public fields without disturbing private selections, and `Korea` and `US` toggle only their corresponding private regional fields. The sharing actions sit above the separator from the bottom session actions, and oversized QR selections show an actionable error without disabling vCard download.
 - [`/api/vcard`](../src/routes/api/vcard/+server.ts) uses public authorization by default, accepts explicit field selections only from an authenticated admin, and serializes download and QR representations separately.
 - [`qr.ts`](../src/lib/qr.ts) encodes QR input as UTF-8 bytes so non-ASCII contact text survives scanning.
 - [`admin-auth.server.ts`](../src/lib/contact/admin-auth.server.ts) implements high-entropy access-key verification, one-year admin sessions, and 10-minute bootstrap tokens with distinct token claims.
@@ -91,6 +91,7 @@ Out of scope:
 | Public website display    | Taste under constraints | Keep URL fields in contact artifacts but omit them from `/contact` UI        | Repeating the current website on its own contact route adds noise without helping the visitor.                                                       |
 | Visitor QR presentation   | Design coherence        | Top-level QR link enhanced into a labeled native dialog                      | The common action stays near vCard download; without JavaScript or dialog support, the same link opens the existing SVG endpoint directly.           |
 | Admin QR presentation     | Design coherence        | Place selected artifact actions after selection and enhance QR into a dialog | The interface follows selection order while the direct filtered SVG endpoint remains the no-JavaScript fallback.                                     |
+| Per-field QR payloads     | Design coherence        | Encode native actions independently of the selected vCard                    | Email, phone, URL, maps-search, and labeled-text payloads perform the field's direct action without changing the current selection.                  |
 | Visitor-link presentation | Design coherence        | Put creation beside vCard and QR, then show results in a native dialog       | Selection-dependent sharing actions stay together while explanation, copy controls, and errors appear only when relevant.                            |
 | Mobile-login presentation | Design coherence        | Generate from the bottom action row and show the result in a native dialog   | Expiration and security context stay with the generated link and QR without adding a permanent page section.                                         |
 | Visitor request UI        | Design coherence        | Email and body-only copy actions for one plain-text bracket checklist        | The same template works in email, chat, or another channel; the admin chooses the actual fields to grant.                                            |
@@ -483,6 +484,12 @@ The vCard generator must:
 
 The admin QR encodes the selected contact values directly. Scanning it does not create a visitor session and cannot be revoked or expired after the values have been delivered.
 
+Each eligible admin field also links to an authenticated, single-field QR endpoint. These QRs are
+independent of the checkbox selection and encode native payloads: `mailto:` for email, `tel:` for
+phone, the configured URL directly, a Google Maps web search for an address, and labeled plain text
+for a custom field without a configured link. They do not include the required vCard identity field.
+Photo and identity-only fields do not offer this action. The selected multi-field QR remains a vCard.
+
 On the visitor page, `Download vCard` and `QR code` form one action row directly below the page
 title. The QR action is an ordinary link to `/api/vcard?format=svg`. When JavaScript and
 `HTMLDialogElement.showModal()` are available, the page prevents that navigation and opens the same
@@ -599,6 +606,9 @@ The admin reviews the suggestion, chooses suitable fields, creates an access lin
 - Toggle the private Korea- or US-specific fields as groups without changing public or unrelated private selections.
 - Allow the admin to adjust any preset arbitrarily.
 - Use dense, full-width field rows; align checkboxes to the first line and allow long labels to wrap.
+- Give each eligible row a native QR action that does not alter its checkbox, reveal, or copy state.
+- Reuse one labeled QR dialog for selected vCards and individual fields, retaining each endpoint link as the no-JavaScript fallback.
+- Keep row action widths stable when copy status changes.
 - Offer a plain-text request textarea that can apply checked methods as a suggested selection.
 - Show which request methods matched, which checked lines did not match, and keep the resulting field selection editable.
 - Offer:
@@ -753,6 +763,7 @@ Do not remove the old construction path until the new public vCard and QR behavi
 - [x] A configured custom `NOTE` remains a note in downloads and can be represented as an `OTHER` address only in QR vCards.
 - [x] QR payloads preserve UTF-8 contact text.
 - [x] The admin can produce a vCard and direct vCard QR containing exactly the checked fields plus required identity fields, subject to the QR photo exclusion.
+- [x] The admin can open a native QR for one eligible field without changing the current selection or exposing any unrelated private field.
 - [x] The admin sees selected vCard and QR actions after the field list, with a labeled, backdrop-dismissible QR dialog and direct-link fallback.
 - [x] The admin creates visitor links from the same action row and sees the explanation, generated link, copy control, or action error in a dismissible dialog.
 - [x] The admin can toggle all public fields without changing selected private fields, or toggle every shareable field from the first preset control.
