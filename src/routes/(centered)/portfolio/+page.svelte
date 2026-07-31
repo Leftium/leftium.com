@@ -17,7 +17,9 @@
 			}
 
 			const target = document.getElementById(targetId)
-			const disclosure = target?.closest('.project-disclosure')
+			if (!target) return
+
+			const disclosure = target.closest('.project-disclosure')
 
 			if (disclosure instanceof HTMLDetailsElement) {
 				disclosure.open = true
