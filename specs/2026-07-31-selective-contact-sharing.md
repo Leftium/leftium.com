@@ -51,7 +51,7 @@ Out of scope:
 - [`+page.svelte`](<../src/routes/(centered)/contact/+page.svelte>) keeps vCard and QR actions directly below the page title, opens QR output in a labeled dismissible native dialog with a direct-link fallback, groups unavailable field labels in a centered responsive layout of up to four columns, offers email and copy request-template actions without another section heading, and keeps a small link to `/contact/admin`.
 - [`contact-info.server.example.toml`](<../src/routes/(centered)/contact/contact-info.server.example.toml>) documents concise public and private fields, the bank preset, named sets, and the optional `qr_as_address` compatibility override. Local development can load an ignored private TOML file; deployments load the same TOML text from the `CONTACT_INFO_TOML` runtime secret.
 - [`/contact/admin`](<../src/routes/(centered)/contact/admin/+page.svelte>) provides access-key login, bottom-aligned mobile-login and logout actions, a modal 10-minute mobile-login result, and the full-width field-selection interface. The public-page link is centered below the session actions.
-- [`AdminContactControls.svelte`](<../src/routes/(centered)/contact/admin/AdminContactControls.svelte>) keeps selected vCard, QR, and visitor-link actions together below the field list, enhances QR and visitor-link results into labeled native dialogs, and provides dense field rows, wrapping labels, named presets, and arbitrary checkbox edits. Field values are hidden by default, with per-field reveal and copy actions; revealing one field hides the previous value. `All` toggles every shareable field, `Public` toggles public fields without disturbing private selections, and `Korea` toggles only its private Korea-specific fields. The sharing actions sit above the separator from the bottom session actions, and oversized QR selections show an actionable error without disabling vCard download.
+- [`AdminContactControls.svelte`](<../src/routes/(centered)/contact/admin/AdminContactControls.svelte>) keeps selected vCard, QR, and visitor-link actions together below the field list, enhances QR and visitor-link results into labeled native dialogs, and provides dense field rows, wrapping labels, named presets, and arbitrary checkbox edits. Field values are hidden by default, with per-field reveal and copy actions; revealing one field hides the previous value. `All` toggles every shareable field, `Public` toggles public fields without disturbing private selections, and `Korea` and `US` toggle only their corresponding private regional fields. The sharing actions sit above the separator from the bottom session actions, and oversized QR selections show an actionable error without disabling vCard download.
 - [`/api/vcard`](../src/routes/api/vcard/+server.ts) uses public authorization by default, accepts explicit field selections only from an authenticated admin, and serializes download and QR representations separately.
 - [`qr.ts`](../src/lib/qr.ts) encodes QR input as UTF-8 bytes so non-ASCII contact text survives scanning.
 - [`admin-auth.server.ts`](../src/lib/contact/admin-auth.server.ts) implements high-entropy access-key verification, one-year admin sessions, and 10-minute bootstrap tokens with distinct token claims.
@@ -596,7 +596,7 @@ The admin reviews the suggestion, chooses suitable fields, creates an access lin
 - Offer named sets that replace the current selection with the set's field IDs.
 - Put `All` first and toggle every shareable field on or off.
 - Toggle public fields as a group without changing the current private-field selection.
-- Toggle the private Korea-specific fields as a group without changing public or unrelated private selections.
+- Toggle the private Korea- or US-specific fields as groups without changing public or unrelated private selections.
 - Allow the admin to adjust any preset arbitrarily.
 - Use dense, full-width field rows; align checkboxes to the first line and allow long labels to wrap.
 - Offer a plain-text request textarea that can apply checked methods as a suggested selection.
@@ -756,7 +756,7 @@ Do not remove the old construction path until the new public vCard and QR behavi
 - [x] The admin sees selected vCard and QR actions after the field list, with a labeled, backdrop-dismissible QR dialog and direct-link fallback.
 - [x] The admin creates visitor links from the same action row and sees the explanation, generated link, copy control, or action error in a dismissible dialog.
 - [x] The admin can toggle all public fields without changing selected private fields, or toggle every shareable field from the first preset control.
-- [x] The admin can toggle Korea-specific private fields without changing public or unrelated private selections.
+- [x] The admin can toggle Korea- or US-specific private fields without changing public or unrelated private selections.
 - [x] Mobile-login creation preserves the current contact selection and shows the link, expiration, security note, and QR code in a dismissible dialog.
 - [x] The admin can copy a signed link for the checked private fields.
 - [x] Opening a valid link grants only those fields until that link's expiration; reclaiming it does not extend access.

@@ -2,6 +2,7 @@
 	import { enhance } from '$app/forms'
 	import { resolve } from '$app/paths'
 	import { tick } from 'svelte'
+	import { SvelteURLSearchParams } from 'svelte/reactivity'
 
 	import type { ActionData, PageData } from './$types'
 
@@ -76,9 +77,18 @@
 		return fieldIds.length > 0 && fieldIds.every((id) => selectedFieldIds.includes(id))
 	}
 
+	function isRegionalPreset(set: PageData['contact']['sets'][number]) {
+		const id = set.id.toLowerCase()
+		return id === 'korea' || id === 'us'
+	}
+
+	function privatePresetFieldIds(set: PageData['contact']['sets'][number]) {
+		return set.fieldIds.filter((id) => privateFieldIds.has(id))
+	}
+
 	function applyNamedPreset(set: PageData['contact']['sets'][number]) {
-		if (set.id === 'korea') {
-			toggleFieldGroup(set.fieldIds.filter((id) => privateFieldIds.has(id)))
+		if (isRegionalPreset(set)) {
+			toggleFieldGroup(privatePresetFieldIds(set))
 			return
 		}
 
@@ -149,7 +159,7 @@
 	}
 
 	function buildArtifactQuery(format?: 'svg') {
-		const parameters = new URLSearchParams()
+		const parameters = new SvelteURLSearchParams()
 		if (format) parameters.set('format', format)
 		for (const id of selectedFieldIds) parameters.append('field', id)
 		return parameters.toString()
@@ -192,8 +202,8 @@
 		{#each namedPresets as set (set.id)}
 			<button
 				type="button"
-				aria-pressed={set.id === 'korea'
-					? hasEverySelectedField(set.fieldIds.filter((id) => privateFieldIds.has(id)))
+				aria-pressed={isRegionalPreset(set)
+					? hasEverySelectedField(privatePresetFieldIds(set))
 					: undefined}
 				onclick={() => applyNamedPreset(set)}>{set.label}</button
 			>
