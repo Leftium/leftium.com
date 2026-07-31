@@ -369,21 +369,35 @@ both existing admin sessions and outstanding bootstrap tokens.
 
 ### Token
 
-Use a maintained JOSE implementation and HMAC-SHA-256 rather than defining a general-purpose token format. Grant and session verification must constrain the expected algorithm, issuer, audience, and token type.
+Use a maintained JOSE implementation and HMAC-SHA-256 rather than defining a general-purpose token format. Grant and session verification must constrain the expected algorithm and audience. Visitor sessions retain their explicit issuer and token type.
 
 A grant contains:
 
 ```ts
 type ContactGrantClaims = {
-	profileId: string
-	profileVersion: number
-	fieldIds: string[]
+	p?: string
+	v: number
+	f: string[]
+	aud: 'g'
 	iat: number
 	exp: number
 }
 ```
 
+Grant claims use compact names because the signed token is carried in a visitor URL. `p` is omitted
+while the deployment has one profile; if present, it must match the current profile ID. A future
+multi-profile deployment must require `p` and may invalidate profile-less grants. `v` is the profile
+version. `f` contains canonical private field IDs relative to the `private.` namespace, such as
+`email.personal`; verification restores the prefix before applying the existing private-shareable
+field policy. Public fields are never included because they require no grant. The compact `g`
+audience separates grants from visitor sessions, so grants do not duplicate issuer, token-type, or
+`typ` strings. Visitor-session claims and cookies retain their existing format.
+
 The default claim deadline is seven days after generation. The token is reusable until expiration and cannot be individually revoked in v1. It contains field IDs, not contact values.
+
+Deploying the compact grant format intentionally invalidates outstanding links using the earlier
+verbose claims. Already claimed visitor sessions remain valid because their token format does not
+change.
 
 The admin creates a link by submitting the current private-field selection to a protected server action. The server validates every field ID against the profile before signing.
 

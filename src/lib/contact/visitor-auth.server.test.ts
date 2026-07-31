@@ -1,5 +1,5 @@
 import { randomBytes } from 'node:crypto'
-import { SignJWT } from 'jose'
+import { decodeJwt, decodeProtectedHeader, SignJWT } from 'jose'
 import { describe, expect, it } from 'vitest'
 
 import { createAdminSessionToken } from './admin-auth.server'
@@ -66,6 +66,17 @@ describe('contact grant tokens', () => {
 		const grant = await createContactGrantToken(config, profile, fieldIds, now)
 
 		expect(await verifyContactGrantToken(grant.token, config, profile, now)).toEqual(grant)
+		expect(decodeProtectedHeader(grant.token)).toEqual({ alg: 'HS256' })
+		const payload = decodeJwt(grant.token)
+		expect(Object.keys(payload).sort()).toEqual(['aud', 'exp', 'f', 'iat', 'v'])
+		expect(payload).toMatchObject({
+			v: profile.version,
+			f: ['email.personal', 'phone.mobile'],
+			aud: 'g',
+			iat: Math.floor(now.getTime() / 1000),
+			exp: grant.expiresAt,
+		})
+		expect(grant.token.length).toBeLessThanOrEqual(190)
 		expect(
 			await verifyContactGrantToken(
 				grant.token,
@@ -120,14 +131,75 @@ describe('contact grant tokens', () => {
 		expect(await verifyVisitorSessionToken(admin, config, profile, now)).toBeNull()
 	})
 
-	it('rejects correctly signed tokens with unknown fields or the wrong type', async () => {
+	it('accepts an optional matching profile and rejects a different profile', async () => {
 		const config = createConfig()
 		const issuedAt = Math.floor(now.getTime() / 1000)
-		const token = await new SignJWT({
+		const matchingToken = await new SignJWT({
+			p: profile.id,
+			v: profile.version,
+			f: ['email.personal'],
+		})
+			.setProtectedHeader({ alg: 'HS256' })
+			.setAudience('g')
+			.setIssuedAt(issuedAt)
+			.setExpirationTime(issuedAt + 7 * 24 * 60 * 60)
+			.sign(config.signingSecret)
+		const differentToken = await new SignJWT({
+			p: 'different-profile',
+			v: profile.version,
+			f: ['email.personal'],
+		})
+			.setProtectedHeader({ alg: 'HS256' })
+			.setAudience('g')
+			.setIssuedAt(issuedAt)
+			.setExpirationTime(issuedAt + 7 * 24 * 60 * 60)
+			.sign(config.signingSecret)
+
+		expect(await verifyContactGrantToken(matchingToken, config, profile, now)).not.toBeNull()
+		expect(await verifyContactGrantToken(differentToken, config, profile, now)).toBeNull()
+	})
+
+	it('rejects signed grants with invalid claims, lifetimes, or the old verbose format', async () => {
+		const config = createConfig()
+		const issuedAt = Math.floor(now.getTime() / 1000)
+		const invalidClaims = [
+			{ v: profile.version, f: [] },
+			{ v: profile.version, f: ['unknown'] },
+			{ v: profile.version, f: ['private.email.personal'] },
+			{ v: profile.version, f: ['email.personal', 'email.personal'] },
+			{ p: 1, v: profile.version, f: ['email.personal'] },
+		]
+		const invalidClaimTokens = await Promise.all(
+			invalidClaims.map((claims) =>
+				new SignJWT(claims)
+					.setProtectedHeader({ alg: 'HS256' })
+					.setAudience('g')
+					.setIssuedAt(issuedAt)
+					.setExpirationTime(issuedAt + 7 * 24 * 60 * 60)
+					.sign(config.signingSecret),
+			),
+		)
+		const shortLifetimeToken = await new SignJWT({
+			v: profile.version,
+			f: ['email.personal'],
+		})
+			.setProtectedHeader({ alg: 'HS256' })
+			.setAudience('g')
+			.setIssuedAt(issuedAt)
+			.setExpirationTime(issuedAt + 6 * 24 * 60 * 60)
+			.sign(config.signingSecret)
+		const futureIssuedAt = issuedAt + 60
+		const futureToken = await new SignJWT({ v: profile.version, f: ['email.personal'] })
+			.setProtectedHeader({ alg: 'HS256' })
+			.setAudience('g')
+			.setIssuedAt(futureIssuedAt)
+			.setExpirationTime(futureIssuedAt + 7 * 24 * 60 * 60)
+			.sign(config.signingSecret)
+		const oldToken = await new SignJWT({
 			token_type: 'contact-visitor-grant',
 			profile_id: profile.id,
 			profile_version: profile.version,
-			field_ids: ['private.unknown'],
+			field_ids: ['private.email.personal'],
 		})
 			.setProtectedHeader({ alg: 'HS256', typ: 'JWT' })
 			.setIssuer('leftium.com/contact')
@@ -136,7 +208,12 @@ describe('contact grant tokens', () => {
 			.setExpirationTime(issuedAt + 7 * 24 * 60 * 60)
 			.sign(config.signingSecret)
 
-		expect(await verifyContactGrantToken(token, config, profile, now)).toBeNull()
+		for (const token of invalidClaimTokens) {
+			expect(await verifyContactGrantToken(token, config, profile, now)).toBeNull()
+		}
+		expect(await verifyContactGrantToken(shortLifetimeToken, config, profile, now)).toBeNull()
+		expect(await verifyContactGrantToken(futureToken, config, profile, now)).toBeNull()
+		expect(await verifyContactGrantToken(oldToken, config, profile, now)).toBeNull()
 	})
 })
 

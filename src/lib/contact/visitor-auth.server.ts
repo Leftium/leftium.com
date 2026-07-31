@@ -7,12 +7,12 @@ import type { ContactAuthorization, ContactProfile } from './types'
 
 const VISITOR_COOKIE_NAME = 'contact_visitor'
 const TOKEN_ISSUER = 'leftium.com/contact'
-const GRANT_TOKEN_TYPE = 'contact-visitor-grant'
-const GRANT_TOKEN_AUDIENCE = 'leftium.com/contact/grant'
+const GRANT_TOKEN_AUDIENCE = 'g'
 const VISITOR_TOKEN_TYPE = 'contact-visitor-session'
 const VISITOR_TOKEN_AUDIENCE = 'leftium.com/contact/visitor'
 const GRANT_MAX_AGE = 7 * 24 * 60 * 60
 const MAX_TOKEN_LENGTH = 16_384
+const PRIVATE_FIELD_PREFIX = 'private.'
 
 export const CONTACT_GRANT_LIFETIME_DAYS = GRANT_MAX_AGE / (24 * 60 * 60)
 
@@ -79,13 +79,10 @@ export async function createContactGrantToken(
 	const issuedAt = Math.floor(now.getTime() / 1000)
 	const expiresAt = issuedAt + GRANT_MAX_AGE
 	const token = await new SignJWT({
-		token_type: GRANT_TOKEN_TYPE,
-		profile_id: profile.id,
-		profile_version: profile.version,
-		field_ids: authorizedFieldIds,
+		v: profile.version,
+		f: authorizedFieldIds.map(toRelativePrivateFieldId),
 	})
-		.setProtectedHeader({ alg: 'HS256', typ: 'JWT' })
-		.setIssuer(TOKEN_ISSUER)
+		.setProtectedHeader({ alg: 'HS256' })
 		.setAudience(GRANT_TOKEN_AUDIENCE)
 		.setIssuedAt(issuedAt)
 		.setExpirationTime(expiresAt)
@@ -100,18 +97,47 @@ export async function verifyContactGrantToken(
 	profile: ContactProfile,
 	now = new Date(),
 ): Promise<ContactGrant | null> {
-	const verified = await verifyToken(
-		token,
-		config,
-		profile,
-		GRANT_TOKEN_TYPE,
-		GRANT_TOKEN_AUDIENCE,
-		GRANT_MAX_AGE,
-		now,
-	)
-	if (!verified) return null
+	if (typeof token !== 'string' || token.length === 0 || token.length > MAX_TOKEN_LENGTH) {
+		return null
+	}
 
-	return { token: token as string, fieldIds: verified.fieldIds, expiresAt: verified.expiresAt }
+	try {
+		const { payload } = await jwtVerify(token, config.signingSecret, {
+			algorithms: ['HS256'],
+			audience: GRANT_TOKEN_AUDIENCE,
+			currentDate: now,
+		})
+		const nowSeconds = Math.floor(now.getTime() / 1000)
+		if (
+			(payload.p !== undefined && payload.p !== profile.id) ||
+			payload.v !== profile.version ||
+			!Number.isSafeInteger(payload.iat) ||
+			!Number.isSafeInteger(payload.exp) ||
+			(payload.iat as number) > nowSeconds ||
+			(payload.exp as number) - (payload.iat as number) !== GRANT_MAX_AGE ||
+			!Array.isArray(payload.f)
+		) {
+			return null
+		}
+
+		const relativeFieldIds = payload.f
+		if (
+			relativeFieldIds.length === 0 ||
+			!relativeFieldIds.every(
+				(fieldId): fieldId is string => typeof fieldId === 'string' && fieldId.length > 0,
+			)
+		) {
+			return null
+		}
+
+		const fieldIds = relativeFieldIds.map((fieldId) => `${PRIVATE_FIELD_PREFIX}${fieldId}`)
+		const validatedFieldIds = validateAuthorizedFieldIds(profile, fieldIds)
+		if (validatedFieldIds.length !== fieldIds.length) return null
+
+		return { token, fieldIds: validatedFieldIds, expiresAt: payload.exp as number }
+	} catch {
+		return null
+	}
 }
 
 export async function createVisitorSessionToken(
@@ -249,56 +275,6 @@ export function clearVisitorSessionCookie(cookies: Cookies, secureCookies = !dev
 	cookies.delete(VISITOR_COOKIE_NAME, { path: '/', secure: secureCookies })
 }
 
-async function verifyToken(
-	token: unknown,
-	config: VisitorAuthConfig,
-	profile: ContactProfile,
-	tokenType: string,
-	audience: string,
-	maxAge: number,
-	now: Date,
-): Promise<{ fieldIds: string[]; expiresAt: number } | null> {
-	if (typeof token !== 'string' || token.length === 0 || token.length > MAX_TOKEN_LENGTH) {
-		return null
-	}
-
-	try {
-		const { payload } = await jwtVerify(token, config.signingSecret, {
-			algorithms: ['HS256'],
-			issuer: TOKEN_ISSUER,
-			audience,
-			typ: 'JWT',
-			currentDate: now,
-		})
-		const nowSeconds = Math.floor(now.getTime() / 1000)
-
-		if (
-			payload.token_type !== tokenType ||
-			payload.profile_id !== profile.id ||
-			payload.profile_version !== profile.version ||
-			!Number.isSafeInteger(payload.iat) ||
-			!Number.isSafeInteger(payload.exp) ||
-			(payload.iat as number) > nowSeconds ||
-			(payload.exp as number) - (payload.iat as number) !== maxAge ||
-			!Array.isArray(payload.field_ids)
-		) {
-			return null
-		}
-
-		const fieldIds = payload.field_ids
-		if (!fieldIds.every((fieldId): fieldId is string => typeof fieldId === 'string')) {
-			return null
-		}
-
-		const validatedFieldIds = validateAuthorizedFieldIds(profile, fieldIds)
-		return validatedFieldIds.length === fieldIds.length
-			? { fieldIds: validatedFieldIds, expiresAt: payload.exp as number }
-			: null
-	} catch {
-		return null
-	}
-}
-
 function validateFieldGrants(
 	profile: ContactProfile,
 	fieldGrants: Iterable<VisitorFieldGrant>,
@@ -371,6 +347,10 @@ function validateAuthorizedFieldIds(profile: ContactProfile, fieldIds: Iterable<
 
 	const requestedSet = new Set(requested)
 	return profile.fields.filter((field) => requestedSet.has(field.id)).map((field) => field.id)
+}
+
+function toRelativePrivateFieldId(fieldId: string): string {
+	return fieldId.slice(PRIVATE_FIELD_PREFIX.length)
 }
 
 function decodeSigningSecret(value: string | undefined): Uint8Array {
