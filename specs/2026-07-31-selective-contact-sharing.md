@@ -1,12 +1,12 @@
 # Selective Contact Sharing
 
 **Date**: 2026-07-31
-**Status**: In Progress - direct sharing and visitor grants are implemented; request email remains
+**Status**: In Progress - visitor request templates are implemented; admin request import remains
 **Owner**: John
 
 ## One Sentence
 
-Turn `/contact` into a database-free, capability-gated contact profile where the admin selects the details to share, presents them directly as a vCard QR code or sends a signed access link, and visitors can request additional contact methods through a prefilled email.
+Turn `/contact` into a database-free, capability-gated contact profile where the admin selects the details to share, presents them directly as a vCard QR code or sends a signed access link, and visitors can request additional contact methods with a reusable message template.
 
 ## Overview
 
@@ -17,7 +17,7 @@ The completed work establishes two modes:
 - Visitor mode shows public details with matching vCard and QR representations. Website fields stay in contact artifacts but are omitted from the site UI because the visitor is already on the website.
 - Admin mode is unlocked with a high-entropy admin access key. It shows every contact field, applies named sets as selection presets, and generates a direct vCard QR code or download for an arbitrary selection.
 
-The remaining target adds the request-email workflow and final hardening. The full change is complete when an unauthorized request cannot retrieve a private value from page data, vCard, or QR endpoints; the admin can share any selected combination by QR or signed link; and a pasted request email can initialize a reviewed selection without becoming trusted input.
+The remaining target adds admin request import and final hardening. The full change is complete when an unauthorized request cannot retrieve a private value from page data, vCard, or QR endpoints; the admin can share any selected combination by QR or signed link; and pasted request text can initialize a reviewed selection without becoming trusted input.
 
 ## Scope
 
@@ -32,8 +32,8 @@ In scope:
 - Signed, seven-day visitor access links.
 - Signed visitor sessions capped by each source grant's seven-day expiration.
 - Authorized text, link, vCard, and QR representations.
-- A `mailto:` request containing a plain-text bracket checklist of contact methods.
-- Admin-side parsing of a pasted request email into an editable suggested field selection.
+- Email and channel-neutral copy actions for a plain-text bracket checklist of contact methods.
+- Admin-side parsing of pasted request text into an editable suggested field selection.
 - Tests for profile filtering, token boundaries, vCard generation, and authorization.
 
 Out of scope:
@@ -47,8 +47,8 @@ Out of scope:
 
 ## Current State
 
-- [`+page.server.ts`](<../src/routes/(centered)/contact/+page.server.ts>) returns public contact fields and public request-method labels without serializing private values. URL fields are omitted from this route's visible data.
-- [`+page.svelte`](<../src/routes/(centered)/contact/+page.svelte>) renders the public fields, vCard download, QR code, and a small link to `/contact/admin`.
+- [`+page.server.ts`](<../src/routes/(centered)/contact/+page.server.ts>) returns authorized contact values, base labels for unavailable shareable fields, and request-template output without serializing unauthorized private values. The public website remains omitted from the visible contact list.
+- [`+page.svelte`](<../src/routes/(centered)/contact/+page.svelte>) keeps vCard and QR actions directly below the page title, opens QR output in a labeled dismissible native dialog with a direct-link fallback, groups unavailable field labels in a centered responsive layout of up to four columns, offers email and copy request-template actions without another section heading, and keeps a small link to `/contact/admin`.
 - [`contact-info.server.example.toml`](<../src/routes/(centered)/contact/contact-info.server.example.toml>) documents concise public and private fields, the bank preset, named sets, and the optional `qr_as_address` compatibility override. Local development can load an ignored private TOML file; deployments load the same TOML text from the `CONTACT_INFO_TOML` runtime secret.
 - [`/contact/admin`](<../src/routes/(centered)/contact/admin/+page.svelte>) provides access-key login, a single "Log out of admin mode" control, 10-minute mobile login links, and the full-width field-selection interface.
 - [`AdminContactControls.svelte`](<../src/routes/(centered)/contact/admin/AdminContactControls.svelte>) provides dense field rows, wrapping labels, named presets, arbitrary checkbox edits, and direct vCard and QR output. Field values are hidden by default, with per-field reveal and copy actions; revealing one field hides the previous value. A preset containing every shareable field clears the selection when everything is already checked, and oversized QR selections show an actionable error without disabling vCard download.
@@ -56,8 +56,9 @@ Out of scope:
 - [`qr.ts`](../src/lib/qr.ts) encodes QR input as UTF-8 bytes so non-ASCII contact text survives scanning.
 - [`admin-auth.server.ts`](../src/lib/contact/admin-auth.server.ts) implements high-entropy access-key verification, one-year admin sessions, and 10-minute bootstrap tokens with distinct token claims.
 - Focused profile, vCard, QR, and admin-auth tests cover the implemented domain and token boundaries.
-- Signed seven-day visitor grants, resilient fragment claiming, grant-capped visitor sessions, and
-  granted page/vCard/QR representations are implemented. Request email and request import remain.
+- Signed seven-day visitor grants, resilient fragment claiming, grant-capped visitor sessions,
+  granted page/vCard/QR representations, and visitor request templates are implemented. Admin
+  request import remains.
 - [`wrangler.toml`](../wrangler.toml) establishes Cloudflare Workers as an intended deployment target.
 
 ## Terminology
@@ -70,8 +71,8 @@ Out of scope:
 - **Grant**: A signed bearer token authorizing a specific list of private contact field IDs until its expiration.
 - **Visitor session**: A signed cookie containing the field IDs granted to the current browser and each field's grant expiration.
 - **Direct artifact**: A vCard file or QR code generated for the admin's exact current selection. Its contact values are delivered directly and cannot expire after being scanned or saved.
-- **Request method**: A public, value-free label such as "Email", "Phone", or "Postal mail" included in the visitor's email checklist, with optional default field IDs used only to initialize the admin's selection.
-- **Request import**: Client-side parsing of a pasted request email. It recognizes checked method labels and suggests fields but never authorizes or sends anything by itself.
+- **Request method**: A public, value-free label such as "Email", "Phone", or "Postal mail" included in the visitor's request checklist, with optional default field IDs used only to initialize the admin's selection.
+- **Request import**: Client-side parsing of pasted request text. It recognizes checked method labels and suggests fields but never authorizes or sends anything by itself.
 
 ## Design Decisions
 
@@ -88,8 +89,9 @@ Out of scope:
 | Photo handling           | Design coherence        | Embed the configured photo in downloaded vCards and omit it from QR vCards   | This preserves the current full-card behavior without exceeding practical QR payload size.                                                           |
 | QR note compatibility    | Evidence                | Allow custom fields to opt into `ADR;TYPE=OTHER` only in QR vCards           | iPhone Camera drops `NOTE` values but imports an `OTHER` address. Downloads keep the configured property, including `NOTE`.                          |
 | Public website display   | Taste under constraints | Keep URL fields in contact artifacts but omit them from `/contact` UI        | Repeating the current website on its own contact route adds noise without helping the visitor.                                                       |
-| Visitor request UI       | Design coherence        | One `mailto:` action with a plain-text bracket checklist                     | The email itself captures selections and context; the admin chooses the actual fields to grant.                                                      |
-| Request import           | Design coherence        | Parse pasted email locally into an editable suggestion                       | This saves admin effort without treating visitor-edited text as trusted state.                                                                       |
+| Visitor QR presentation  | Design coherence        | Top-level QR link enhanced into a labeled native dialog                      | The common action stays near vCard download; without JavaScript or dialog support, the same link opens the existing SVG endpoint directly.           |
+| Visitor request UI       | Design coherence        | Email and body-only copy actions for one plain-text bracket checklist        | The same template works in email, chat, or another channel; the admin chooses the actual fields to grant.                                            |
+| Request import           | Design coherence        | Parse pasted request text locally into an editable suggestion                | This saves admin effort without treating visitor-edited text as trusted state.                                                                       |
 | Named sets               | Design coherence        | Admin-only presets using stable field IDs                                    | Sets speed common selections without limiting arbitrary combinations or becoming part of the security model.                                         |
 | Dynamic values           | Evidence                | Render as escaped Svelte values, not dynamic `{@html}`                       | Private contact data must not pass through the current developer-authored Markdown HTML path.                                                        |
 | Reusable package         | Deferred                | Preserve pure core boundaries but do not extract in v1                       | The route behavior should settle before its API is made public.                                                                                      |
@@ -464,16 +466,40 @@ The vCard generator must:
 
 The admin QR encodes the selected contact values directly. Scanning it does not create a visitor session and cannot be revoked or expired after the values have been delivered.
 
-## Visitor Request Email
+On the visitor page, `Download vCard` and `QR code` form one action row directly below the page
+title. The QR action is an ordinary link to `/api/vcard?format=svg`. When JavaScript and
+`HTMLDialogElement.showModal()` are available, the page prevents that navigation and opens the same
+authorized image in a native dialog labeled `Contact QR code`. Otherwise the browser follows the
+link and displays the SVG directly. The enhanced dialog closes through its button, Escape, or a
+click on the backdrop; clicks inside the dialog do not dismiss it. No separate QR page or
+query-driven page state is required.
 
-Visitor mode presents one request action after the currently visible contact details:
+## Visitor Request Template
+
+Visitor mode lists each shareable communication/detail field exactly once. Authorized fields appear
+with their values. Unauthorized private fields appear as base, value-free labels under one heading:
 
 ```txt
-Need another way to reach me?
-[Request more contact information]
+Available upon request
+Personal email
+Korea mobile
+KakaoTalk
+Bank
 ```
 
-The action opens a `mailto:` URL addressed to `profile.requestEmail`. The body is generated from the configured public request methods:
+The base configured label must be used for an unavailable field. Formatting that derives display
+text from a private value, such as adding a URL-fragment username, is allowed only after that field
+is authorized. The profile name remains in the page heading, the photo remains an artifact concern,
+non-shareable fields are not advertised, and the public website remains omitted from the page.
+
+Two actions follow the field groups without another visible section heading:
+
+- `Email request template` opens a `mailto:` URL addressed to `profile.requestEmail`, with a subject
+  and the generated body.
+- `Copy request template` copies only the generated body so it can be pasted into chat or another
+  channel without email-specific `To:` or `Subject:` lines.
+
+The body is generated from the configured public request methods:
 
 ```txt
 Hi John,
@@ -498,14 +524,14 @@ Requirements:
 - The list contains method labels only, never private contact values.
 - The body is URL-encoded correctly.
 - The checklist uses bracket markers without Markdown list bullets.
-- The markers are plain email text. The design does not assume that an email client renders interactive controls.
-- The visitor can edit `[ ]` to `[x]`, add specifics, and explain the request in the email editor.
-- The page provides a copyable email address, and preferably a copyable request template, for visitors without a configured `mailto:` handler.
+- The markers are plain message text. The design does not assume that an email or chat client renders interactive controls.
+- The visitor can edit `[ ]` to `[x]`, add specifics, and explain the request in the destination editor.
+- The copy action provides success or failure feedback and falls back when the asynchronous Clipboard API is unavailable or denied.
 - The site does not submit, store, or send the request.
 
 ### Admin Request Import
 
-Admin mode includes a "Paste request email" textarea and an "Apply request" action. Parsing happens entirely in the browser:
+Admin mode includes a "Paste request" textarea and an "Apply request" action. Parsing happens entirely in the browser:
 
 1. Find lines whose normalized form is `[x] <configured method label>` or `[X] <configured method label>`.
 2. Tolerate surrounding whitespace and common quoted-email prefixes such as `>`.
@@ -514,27 +540,32 @@ Admin mode includes a "Paste request email" textarea and an "Apply request" acti
 5. Apply that union as the current suggested field selection.
 6. Report matched and unmatched checked lines, then leave every checkbox editable.
 
-Additional prose, email headers, signatures, unchecked lines, and unknown labels do not select fields. A method with no default fields is reported as matched but leaves the choice to the admin.
+Additional prose, message headers, signatures, unchecked lines, and unknown labels do not select fields. A method with no default fields is reported as matched but leaves the choice to the admin.
 
-The pasted email is untrusted text. Do not render it as HTML, execute links from it, persist it, log it, or submit it to the server. The parser is an admin convenience, not an authorization or policy boundary.
+The pasted request is untrusted text. Do not render it as HTML, execute links from it, persist it, log it, or submit it to the server. The parser is an admin convenience, not an authorization or policy boundary.
 
-The admin reviews the suggestion, chooses suitable fields, creates an access link, and pastes it into the email reply. The incoming email never finalizes or constrains the admin's selection.
+The admin reviews the suggestion, chooses suitable fields, creates an access link, and replies through the original channel. The incoming request never finalizes or constrains the admin's selection.
 
 ## User Interface States
 
 ### Public Visitor
 
-- Show public contact details at the top.
+- Place `Download vCard` and `QR code` together directly below the page title.
+- Open QR output in a labeled native dialog when supported, with the existing SVG endpoint as the no-JavaScript fallback.
+- Show public contact details at the top, excluding the public website.
+- List unavailable shareable private fields together using value-free base labels in a centered responsive layout of up to four columns.
 - Offer vCard download and QR output for the currently public details when the result is useful.
-- Offer the request-email action.
+- Offer the email and copy request-template actions.
 - Keep a small link to `/contact/admin` at the bottom of the page.
 
 ### Granted Visitor
 
-- Show public and granted details together at the top.
+- Keep the same top-level vCard and progressively enhanced QR actions.
+- Show public and granted details together at the top, excluding the public website.
+- Move each granted field out of the unavailable group without duplicating it.
 - Show a concise indication that additional details have been shared with this browser.
 - Generate vCard and QR output from the same effective field set.
-- Continue to offer the request-email action because the visitor may need something else.
+- Continue to offer both request-template actions because the visitor may need something else.
 
 ### Admin
 
@@ -544,7 +575,7 @@ The admin reviews the suggestion, chooses suitable fields, creates an access lin
 - When an all-fields preset is applied while every shareable field is selected, clear the selection.
 - Allow the admin to adjust any preset arbitrarily.
 - Use dense, full-width field rows; align checkboxes to the first line and allow long labels to wrap.
-- Offer a plain-text request-email textarea that can apply checked methods as a suggested selection.
+- Offer a plain-text request textarea that can apply checked methods as a suggested selection.
 - Show which request methods matched, which checked lines did not match, and keep the resulting field selection editable.
 - Offer:
   - Show selected vCard QR.
@@ -558,17 +589,17 @@ The admin reviews the suggestion, chooses suitable fields, creates an access lin
 
 The exact file split may follow SvelteKit conventions discovered during implementation, but the behavior should have these boundaries:
 
-| Boundary                                 | Authentication                     | Responsibility                                                                  |
-| ---------------------------------------- | ---------------------------------- | ------------------------------------------------------------------------------- |
-| `/contact` server load                   | Public                             | Return only public fields and request-method labels.                            |
-| `/contact/admin` server load             | Optional admin cookie              | Return the login state or all fields and named sets for an authenticated admin. |
-| `/contact/admin` login action            | Public, rate limited               | Verify access key and set admin cookie.                                         |
-| `/contact/admin` bootstrap-create action | Admin                              | Return an explicitly requested 10-minute mobile-login link and QR code.         |
-| `/contact/admin` bootstrap-claim action  | Public                             | Verify a fragment-submitted bootstrap token and set the admin cookie.           |
-| `/contact/admin` logout action           | Admin or idempotent public         | Clear admin cookie and return to `/contact`.                                    |
-| Grant creation action                    | Admin                              | Validate selected IDs and return a signed seven-day link.                       |
-| Grant claim action                       | Public                             | Verify fragment-submitted token and set or extend the visitor cookie.           |
-| `/api/vcard`                             | Optional admin and visitor cookies | Return only the authorized vCard or QR representation.                          |
+| Boundary                                 | Authentication                     | Responsibility                                                                              |
+| ---------------------------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------- |
+| `/contact` server load                   | Public                             | Return authorized field values, value-free unavailable labels, and request-template output. |
+| `/contact/admin` server load             | Optional admin cookie              | Return the login state or all fields and named sets for an authenticated admin.             |
+| `/contact/admin` login action            | Public, rate limited               | Verify access key and set admin cookie.                                                     |
+| `/contact/admin` bootstrap-create action | Admin                              | Return an explicitly requested 10-minute mobile-login link and QR code.                     |
+| `/contact/admin` bootstrap-claim action  | Public                             | Verify a fragment-submitted bootstrap token and set the admin cookie.                       |
+| `/contact/admin` logout action           | Admin or idempotent public         | Clear admin cookie and return to `/contact`.                                                |
+| Grant creation action                    | Admin                              | Validate selected IDs and return a signed seven-day link.                                   |
+| Grant claim action                       | Public                             | Verify fragment-submitted token and set or extend the visitor cookie.                       |
+| `/api/vcard`                             | Optional admin and visitor cookies | Return only the authorized vCard or QR representation.                                      |
 
 Token parsing, cookie handling, profile filtering, and vCard generation belong in server-only library modules rather than inside page components.
 
@@ -589,7 +620,7 @@ Required controls:
 - Use constant-time secret comparisons.
 - Check the request origin for admin actions.
 - Never log access keys, grant tokens, visitor tokens, or private contact values.
-- Treat pasted request emails as untrusted text and process them locally without HTML rendering or persistence.
+- Treat pasted request text as untrusted and process it locally without HTML rendering or persistence.
 - Use `Cache-Control: private, no-store` for personalized HTML and contact artifacts.
 - Use `Referrer-Policy: no-referrer` on the contact route.
 - Reject malformed field selections and unknown IDs.
@@ -636,11 +667,11 @@ Do not remove the old construction path until the new public vCard and QR behavi
 - [x] Add grant-capped visitor cookies with per-field scope-union behavior.
 - [x] Render granted text, links, vCard, and QR from the same effective field set.
 
-### Phase 5: Request Email and Import
+### Phase 5: Request Template and Import
 
-- [ ] Generate the bracket-only checklist from `requestMethods`.
-- [ ] Build the encoded `mailto:` subject and body.
-- [ ] Add copy fallbacks for the address and template.
+- [x] Generate the bracket-only checklist from `requestMethods`.
+- [x] Build the encoded `mailto:` subject and body.
+- [x] Add a channel-neutral body-copy action with clipboard fallback.
 - [ ] Add the admin-only paste textarea and a pure client-side checked-method parser.
 - [ ] Map recognized methods to default field suggestions and report unmatched checked lines.
 - [ ] Verify the result in common desktop and mobile email flows without assuming rendered checkbox controls.
@@ -651,7 +682,7 @@ Do not remove the old construction path until the new public vCard and QR behavi
 - [x] Add private no-store caching and no-referrer protections to implemented contact routes.
 - [ ] Complete token-redaction and origin protections for the remaining grant actions.
 - [x] Cover invalid, expired, incompatible, and tampered tokens.
-- [ ] Verify public, granted, admin, logout, direct QR, direct vCard, grant-link, and request-email flows.
+- [ ] Verify public, granted, admin, logout, direct QR, direct vCard, grant-link, and request-template flows.
 - [ ] Run type checking and linting.
 - [x] Document admin environment variables, key generation, and local setup.
 - [x] Document grant-key rotation and recovery.
@@ -673,7 +704,7 @@ Do not remove the old construction path until the new public vCard and QR behavi
 - **Empty grant selection**: Do not create a link.
 - **Lost admin device**: Rotate the admin-session secret or session version to invalidate all admin cookies.
 - **Admin access-key rotation**: Change the stored digest. Rotate the session secret as well when existing sessions must be invalidated.
-- **No email handler**: Keep the request email address and template copyable.
+- **No email handler**: Keep the request body copyable for chat or another channel.
 - **Checklist not rendered as controls**: The bracket checklist remains understandable and editable as plain text.
 - **Pasted request uses old labels**: Report unmatched checked lines and do not guess at field selection.
 - **Pasted request contains HTML, links, or quoted content**: Treat everything as text; only recognized checked lines affect the suggestion.
@@ -701,7 +732,9 @@ Do not remove the old construction path until the new public vCard and QR behavi
 - [x] Opening a valid link grants only those fields until that link's expiration; reclaiming it does not extend access.
 - [x] Expired, modified, wrongly typed, or incompatible tokens do not reveal private data.
 - [x] Visitor text, link, vCard, and QR output agree on the effective authorized field set.
-- [ ] The request action opens an email draft containing every configured request-method label as a bracket-only checklist item.
+- [x] The contact page keeps vCard and QR actions at the top and opens QR output in a labeled, backdrop-dismissible native dialog without removing the direct-link fallback.
+- [x] Unauthorized shareable fields are listed by base label without serializing values, links, derived usernames, field IDs, or vCard metadata.
+- [x] The request actions open an email draft and copy a channel-neutral body containing every configured request-method label as a bracket-only checklist item.
 - [ ] Pasting an email with checked methods suggests the configured default fields, reports unmatched entries, sends no pasted content to the server, and leaves the admin in control of the final selection.
 - [x] No database or email provider is required.
 - [x] Key setup, rotation, and recovery behavior are documented.

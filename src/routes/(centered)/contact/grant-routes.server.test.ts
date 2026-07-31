@@ -31,12 +31,16 @@ name = "Leftium"
 
 [public]
 email = "public-route@example.com"
+url = "https://public-route.example.com"
 
 [private.email]
 personal = "private-route@example.com"
 
 [private.phone]
 mobile = "+82 10 7654 3210"
+
+[private.url]
+KakaoTalk = "https://open.kakao.example/example#SecretHandle"
 `)
 
 vi.mock('./contact-profile.server', () => ({ loadContactProfile: () => profile }))
@@ -77,6 +81,73 @@ afterEach(() => {
 })
 
 describe('visitor grant route boundaries', () => {
+	it('lists unavailable field labels without serializing their private values', async () => {
+		const { load } = await import('./+page.server')
+		const result = await load({
+			cookies: new TestCookies() as unknown as Cookies,
+			setHeaders: vi.fn(),
+		} as never)
+		const contact = (
+			result as {
+				contact: {
+					fields: Array<{ label: string; value: string }>
+					unavailableFields: Array<{ label: string }>
+					request: { body: string; mailtoHref: string }
+				}
+			}
+		).contact
+		const serialized = JSON.stringify(result)
+
+		expect(contact.fields).toEqual([
+			expect.objectContaining({ label: 'Email', value: 'public-route@example.com' }),
+		])
+		expect(contact.unavailableFields).toEqual([
+			{ label: 'Personal email' },
+			{ label: 'mobile' },
+			{ label: 'KakaoTalk' },
+		])
+		expect(contact.request.body).toContain('[ ] Email\n[ ] Phone\n[ ] KakaoTalk')
+		expect(contact.request.body).not.toMatch(/^(?:To|Subject):/m)
+		expect(new URL(contact.request.mailtoHref).searchParams.get('body')).toBe(contact.request.body)
+		expect(serialized).not.toContain('https://public-route.example.com')
+		expect(serialized).not.toContain('private-route@example.com')
+		expect(serialized).not.toContain('+82 10 7654 3210')
+		expect(serialized).not.toContain('SecretHandle')
+	})
+
+	it('moves a granted field from the unavailable group to authorized details', async () => {
+		const { load } = await import('./+page.server')
+		const config = parseVisitorAuthConfig(testState.env, false)
+		const cookies = new TestCookies()
+		const grant = await createContactGrantToken(config, profile, ['private.url.KakaoTalk'], now)
+		const session = await createVisitorSessionToken(
+			config,
+			profile,
+			[{ fieldId: 'private.url.KakaoTalk', expiresAt: grant.expiresAt }],
+			now,
+		)
+		cookies.values.set('contact_visitor', session.token)
+
+		const result = await load({
+			cookies: cookies as unknown as Cookies,
+			setHeaders: vi.fn(),
+		} as never)
+
+		expect(result).toMatchObject({
+			contact: {
+				fields: expect.arrayContaining([
+					{
+						id: 'private.url.KakaoTalk',
+						label: 'KakaoTalk (SecretHandle)',
+						value: 'Open',
+						href: 'https://open.kakao.example/example#SecretHandle',
+					},
+				]),
+				unavailableFields: [{ label: 'Personal email' }, { label: 'mobile' }],
+			},
+		})
+	})
+
 	it('creates a signed link for the admin selection', async () => {
 		const { actions } = await import('./admin/+page.server')
 		const cookies = new TestCookies()

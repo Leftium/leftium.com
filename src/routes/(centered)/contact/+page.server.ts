@@ -3,6 +3,7 @@ import {
 	formatContactFieldValue,
 	selectContactFields,
 } from '$lib/contact/profile'
+import { buildContactRequestTemplate } from '$lib/contact/request'
 import {
 	createVisitorSessionToken,
 	loadVisitorAuthConfig,
@@ -15,31 +16,45 @@ import { fail } from '@sveltejs/kit'
 
 import { loadContactProfile } from './contact-profile.server'
 
+import type { ContactField } from '$lib/contact/types'
 import type { Actions, PageServerLoad } from './$types'
 
 export const load: PageServerLoad = async ({ cookies, setHeaders }) => {
 	const profile = loadContactProfile()
 	const visitorAccess = await resolveVisitorAccess(cookies, profile)
-	const fields = selectContactFields(profile, visitorAccess.authorization)
+	const authorizedFields = selectContactFields(profile, visitorAccess.authorization)
+	const authorizedFieldIds = new Set(authorizedFields.map(({ id }) => id))
+	const fields = authorizedFields.filter(isContactPageField).map((field) => {
+		const contactUrl = field.kind === 'url' && !field.public
+		return {
+			id: field.id,
+			label: formatContactFieldLabel(field),
+			value:
+				field.kind === 'photo'
+					? 'Included in downloaded vCard'
+					: contactUrl
+						? 'Open'
+						: formatContactFieldValue(field),
+			href: field.link,
+		}
+	})
+	const unavailableFields = profile.fields
 		.filter(
 			(field) =>
-				field.kind !== 'name' &&
-				(field.kind !== 'url' || (!field.public && Boolean(field.vcard.types?.length))),
+				isContactPageField(field) &&
+				!field.public &&
+				field.shareable &&
+				!authorizedFieldIds.has(field.id),
 		)
-		.map((field) => {
-			const contactUrl = field.kind === 'url' && !field.public && Boolean(field.vcard.types?.length)
-			return {
-				id: field.id,
-				label: formatContactFieldLabel(field),
-				value:
-					field.kind === 'photo'
-						? 'Included in downloaded vCard'
-						: contactUrl
-							? 'Open'
-							: formatContactFieldValue(field),
-				href: field.link,
-			}
-		})
+		.map(({ label }) => ({ label }))
+	const request =
+		profile.requestMethods.length === 0
+			? null
+			: buildContactRequestTemplate(
+					profile.displayName,
+					profile.requestEmail,
+					profile.requestMethods.map(({ label }) => label),
+				)
 
 	setHeaders({
 		'Cache-Control': 'private, no-store',
@@ -52,9 +67,14 @@ export const load: PageServerLoad = async ({ cookies, setHeaders }) => {
 			displayName: profile.displayName,
 			granted: visitorAccess.authorization.mode === 'visitor',
 			fields,
-			requestMethods: profile.requestMethods.map(({ label }) => ({ label })),
+			unavailableFields,
+			request,
 		},
 	}
+}
+
+function isContactPageField(field: ContactField): boolean {
+	return field.kind !== 'name' && field.kind !== 'photo' && !(field.public && field.kind === 'url')
 }
 
 export const actions = {
