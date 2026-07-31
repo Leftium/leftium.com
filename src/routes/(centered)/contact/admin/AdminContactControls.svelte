@@ -85,11 +85,11 @@
 	}
 
 	function sameFieldIds(left: string[] | undefined, right: string[]) {
-		return (
-			left !== undefined &&
-			left.length === right.length &&
-			left.every((fieldId, index) => fieldId === right[index])
-		)
+		if (left === undefined || left.length !== right.length) return false
+
+		const sortedLeft = [...left].sort()
+		const sortedRight = [...right].sort()
+		return sortedLeft.every((fieldId, index) => fieldId === sortedRight[index])
 	}
 
 	async function showQrError(failedUrl: string) {
@@ -202,7 +202,13 @@
 	<section class="grant-sharing" aria-labelledby="grant-sharing-heading">
 		<h2 id="grant-sharing-heading">Share selected private details by link</h2>
 		<p>The link can be claimed for seven days and grants access until the link expires.</p>
-		<form method="POST" action="?/createGrantLink" use:enhance>
+		<form
+			method="POST"
+			action="?/createGrantLink"
+			use:enhance={() =>
+				async ({ update }) =>
+					update({ invalidateAll: false, reset: false })}
+		>
 			{#each selectedPrivateFieldIds as fieldId (fieldId)}
 				<input type="hidden" name="field" value={fieldId} />
 			{/each}
