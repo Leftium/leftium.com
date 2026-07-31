@@ -8,6 +8,8 @@
 	const selectableIds = $derived(new Set(contact.allFieldIds))
 	let selectedFieldIds = $derived([...contact.defaultFieldIds])
 	let qrError = $state('')
+	let revealedFieldId = $state<string | null>(null)
+	let copyResult = $state<{ fieldId: string; status: 'copied' | 'failed' } | null>(null)
 
 	const hasSelection = $derived(selectedFieldIds.length > 0)
 	const hasAllSelected = $derived(
@@ -29,6 +31,19 @@
 	function applyPreset(fieldIds: string[]) {
 		const selectsEverything = contact.allFieldIds.every((id) => fieldIds.includes(id))
 		applySelection(selectsEverything && hasAllSelected ? [] : fieldIds)
+	}
+
+	function toggleFieldValue(fieldId: string) {
+		revealedFieldId = revealedFieldId === fieldId ? null : fieldId
+	}
+
+	async function copyFieldValue(fieldId: string, value: string) {
+		try {
+			await navigator.clipboard.writeText(value)
+			copyResult = { fieldId, status: 'copied' }
+		} catch {
+			copyResult = { fieldId, status: 'failed' }
+		}
 	}
 
 	function buildArtifactQuery(format?: 'svg') {
@@ -73,22 +88,53 @@
 	<fieldset>
 		<legend>Contact fields</legend>
 		{#each contact.fields as field (field.id)}
-			<label class:unshareable={!field.shareable}>
+			<div class="field-row" class:unshareable={!field.shareable}>
 				<input
+					id={`contact-field-${field.id}`}
 					type="checkbox"
 					value={field.id}
 					bind:group={selectedFieldIds}
 					disabled={!field.shareable}
 					onchange={() => (qrError = '')}
 				/>
-				<span class="field-details">
-					<span class="field-name">
+				<span class:has-value={revealedFieldId === field.id} class="field-details">
+					<label class="field-name" for={`contact-field-${field.id}`}>
 						<strong>{field.label}</strong>
 						{#if field.public}<small>Public</small>{/if}
-					</span>
-					<span class="field-value">{field.value}</span>
+					</label>
+					{#if revealedFieldId === field.id}
+						<span class="field-value">{field.value}</span>
+					{/if}
 				</span>
-			</label>
+				<span class="field-actions">
+					<button
+						type="button"
+						class="field-action value-toggle"
+						aria-label={`${revealedFieldId === field.id ? 'Hide' : 'Show'} ${field.label} value`}
+						aria-pressed={revealedFieldId === field.id}
+						onclick={() => toggleFieldValue(field.id)}
+					>
+						{revealedFieldId === field.id ? 'Hide' : 'Show'}
+					</button>
+					<button
+						type="button"
+						class="field-action"
+						aria-label={copyResult?.fieldId === field.id
+							? copyResult.status === 'copied'
+								? `Copied ${field.label} value`
+								: `Copy failed. Retry copying ${field.label} value`
+							: `Copy ${field.label} value`}
+						aria-live="polite"
+						onclick={() => copyFieldValue(field.id, field.value)}
+					>
+						{copyResult?.fieldId === field.id
+							? copyResult.status === 'copied'
+								? 'Copied'
+								: 'Retry'
+							: 'Copy'}
+					</button>
+				</span>
+			</div>
 		{/each}
 	</fieldset>
 
@@ -144,9 +190,9 @@
 		text-align: left;
 	}
 
-	fieldset label {
+	.field-row {
 		display: grid;
-		grid-template-columns: auto 1fr;
+		grid-template-columns: auto minmax(0, 1fr) auto;
 		gap: var(--size-2);
 		align-items: start;
 		padding: var(--size-1) var(--size-2);
@@ -154,11 +200,11 @@
 		line-height: 1.25;
 	}
 
-	fieldset label:hover {
+	.field-row:hover {
 		background: var(--gray-1);
 	}
 
-	fieldset label.unshareable {
+	.field-row.unshareable {
 		opacity: 0.6;
 	}
 
@@ -174,9 +220,13 @@
 
 	.field-details {
 		display: grid;
-		grid-template-columns: minmax(7rem, 0.45fr) minmax(0, 1fr);
+		grid-template-columns: minmax(0, 1fr);
 		gap: var(--size-2);
 		align-items: baseline;
+	}
+
+	.field-details.has-value {
+		grid-template-columns: minmax(7rem, 0.45fr) minmax(0, 1fr);
 	}
 
 	.field-name {
@@ -188,8 +238,22 @@
 		color: var(--gray-7);
 	}
 
+	.field-actions {
+		display: flex;
+		gap: var(--size-1);
+	}
+
+	.field-action {
+		padding: 0 var(--size-2);
+		font-size: var(--font-size-0);
+	}
+
+	.value-toggle {
+		inline-size: 3.5rem;
+	}
+
 	@media (max-width: 30rem) {
-		.field-details {
+		.field-details.has-value {
 			grid-template-columns: minmax(0, 1fr);
 			gap: 0;
 		}

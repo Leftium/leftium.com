@@ -51,7 +51,7 @@ Out of scope:
 - [`+page.svelte`](<../src/routes/(centered)/contact/+page.svelte>) renders the public fields, vCard download, QR code, and a small link to `/contact/admin`.
 - [`contact-info.server.example.toml`](<../src/routes/(centered)/contact/contact-info.server.example.toml>) documents concise public and private fields, named sets, and the optional `qr_as_address` compatibility override. Local development can load an ignored private TOML file; deployments load the same TOML text from the `CONTACT_INFO_TOML` runtime secret.
 - [`/contact/admin`](<../src/routes/(centered)/contact/admin/+page.svelte>) provides access-key login, a single "Log out of admin mode" control, 10-minute mobile login links, and the full-width field-selection interface.
-- [`AdminContactControls.svelte`](<../src/routes/(centered)/contact/admin/AdminContactControls.svelte>) provides dense field rows, wrapping labels, named presets, arbitrary checkbox edits, and direct vCard and QR output. A preset containing every shareable field clears the selection when everything is already checked, and oversized QR selections show an actionable error without disabling vCard download.
+- [`AdminContactControls.svelte`](<../src/routes/(centered)/contact/admin/AdminContactControls.svelte>) provides dense field rows, wrapping labels, named presets, arbitrary checkbox edits, and direct vCard and QR output. Field values are hidden by default, with per-field reveal and copy actions; revealing one field hides the previous value. A preset containing every shareable field clears the selection when everything is already checked, and oversized QR selections show an actionable error without disabling vCard download.
 - [`/api/vcard`](../src/routes/api/vcard/+server.ts) uses public authorization by default, accepts explicit field selections only from an authenticated admin, and serializes download and QR representations separately.
 - [`qr.ts`](../src/lib/qr.ts) encodes QR input as UTF-8 bytes so non-ASCII contact text survives scanning.
 - [`admin-auth.server.ts`](../src/lib/contact/admin-auth.server.ts) implements high-entropy access-key verification, one-year admin sessions, and 10-minute bootstrap tokens with distinct token claims.
@@ -592,7 +592,7 @@ Do not remove the old construction path until the new public vCard and QR behavi
 - [x] Add 10-minute mobile-login links and QR codes using a distinct bootstrap token.
 - [x] Return the complete profile and named sets only in admin mode.
 - [x] Build field selection, preset application, direct vCard download, and direct QR display.
-- [x] Refine the admin UI with one logout control, dense wrapping field rows, full-width layout, and all-fields deselection.
+- [x] Refine the admin UI with one logout control, dense wrapping field rows, default-hidden values, per-field reveal and copy actions, full-width layout, and all-fields deselection.
 - [ ] Add the signed access-link action and copy interaction.
 
 ### Phase 4: Visitor Grants
