@@ -13,7 +13,7 @@
 <!-- eslint-disable svelte/no-at-html-tags -- developer-authored markdown, not user input -->
 <scope-css>
 	<section class="consulting-intro">
-		<h1>Stuck? Working on something important?</h1>
+		<h1>Stuck? Need something important done right?</h1>
 		<p>
 			Some problems don't fit neatly into people, products, or technology. I'm a full-stack
 			SvelteKit developer who obsesses over UX and finds unconventional solutions. I work across
