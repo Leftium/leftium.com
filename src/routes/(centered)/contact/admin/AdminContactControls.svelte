@@ -1,18 +1,31 @@
 <script lang="ts">
 	import { enhance } from '$app/forms'
 	import { resolve } from '$app/paths'
+	import { tick } from 'svelte'
 
 	import type { ActionData, PageData } from './$types'
 
 	let { contact, form }: { contact: PageData['contact']; form: ActionData | null } = $props()
 
 	const selectableIds = $derived(new Set(contact.allFieldIds))
+	const privateFieldIds = $derived(
+		new Set(
+			contact.fields.filter((field) => !field.public && field.shareable).map((field) => field.id),
+		),
+	)
 	let selectedFieldIds = $derived([...contact.defaultFieldIds])
 	let qrError = $state('')
 	let revealedFieldId = $state<string | null>(null)
 	let copyResult = $state<{ fieldId: string; status: 'copied' | 'failed' } | null>(null)
 	let grantCopyStatus = $state('')
+	let grantDialog = $state<HTMLDialogElement>()
 	let grantLinkInput = $state<HTMLInputElement>()
+
+	$effect(() => {
+		if (form?.action !== 'createGrantLink') return
+
+		void showGrantDialog()
+	})
 
 	const hasSelection = $derived(selectedFieldIds.length > 0)
 	const selectedPrivateFieldIds = $derived(
@@ -25,8 +38,12 @@
 		contact.allFieldIds.length > 0 &&
 			contact.allFieldIds.every((id) => selectedFieldIds.includes(id)),
 	)
-	const hasEverythingPreset = $derived(
-		contact.sets.some((set) => contact.allFieldIds.every((id) => set.fieldIds.includes(id))),
+	const hasAllPublicSelected = $derived(
+		contact.defaultFieldIds.length > 0 &&
+			contact.defaultFieldIds.every((id) => selectedFieldIds.includes(id)),
+	)
+	const namedPresets = $derived(
+		contact.sets.filter((set) => !contact.allFieldIds.every((id) => set.fieldIds.includes(id))),
 	)
 	const vcardQuery = $derived(buildArtifactQuery())
 	const qrQuery = $derived(buildArtifactQuery('svg'))
@@ -38,9 +55,63 @@
 		selectedFieldIds = [...new Set(fieldIds.filter((id) => selectableIds.has(id)))]
 	}
 
-	function applyPreset(fieldIds: string[]) {
-		const selectsEverything = contact.allFieldIds.every((id) => fieldIds.includes(id))
-		applySelection(selectsEverything && hasAllSelected ? [] : fieldIds)
+	function toggleAllFields() {
+		applySelection(hasAllSelected ? [] : contact.allFieldIds)
+	}
+
+	function togglePublicFields() {
+		toggleFieldGroup(contact.defaultFieldIds)
+	}
+
+	function toggleFieldGroup(fieldIds: string[]) {
+		const fieldIdSet = new Set(fieldIds)
+		applySelection(
+			hasEverySelectedField(fieldIds)
+				? selectedFieldIds.filter((id) => !fieldIdSet.has(id))
+				: [...selectedFieldIds, ...fieldIds],
+		)
+	}
+
+	function hasEverySelectedField(fieldIds: string[]) {
+		return fieldIds.length > 0 && fieldIds.every((id) => selectedFieldIds.includes(id))
+	}
+
+	function applyNamedPreset(set: PageData['contact']['sets'][number]) {
+		if (set.id === 'korea') {
+			toggleFieldGroup(set.fieldIds.filter((id) => privateFieldIds.has(id)))
+			return
+		}
+
+		applySelection(set.fieldIds)
+	}
+
+	function openQrDialog(event: MouseEvent) {
+		const dialog = document.querySelector<HTMLDialogElement>('#admin-contact-qr-dialog')
+		if (!dialog || typeof dialog.showModal !== 'function') return
+
+		event.preventDefault()
+		if (!dialog.open) dialog.showModal()
+	}
+
+	function closeDialogOnBackdrop(event: MouseEvent) {
+		const dialog = event.currentTarget
+		if (!(dialog instanceof HTMLDialogElement) || event.target !== dialog) return
+
+		const bounds = dialog.getBoundingClientRect()
+		const outsideDialog =
+			event.clientX < bounds.left ||
+			event.clientX > bounds.right ||
+			event.clientY < bounds.top ||
+			event.clientY > bounds.bottom
+		if (outsideDialog) dialog.close()
+	}
+
+	async function showGrantDialog() {
+		await tick()
+		if (!grantDialog || typeof grantDialog.showModal !== 'function') return
+
+		if (grantDialog.open) grantDialog.close()
+		grantDialog.showModal()
 	}
 
 	function toggleFieldValue(fieldId: string) {
@@ -109,19 +180,24 @@
 	}
 </script>
 
-<section class="admin-controls" aria-labelledby="admin-contact-heading">
-	<h2 id="admin-contact-heading">Choose details to share</h2>
+<section class="admin-controls">
+	<h1>Contact Admin</h1>
+	<p class="subtitle">Choose details to share</p>
 
 	<div class="presets" aria-label="Contact field presets">
-		<button type="button" onclick={() => applySelection(contact.defaultFieldIds)}
-			>Public only</button
+		<button type="button" aria-pressed={hasAllSelected} onclick={toggleAllFields}>All</button>
+		<button type="button" aria-pressed={hasAllPublicSelected} onclick={togglePublicFields}
+			>Public</button
 		>
-		{#each contact.sets as set (set.id)}
-			<button type="button" onclick={() => applyPreset(set.fieldIds)}>{set.label}</button>
+		{#each namedPresets as set (set.id)}
+			<button
+				type="button"
+				aria-pressed={set.id === 'korea'
+					? hasEverySelectedField(set.fieldIds.filter((id) => privateFieldIds.has(id)))
+					: undefined}
+				onclick={() => applyNamedPreset(set)}>{set.label}</button
+			>
 		{/each}
-		{#if !hasEverythingPreset}
-			<button type="button" onclick={() => applyPreset(contact.allFieldIds)}>Everything</button>
-		{/if}
 	</div>
 
 	<fieldset>
@@ -180,13 +256,41 @@
 		{/each}
 	</fieldset>
 
-	<section class="artifacts" aria-labelledby="admin-card-heading">
-		<h2 id="admin-card-heading">Selected digital business card</h2>
+	<div class="artifacts" aria-label="Selected contact card actions">
 		{#if hasSelection}
 			<a class="button" href={resolve(`/api/vcard?${vcardQuery}`)} data-sveltekit-reload download
 				>Download selected vCard</a
 			>
-			<h3>Or scan this QR code</h3>
+			<a class="button" href={qrUrl} rel="external" data-sveltekit-reload onclick={openQrDialog}
+				>QR code</a
+			>
+		{:else}
+			<p>Select at least one contact field to create a vCard or QR code.</p>
+		{/if}
+		<form
+			method="POST"
+			action="?/createGrantLink"
+			use:enhance={() => {
+				grantCopyStatus = ''
+				return async ({ update }) => update({ invalidateAll: false, reset: false })
+			}}
+		>
+			{#each selectedPrivateFieldIds as fieldId (fieldId)}
+				<input type="hidden" name="field" value={fieldId} />
+			{/each}
+			<button class="button grant-action" type="submit" disabled={!hasPrivateSelection}
+				>Create visitor link</button
+			>
+		</form>
+	</div>
+
+	<dialog
+		id="admin-contact-qr-dialog"
+		aria-labelledby="admin-contact-qr-heading"
+		onclick={closeDialogOnBackdrop}
+	>
+		<h2 id="admin-contact-qr-heading">Selected contact QR code</h2>
+		{#if hasSelection}
 			<img
 				class:failed={qrError}
 				src={qrUrl}
@@ -194,63 +298,88 @@
 				onerror={(event) => void showQrError(event.currentTarget.getAttribute('src') ?? qrUrl)}
 			/>
 			{#if qrError}<p class="qr-error" aria-live="polite">{qrError}</p>{/if}
-		{:else}
-			<p>Select at least one contact field to create a vCard or QR code.</p>
 		{/if}
-	</section>
-
-	<section class="grant-sharing" aria-labelledby="grant-sharing-heading">
-		<h2 id="grant-sharing-heading">Share selected private details by link</h2>
-		<p>The link can be claimed for seven days and grants access until the link expires.</p>
-		<form
-			method="POST"
-			action="?/createGrantLink"
-			use:enhance={() =>
-				async ({ update }) =>
-					update({ invalidateAll: false, reset: false })}
-		>
-			{#each selectedPrivateFieldIds as fieldId (fieldId)}
-				<input type="hidden" name="field" value={fieldId} />
-			{/each}
-			<button class="grant-action" type="submit" disabled={!hasPrivateSelection}
-				>Create visitor link</button
-			>
+		<p>Scan to add the selected contact details for {contact.displayName}.</p>
+		<form method="dialog">
+			<button class="button" type="submit">Close</button>
 		</form>
+	</dialog>
 
-		{#if form?.action === 'createGrantLink' && 'grantLink' in form && sameFieldIds(form.grantFieldIds, selectedPrivateFieldIds)}
-			<div class="generated-grant">
-				<label for="visitor-grant-link">Visitor link, claimable for {form.expiresInDays} days</label
-				>
-				<div class="copy-row">
-					<input
-						id="visitor-grant-link"
-						type="text"
-						readonly
-						value={form.grantLink}
-						bind:this={grantLinkInput}
-						onfocus={(event) => event.currentTarget.select()}
-					/>
-					<button type="button" onclick={() => copyGrantLink(form.grantLink)}>Copy link</button>
+	{#if form?.action === 'createGrantLink'}
+		<dialog
+			open
+			aria-labelledby="visitor-link-heading"
+			bind:this={grantDialog}
+			onclick={closeDialogOnBackdrop}
+		>
+			<h2 id="visitor-link-heading">Visitor link</h2>
+			{#if 'grantLink' in form && sameFieldIds(form.grantFieldIds, selectedPrivateFieldIds)}
+				<p>
+					This link can be claimed for {form.expiresInDays} days and grants access until the link expires.
+				</p>
+				<div class="generated-grant">
+					<label for="visitor-grant-link">Visitor link</label>
+					<div class="copy-row">
+						<input
+							id="visitor-grant-link"
+							type="text"
+							readonly
+							value={form.grantLink}
+							bind:this={grantLinkInput}
+							onfocus={(event) => event.currentTarget.select()}
+						/>
+						<button type="button" onclick={() => copyGrantLink(form.grantLink)}>Copy link</button>
+					</div>
+					{#if grantCopyStatus}
+						<p class="copy-status" aria-live="polite">{grantCopyStatus}</p>
+					{/if}
 				</div>
-				{#if grantCopyStatus}
-					<p class="copy-status" aria-live="polite">{grantCopyStatus}</p>
-				{/if}
-			</div>
-		{:else if form?.action === 'createGrantLink' && 'grantLink' in form}
-			<p class="form-error">The selection changed. Create a new visitor link.</p>
-		{:else if form?.action === 'createGrantLink' && 'unauthorized' in form}
-			<p class="form-error">Your admin session is no longer valid. Log in again.</p>
-		{:else if form?.action === 'createGrantLink' && 'unavailable' in form}
-			<p class="form-error">Visitor link signing is not configured.</p>
-		{:else if form?.action === 'createGrantLink' && 'invalidSelection' in form}
-			<p class="form-error">Select at least one private contact field and try again.</p>
-		{/if}
-	</section>
+			{:else if 'grantLink' in form}
+				<p class="form-error">The selection changed. Create a new visitor link.</p>
+			{:else if 'unauthorized' in form}
+				<p class="form-error">Your admin session is no longer valid. Log in again.</p>
+			{:else if 'unavailable' in form}
+				<p class="form-error">Visitor link signing is not configured.</p>
+			{:else if 'invalidSelection' in form}
+				<p class="form-error">Select at least one private contact field and try again.</p>
+			{/if}
+			<form method="dialog">
+				<button class="button" type="submit">Close</button>
+			</form>
+		</dialog>
+	{/if}
 </section>
 
 <style>
 	.admin-controls {
-		margin-top: var(--size-6);
+		margin-top: 0;
+		padding-bottom: var(--size-5);
+		border-bottom: 1px solid var(--gray-4);
+	}
+
+	.admin-controls > h1 {
+		margin-bottom: var(--size-2);
+	}
+
+	.subtitle {
+		margin: 0;
+		color: var(--gray-7);
+	}
+
+	.artifacts {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: var(--size-3);
+		margin: var(--size-4) 0 0;
+	}
+
+	.artifacts form {
+		margin: 0;
+	}
+
+	.artifacts p {
+		margin: 0;
 	}
 
 	.presets {
@@ -349,16 +478,6 @@
 		}
 	}
 
-	.artifacts {
-		margin-top: var(--size-6);
-	}
-
-	.grant-sharing {
-		margin-top: var(--size-7);
-		padding-top: var(--size-4);
-		border-top: 1px solid var(--gray-4);
-	}
-
 	.grant-action {
 		border-color: var(--blue-9);
 		background: var(--blue-8);
@@ -366,7 +485,8 @@
 		font-weight: var(--font-weight-6);
 	}
 
-	.grant-action:disabled {
+	.grant-action:disabled,
+	.grant-action:disabled:hover {
 		border-color: var(--gray-5);
 		background: var(--gray-3);
 		color: var(--gray-7);
@@ -385,6 +505,15 @@
 		display: grid;
 		grid-template-columns: minmax(0, 1fr) auto;
 		gap: var(--size-2);
+		align-items: stretch;
+	}
+
+	.copy-row input,
+	.copy-row button {
+		box-sizing: border-box;
+		margin: 0;
+		font: inherit;
+		line-height: 1.5;
 	}
 
 	.copy-row input {
@@ -402,14 +531,21 @@
 	}
 
 	.button {
-		display: inline-block;
+		box-sizing: border-box;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		margin: 0;
 		padding: var(--size-2) var(--size-4);
 		border: 1px solid var(--blue-9);
 		border-radius: var(--radius-2);
 		background: var(--blue-8);
 		color: white;
+		font: inherit;
 		font-weight: var(--font-weight-6);
+		line-height: 1.5;
 		text-decoration: none;
+		cursor: pointer;
 		box-shadow: var(--shadow-2);
 	}
 
@@ -417,15 +553,38 @@
 		background: var(--blue-9);
 	}
 
-	img {
+	dialog {
+		box-sizing: border-box;
+		width: min(calc(100% - var(--size-6)), 30rem);
+		max-width: none;
+		padding: var(--size-5);
+		border: 0;
+		border-radius: var(--radius-3);
+		text-align: center;
+		box-shadow: var(--shadow-5);
+	}
+
+	dialog::backdrop {
+		background: rgb(0 0 0 / 60%);
+	}
+
+	dialog h2 {
+		margin-top: 0;
+	}
+
+	dialog img {
 		display: block;
-		width: min(100%, 24rem);
+		width: min(100%, 20rem);
 		height: auto;
 		margin: var(--size-3) auto 0;
 	}
 
-	img.failed {
+	dialog img.failed {
 		display: none;
+	}
+
+	dialog form {
+		margin-top: var(--size-4);
 	}
 
 	.qr-error {

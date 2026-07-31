@@ -50,8 +50,8 @@ Out of scope:
 - [`+page.server.ts`](<../src/routes/(centered)/contact/+page.server.ts>) returns authorized contact values, base labels for unavailable shareable fields, and request-template output without serializing unauthorized private values. The public website remains omitted from the visible contact list.
 - [`+page.svelte`](<../src/routes/(centered)/contact/+page.svelte>) keeps vCard and QR actions directly below the page title, opens QR output in a labeled dismissible native dialog with a direct-link fallback, groups unavailable field labels in a centered responsive layout of up to four columns, offers email and copy request-template actions without another section heading, and keeps a small link to `/contact/admin`.
 - [`contact-info.server.example.toml`](<../src/routes/(centered)/contact/contact-info.server.example.toml>) documents concise public and private fields, the bank preset, named sets, and the optional `qr_as_address` compatibility override. Local development can load an ignored private TOML file; deployments load the same TOML text from the `CONTACT_INFO_TOML` runtime secret.
-- [`/contact/admin`](<../src/routes/(centered)/contact/admin/+page.svelte>) provides access-key login, a single "Log out of admin mode" control, 10-minute mobile login links, and the full-width field-selection interface.
-- [`AdminContactControls.svelte`](<../src/routes/(centered)/contact/admin/AdminContactControls.svelte>) provides dense field rows, wrapping labels, named presets, arbitrary checkbox edits, and direct vCard and QR output. Field values are hidden by default, with per-field reveal and copy actions; revealing one field hides the previous value. A preset containing every shareable field clears the selection when everything is already checked, and oversized QR selections show an actionable error without disabling vCard download.
+- [`/contact/admin`](<../src/routes/(centered)/contact/admin/+page.svelte>) provides access-key login, bottom-aligned mobile-login and logout actions, a modal 10-minute mobile-login result, and the full-width field-selection interface. The public-page link is centered below the session actions.
+- [`AdminContactControls.svelte`](<../src/routes/(centered)/contact/admin/AdminContactControls.svelte>) keeps selected vCard, QR, and visitor-link actions together below the field list, enhances QR and visitor-link results into labeled native dialogs, and provides dense field rows, wrapping labels, named presets, and arbitrary checkbox edits. Field values are hidden by default, with per-field reveal and copy actions; revealing one field hides the previous value. `All` toggles every shareable field, `Public` toggles public fields without disturbing private selections, and `Korea` toggles only its private Korea-specific fields. The sharing actions sit above the separator from the bottom session actions, and oversized QR selections show an actionable error without disabling vCard download.
 - [`/api/vcard`](../src/routes/api/vcard/+server.ts) uses public authorization by default, accepts explicit field selections only from an authenticated admin, and serializes download and QR representations separately.
 - [`qr.ts`](../src/lib/qr.ts) encodes QR input as UTF-8 bytes so non-ASCII contact text survives scanning.
 - [`admin-auth.server.ts`](../src/lib/contact/admin-auth.server.ts) implements high-entropy access-key verification, one-year admin sessions, and 10-minute bootstrap tokens with distinct token claims.
@@ -76,25 +76,28 @@ Out of scope:
 
 ## Design Decisions
 
-| Decision                 | Class                   | Choice                                                                       | Rationale                                                                                                                                            |
-| ------------------------ | ----------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Initial sharing channels | Design coherence        | Direct vCard QR in person and signed access links remotely                   | These cover the expected face-to-face and remote cases without adding a rarely used short-code flow.                                                 |
-| Admin credential         | Taste under constraints | Random 128-bit-or-stronger admin access key                                  | A high-entropy key can use fast verification and does not need password-strength rules or an adaptive password hash.                                 |
-| Credential separation    | Design coherence        | Separate admin access, admin-session, and grant-signing secrets              | Compromise of an entered admin credential must not directly reveal the key used to forge visitor grants.                                             |
-| Admin session lifetime   | Taste under constraints | One year                                                                     | This is a single-admin personal site, and avoiding frequent reauthentication is worth the lost-device risk.                                          |
-| Grant storage            | Design coherence        | Stateless signed token                                                       | Links can carry field IDs and expiration without carrying contact values or requiring a database.                                                    |
-| Grant claim lifetime     | Taste under constraints | Seven days                                                                   | Email recipients have time to open the link without making the bearer capability effectively permanent.                                              |
-| Visitor session lifetime | Design coherence        | Until each source grant expires                                              | Claiming or reclaiming a link never extends its authority, while a recipient can revisit without reopening the link.                                 |
-| Authoring format         | Evidence                | Minimal server-only TOML shorthand parsed into the internal TypeScript model | The file should state contact facts once; IDs, labels, visibility, links, vCard properties, and request mappings are inferred from their TOML paths. |
-| Photo handling           | Design coherence        | Embed the configured photo in downloaded vCards and omit it from QR vCards   | This preserves the current full-card behavior without exceeding practical QR payload size.                                                           |
-| QR note compatibility    | Evidence                | Allow custom fields to opt into `ADR;TYPE=OTHER` only in QR vCards           | iPhone Camera drops `NOTE` values but imports an `OTHER` address. Downloads keep the configured property, including `NOTE`.                          |
-| Public website display   | Taste under constraints | Keep URL fields in contact artifacts but omit them from `/contact` UI        | Repeating the current website on its own contact route adds noise without helping the visitor.                                                       |
-| Visitor QR presentation  | Design coherence        | Top-level QR link enhanced into a labeled native dialog                      | The common action stays near vCard download; without JavaScript or dialog support, the same link opens the existing SVG endpoint directly.           |
-| Visitor request UI       | Design coherence        | Email and body-only copy actions for one plain-text bracket checklist        | The same template works in email, chat, or another channel; the admin chooses the actual fields to grant.                                            |
-| Request import           | Design coherence        | Parse pasted request text locally into an editable suggestion                | This saves admin effort without treating visitor-edited text as trusted state.                                                                       |
-| Named sets               | Design coherence        | Admin-only presets using stable field IDs                                    | Sets speed common selections without limiting arbitrary combinations or becoming part of the security model.                                         |
-| Dynamic values           | Evidence                | Render as escaped Svelte values, not dynamic `{@html}`                       | Private contact data must not pass through the current developer-authored Markdown HTML path.                                                        |
-| Reusable package         | Deferred                | Preserve pure core boundaries but do not extract in v1                       | The route behavior should settle before its API is made public.                                                                                      |
+| Decision                  | Class                   | Choice                                                                       | Rationale                                                                                                                                            |
+| ------------------------- | ----------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Initial sharing channels  | Design coherence        | Direct vCard QR in person and signed access links remotely                   | These cover the expected face-to-face and remote cases without adding a rarely used short-code flow.                                                 |
+| Admin credential          | Taste under constraints | Random 128-bit-or-stronger admin access key                                  | A high-entropy key can use fast verification and does not need password-strength rules or an adaptive password hash.                                 |
+| Credential separation     | Design coherence        | Separate admin access, admin-session, and grant-signing secrets              | Compromise of an entered admin credential must not directly reveal the key used to forge visitor grants.                                             |
+| Admin session lifetime    | Taste under constraints | One year                                                                     | This is a single-admin personal site, and avoiding frequent reauthentication is worth the lost-device risk.                                          |
+| Grant storage             | Design coherence        | Stateless signed token                                                       | Links can carry field IDs and expiration without carrying contact values or requiring a database.                                                    |
+| Grant claim lifetime      | Taste under constraints | Seven days                                                                   | Email recipients have time to open the link without making the bearer capability effectively permanent.                                              |
+| Visitor session lifetime  | Design coherence        | Until each source grant expires                                              | Claiming or reclaiming a link never extends its authority, while a recipient can revisit without reopening the link.                                 |
+| Authoring format          | Evidence                | Minimal server-only TOML shorthand parsed into the internal TypeScript model | The file should state contact facts once; IDs, labels, visibility, links, vCard properties, and request mappings are inferred from their TOML paths. |
+| Photo handling            | Design coherence        | Embed the configured photo in downloaded vCards and omit it from QR vCards   | This preserves the current full-card behavior without exceeding practical QR payload size.                                                           |
+| QR note compatibility     | Evidence                | Allow custom fields to opt into `ADR;TYPE=OTHER` only in QR vCards           | iPhone Camera drops `NOTE` values but imports an `OTHER` address. Downloads keep the configured property, including `NOTE`.                          |
+| Public website display    | Taste under constraints | Keep URL fields in contact artifacts but omit them from `/contact` UI        | Repeating the current website on its own contact route adds noise without helping the visitor.                                                       |
+| Visitor QR presentation   | Design coherence        | Top-level QR link enhanced into a labeled native dialog                      | The common action stays near vCard download; without JavaScript or dialog support, the same link opens the existing SVG endpoint directly.           |
+| Admin QR presentation     | Design coherence        | Place selected artifact actions after selection and enhance QR into a dialog | The interface follows selection order while the direct filtered SVG endpoint remains the no-JavaScript fallback.                                     |
+| Visitor-link presentation | Design coherence        | Put creation beside vCard and QR, then show results in a native dialog       | Selection-dependent sharing actions stay together while explanation, copy controls, and errors appear only when relevant.                            |
+| Mobile-login presentation | Design coherence        | Generate from the bottom action row and show the result in a native dialog   | Expiration and security context stay with the generated link and QR without adding a permanent page section.                                         |
+| Visitor request UI        | Design coherence        | Email and body-only copy actions for one plain-text bracket checklist        | The same template works in email, chat, or another channel; the admin chooses the actual fields to grant.                                            |
+| Request import            | Design coherence        | Parse pasted request text locally into an editable suggestion                | This saves admin effort without treating visitor-edited text as trusted state.                                                                       |
+| Named sets                | Design coherence        | Admin-only presets using stable field IDs                                    | Sets speed common selections without limiting arbitrary combinations or becoming part of the security model.                                         |
+| Dynamic values            | Evidence                | Render as escaped Svelte values, not dynamic `{@html}`                       | Private contact data must not pass through the current developer-authored Markdown HTML path.                                                        |
+| Reusable package          | Deferred                | Preserve pure core boundaries but do not extract in v1                       | The route behavior should settle before its API is made public.                                                                                      |
 
 ## Contact Profile
 
@@ -569,10 +572,17 @@ The admin reviews the suggestion, chooses suitable fields, creates an access lin
 
 ### Admin
 
-- Show one explicit "Log out of admin mode" button.
+- Keep selected vCard download and QR actions directly below the field list.
+- Keep `Create visitor link` in the same action row, disabled until a private field is selected.
+- Show visitor-link explanation, generated output, copy controls, and action errors in a labeled, dismissible native dialog.
+- Enhance the selected QR link into a labeled, dismissible native dialog while retaining the direct SVG endpoint as its fallback.
+- Place `Create mobile login` and the single explicit `Log out of admin mode` button together near the bottom of the page.
+- Center the public contact-page link below those session actions.
 - Show all fields with values and selection checkboxes.
 - Offer named sets that replace the current selection with the set's field IDs.
-- When an all-fields preset is applied while every shareable field is selected, clear the selection.
+- Put `All` first and toggle every shareable field on or off.
+- Toggle public fields as a group without changing the current private-field selection.
+- Toggle the private Korea-specific fields as a group without changing public or unrelated private selections.
 - Allow the admin to adjust any preset arbitrarily.
 - Use dense, full-width field rows; align checkboxes to the first line and allow long labels to wrap.
 - Offer a plain-text request textarea that can apply checked methods as a suggested selection.
@@ -583,7 +593,7 @@ The admin reviews the suggestion, chooses suitable fields, creates an access lin
   - Copy seven-day access link.
 - Disable selection-dependent actions when no useful fields are selected.
 - Do not expose the admin access key after login.
-- Allow an authenticated admin to generate a 10-minute mobile-login link and QR code.
+- Allow an authenticated admin to generate a 10-minute mobile-login link and QR code in a labeled, dismissible native dialog that keeps the expiration and permanent-key security message visible.
 
 ## Request and Route Boundaries
 
@@ -657,6 +667,7 @@ Do not remove the old construction path until the new public vCard and QR behavi
 - [x] Return the complete profile and named sets only in admin mode.
 - [x] Build field selection, preset application, direct vCard download, and direct QR display.
 - [x] Refine the admin UI with one logout control, dense wrapping field rows, default-hidden values, per-field reveal and copy actions, full-width layout, and all-fields deselection.
+- [x] Group admin artifact and visitor-link actions below the field list, present their results and mobile-login QR codes in native dialogs, and move session navigation to the page footer.
 - [x] Add the signed access-link action and copy interaction.
 
 ### Phase 4: Visitor Grants
@@ -728,6 +739,11 @@ Do not remove the old construction path until the new public vCard and QR behavi
 - [x] A configured custom `NOTE` remains a note in downloads and can be represented as an `OTHER` address only in QR vCards.
 - [x] QR payloads preserve UTF-8 contact text.
 - [x] The admin can produce a vCard and direct vCard QR containing exactly the checked fields plus required identity fields, subject to the QR photo exclusion.
+- [x] The admin sees selected vCard and QR actions after the field list, with a labeled, backdrop-dismissible QR dialog and direct-link fallback.
+- [x] The admin creates visitor links from the same action row and sees the explanation, generated link, copy control, or action error in a dismissible dialog.
+- [x] The admin can toggle all public fields without changing selected private fields, or toggle every shareable field from the first preset control.
+- [x] The admin can toggle Korea-specific private fields without changing public or unrelated private selections.
+- [x] Mobile-login creation preserves the current contact selection and shows the link, expiration, security note, and QR code in a dismissible dialog.
 - [x] The admin can copy a signed link for the checked private fields.
 - [x] Opening a valid link grants only those fields until that link's expiration; reclaiming it does not extend access.
 - [x] Expired, modified, wrongly typed, or incompatible tokens do not reveal private data.
