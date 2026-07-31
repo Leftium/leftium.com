@@ -1,5 +1,6 @@
 import { parseContactProfileToml } from '$lib/contact/profile'
 import { dev } from '$app/environment'
+import { env } from '$env/dynamic/private'
 
 import type { ContactPhotoSource, ContactProfile } from '$lib/contact/types'
 
@@ -21,12 +22,13 @@ export function loadContactProfile(): ContactProfile {
 	if (cachedProfile) return cachedProfile
 
 	const source =
-		profileSources['./contact-info.server.toml'] ??
+		env.CONTACT_INFO_TOML?.trim() ||
+		profileSources['./contact-info.server.toml'] ||
 		(dev ? profileSources['./contact-info.server.example.toml'] : undefined)
 
 	if (!source) {
 		throw new Error(
-			'Contact profile is missing. Add the private contact-info.server.toml before running in production.',
+			'Contact profile is missing. Set CONTACT_INFO_TOML in the deployment environment or add the private contact-info.server.toml.',
 		)
 	}
 

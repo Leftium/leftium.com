@@ -49,7 +49,7 @@ Out of scope:
 
 - [`+page.server.ts`](<../src/routes/(centered)/contact/+page.server.ts>) returns public contact fields and public request-method labels without serializing private values. URL fields are omitted from this route's visible data.
 - [`+page.svelte`](<../src/routes/(centered)/contact/+page.svelte>) renders the public fields, vCard download, QR code, and a small link to `/contact/admin`.
-- [`contact-info.server.example.toml`](<../src/routes/(centered)/contact/contact-info.server.example.toml>) documents concise public and private fields, named sets, and the optional `qr_as_address` compatibility override.
+- [`contact-info.server.example.toml`](<../src/routes/(centered)/contact/contact-info.server.example.toml>) documents concise public and private fields, named sets, and the optional `qr_as_address` compatibility override. Local development can load an ignored private TOML file; deployments load the same TOML text from the `CONTACT_INFO_TOML` runtime secret.
 - [`/contact/admin`](<../src/routes/(centered)/contact/admin/+page.svelte>) provides access-key login, a single "Log out of admin mode" control, 10-minute mobile login links, and the full-width field-selection interface.
 - [`AdminContactControls.svelte`](<../src/routes/(centered)/contact/admin/AdminContactControls.svelte>) provides dense field rows, wrapping labels, named presets, arbitrary checkbox edits, and direct vCard and QR output. A preset containing every shareable field clears the selection when everything is already checked, and oversized QR selections show an actionable error without disabling vCard download.
 - [`/api/vcard`](../src/routes/api/vcard/+server.ts) uses public authorization by default, accepts explicit field selections only from an authenticated admin, and serializes download and QR representations separately.
@@ -99,7 +99,7 @@ Out of scope:
 
 The canonical authoring source is a server-only TOML file based on the existing `contact-info.server.example.toml`. The implementation parses and validates that text into the normalized TypeScript model used by the rest of the feature.
 
-The real TOML file and any private photo asset must follow the repository's private deployment process and must not be committed to a public repository. Keep a redacted example in version control. Editing the TOML or replacing its referenced photo takes effect after a rebuild or redeploy; runtime content management is out of scope.
+The real TOML file must not be committed to a public repository. Keep a redacted example in version control, use an ignored private file for local development, and store the complete TOML text in the `CONTACT_INFO_TOML` runtime secret for Cloudflare or Vercel. Editing the TOML or replacing its referenced photo takes effect after a rebuild or redeploy; runtime content management is out of scope.
 
 The common case should contain only facts that cannot be inferred:
 

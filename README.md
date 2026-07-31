@@ -29,7 +29,29 @@ npm run dev -- --open
 
 Copy `src/routes/(centered)/contact/contact-info.server.example.toml` to
 `contact-info.server.toml` in the same directory, then replace the redacted values. The private
-file is ignored by Git and required for production builds; development falls back to the example.
+file is ignored by Git. Development falls back to the redacted example when the private file is
+absent.
+
+Production deployments should store the complete contents of the private TOML as the
+`CONTACT_INFO_TOML` runtime secret. Do not commit the private file or put its values directly in
+`wrangler.toml`.
+
+For Cloudflare Workers:
+
+```sh
+pnpm exec wrangler secret put CONTACT_INFO_TOML \
+  < 'src/routes/(centered)/contact/contact-info.server.toml'
+```
+
+For Vercel production:
+
+```sh
+vercel env add CONTACT_INFO_TOML production \
+  < 'src/routes/(centered)/contact/contact-info.server.toml'
+```
+
+Add the Vercel variable separately for `preview` when preview deployments need the real profile.
+Redeploy after adding or changing the secret.
 
 The admin controls live at `/contact/admin`. Generate an access key and a separate
 session-signing secret:
