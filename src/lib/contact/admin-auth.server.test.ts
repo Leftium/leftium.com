@@ -121,30 +121,33 @@ describe('admin bootstrap tokens', () => {
 })
 
 describe('admin session cookies', () => {
-	it('sets a protected one-year cookie and clears it from the root path', () => {
-		const calls: unknown[][] = []
-		const cookies = {
-			set: (...arguments_: unknown[]) => calls.push(['set', ...arguments_]),
-			delete: (...arguments_: unknown[]) => calls.push(['delete', ...arguments_]),
-		} as unknown as Cookies
+	it.each([true, false])(
+		'sets and clears a protected one-year cookie with secure=%s',
+		(secureCookies) => {
+			const calls: unknown[][] = []
+			const cookies = {
+				set: (...arguments_: unknown[]) => calls.push(['set', ...arguments_]),
+				delete: (...arguments_: unknown[]) => calls.push(['delete', ...arguments_]),
+			} as unknown as Cookies
 
-		setAdminSessionCookie(cookies, 'signed-token', { ...createConfig(), secureCookies: true })
-		clearAdminSessionCookie(cookies)
+			setAdminSessionCookie(cookies, 'signed-token', { ...createConfig(), secureCookies })
+			clearAdminSessionCookie(cookies, secureCookies)
 
-		expect(calls).toEqual([
-			[
-				'set',
-				'contact_admin',
-				'signed-token',
-				{
-					httpOnly: true,
-					secure: true,
-					sameSite: 'lax',
-					path: '/',
-					maxAge: 365 * 24 * 60 * 60,
-				},
-			],
-			['delete', 'contact_admin', { path: '/' }],
-		])
-	})
+			expect(calls).toEqual([
+				[
+					'set',
+					'contact_admin',
+					'signed-token',
+					{
+						httpOnly: true,
+						secure: secureCookies,
+						sameSite: 'lax',
+						path: '/',
+						maxAge: 365 * 24 * 60 * 60,
+					},
+				],
+				['delete', 'contact_admin', { path: '/', secure: secureCookies }],
+			])
+		},
+	)
 })

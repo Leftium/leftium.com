@@ -181,7 +181,7 @@ export async function resolveAdminAccess(cookies: Cookies): Promise<AdminAccess>
 	if (!token) return { authorization: { mode: 'public' }, available: true }
 
 	if (!(await verifyAdminSessionToken(token, config))) {
-		clearAdminSessionCookie(cookies)
+		clearAdminSessionCookie(cookies, config.secureCookies)
 		return { authorization: { mode: 'public' }, available: true }
 	}
 
@@ -202,8 +202,8 @@ export function setAdminSessionCookie(
 	})
 }
 
-export function clearAdminSessionCookie(cookies: Cookies): void {
-	cookies.delete(ADMIN_COOKIE_NAME, { path: '/' })
+export function clearAdminSessionCookie(cookies: Cookies, secureCookies = !dev): void {
+	cookies.delete(ADMIN_COOKIE_NAME, { path: '/', secure: secureCookies })
 }
 
 function decodeHexDigest(value: string | undefined, name: string): Uint8Array {
