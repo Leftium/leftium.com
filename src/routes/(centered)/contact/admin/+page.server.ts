@@ -10,7 +10,11 @@ import {
 	verifyAdminAccessKey,
 	verifyAdminBootstrapToken,
 } from '$lib/contact/admin-auth.server'
-import { formatContactFieldValue, selectContactFields } from '$lib/contact/profile'
+import {
+	formatContactFieldLabel,
+	formatContactFieldValue,
+	selectContactFields,
+} from '$lib/contact/profile'
 import { buildQrSvg } from '$lib/qr'
 import { resolve } from '$app/paths'
 import { fail, redirect } from '@sveltejs/kit'
@@ -28,7 +32,7 @@ export const load: PageServerLoad = async ({ cookies, setHeaders }) => {
 				.filter((field) => field.kind !== 'name')
 				.map((field) => ({
 					id: field.id,
-					label: field.label,
+					label: formatContactFieldLabel(field),
 					value:
 						field.kind === 'photo'
 							? 'Include photo in downloaded vCard'

@@ -11,8 +11,11 @@ personal = "person@example.net"
 work = "person@work.example"
 
 [private.phone]
-korea = "+82 10 5555 6789"
-us = { value = "+1 212 555 6789", label = "US mobile", type = "cell" }
+"Korea mobile" = "+82 10 5555 6789"
+"US mobile" = "+1 212 555 6789"
+
+[private.url]
+KakaoTalk = "https://open.kakao.com/o/example#ExampleUser"
 
 [private.address.korea]
 street = "161 Sajik-ro, Jongno-gu"
@@ -22,9 +25,9 @@ country = "South Korea"
 
 # Some iPhone QR imports drop NOTE fields. This keeps the downloaded vCard note
 # while representing the same value as an "Other" address in QR vCards.
-[private.custom]
-bank = { value = "Bank account: Example Bank 123", label = "Bank account", vcard_property = "NOTE", qr_as_address = true }
+[private.custom.bank]
+"Bank account" = "Example Bank 123"
 
 [sets]
-korea = ["phone.korea", "address.korea"]
-business = ["email.work", "phone.us"]
+korea = ["phone.Korea mobile", "address.korea"]
+business = ["email.work", "phone.US mobile"]

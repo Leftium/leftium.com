@@ -162,6 +162,11 @@ export function formatContactFieldValue(field: ContactField): string {
 		.join(', ')
 }
 
+export function formatContactFieldLabel(field: ContactField): string {
+	const username = inferUrlUsername(field)
+	return username ? `${field.label} (${username})` : field.label
+}
+
 function parseNamespace(
 	namespace: TomlRecord,
 	visibility: 'public' | 'private',
@@ -198,7 +203,41 @@ function parseKind(
 	}
 
 	for (const [alias, value] of Object.entries(namedFields)) {
+		if (kind === 'custom' && alias === 'bank' && isRecord(value) && !isInlineField(value)) {
+			parseBankFields(value, `${baseId}.bank`, visibility === 'public', fields)
+			continue
+		}
 		fields.push(parseField(`${baseId}.${alias}`, kind, alias, value, visibility === 'public'))
+	}
+}
+
+function parseBankFields(
+	source: unknown,
+	baseId: string,
+	isPublic: boolean,
+	fields: ContactField[],
+): void {
+	const namedFields = expectRecord(source, baseId)
+	if (Object.keys(namedFields).length === 0) {
+		throw new ContactProfileError(`${baseId} must not be empty`)
+	}
+
+	for (const [alias, sourceValue] of Object.entries(namedFields)) {
+		const label = expectNonEmptyString(alias.trim(), `${baseId}.${alias} key`)
+		const value = expectNonEmptyString(sourceValue, `${baseId}.${alias}`)
+		fields.push({
+			id: `${baseId}.${alias}`,
+			kind: 'custom',
+			label,
+			value,
+			public: isPublic,
+			shareable: true,
+			vcard: {
+				property: 'NOTE',
+				value: `${label}: ${value}`,
+			},
+			qrAsAddress: true,
+		})
 	}
 }
 
@@ -209,21 +248,43 @@ function parseField(
 	source: unknown,
 	isPublic: boolean,
 ): ContactField {
+	const namedUrlShorthand =
+		kind === 'url' && !isPublic && alias !== undefined && typeof source === 'string'
+	const namedPhoneShorthand = kind === 'phone' && alias !== undefined && typeof source === 'string'
+	const phoneShorthand = namedPhoneShorthand ? parsePhoneShorthand(alias, `${id} key`) : undefined
 	const fieldSource = typeof source === 'string' ? { value: source } : expectRecord(source, id)
-	const label =
-		fieldSource.label === undefined
-			? inferLabel(alias, kind)
-			: expectNonEmptyString(fieldSource.label, `${id}.label`)
+	const label = namedUrlShorthand
+		? alias
+		: phoneShorthand
+			? phoneShorthand.label
+			: fieldSource.label === undefined
+				? inferLabel(alias, kind)
+				: expectNonEmptyString(fieldSource.label, `${id}.label`)
 	const shareable =
 		fieldSource.shareable === undefined
 			? true
 			: expectBoolean(fieldSource.shareable, `${id}.shareable`)
-	const explicitType =
+	const explicitTypeSource =
 		fieldSource.type === undefined
 			? undefined
-			: expectNonEmptyString(fieldSource.type, `${id}.type`).toUpperCase()
+			: expectNonEmptyString(fieldSource.type, `${id}.type`)
+	const explicitType = explicitTypeSource
+		? (knownVCardTypes.get(explicitTypeSource.toLowerCase()) ??
+			normalizeVCardTypeToken(explicitTypeSource, `${id}.type`))
+		: undefined
 	const inferredType = alias ? knownVCardTypes.get(alias.toLowerCase()) : undefined
-	const types = explicitType || inferredType ? [explicitType ?? inferredType!] : undefined
+	const shorthandType = namedUrlShorthand
+		? normalizeVCardTypeToken(alias, `${id} key`)
+		: phoneShorthand?.type
+	const shorthandUsername =
+		namedUrlShorthand && typeof source === 'string'
+			? parseUrlFragmentUsername(source, `${id}.value`)
+			: undefined
+	const usernameType = shorthandUsername
+		? normalizeVCardTypeToken(shorthandUsername, `${id}.value fragment`)
+		: undefined
+	const baseType = explicitType ?? shorthandType ?? inferredType
+	const types = baseType ? [`${baseType}${usernameType ? `-${usernameType}` : ''}`] : undefined
 	const qrAsAddress =
 		fieldSource.qr_as_address === undefined
 			? false
@@ -384,6 +445,18 @@ function parseRequestMethods(source: unknown, fields: ContactField[]): ContactRe
 		const overrideSource = overrides[kind]
 		const override =
 			overrideSource === undefined ? undefined : expectRecord(overrideSource, `requests.${kind}`)
+
+		if (kind === 'url' && override === undefined) {
+			methods.push(
+				...fieldsForKind.map((field) => ({
+					id: field.id.replace(/^private\./, ''),
+					label: field.label,
+					defaultFieldIds: [field.id],
+				})),
+			)
+			continue
+		}
+
 		const enabled =
 			override?.enabled === undefined
 				? true
@@ -410,8 +483,35 @@ function parseRequestMethods(source: unknown, fields: ContactField[]): ContactRe
 		})
 	}
 
+	const bankFields = privateFields.filter((field) => field.id.startsWith('private.custom.bank.'))
+	const bankOverrideSource = overrides.bank
+	const bankOverride =
+		bankOverrideSource === undefined ? undefined : expectRecord(bankOverrideSource, 'requests.bank')
+	const bankEnabled =
+		bankOverride?.enabled === undefined
+			? true
+			: expectBoolean(bankOverride.enabled, 'requests.bank.enabled')
+
+	if (bankEnabled && (bankFields.length > 0 || bankOverride?.fields !== undefined)) {
+		const defaultFieldIds =
+			bankOverride?.fields === undefined
+				? bankFields.map((field) => field.id)
+				: parseReferenceList(bankOverride.fields, fields, 'requests.bank.fields')
+		if (defaultFieldIds.length === 0) {
+			throw new ContactProfileError('requests.bank resolves to no private fields')
+		}
+		methods.push({
+			id: 'bank',
+			label:
+				bankOverride?.label === undefined
+					? 'Bank'
+					: expectNonEmptyString(bankOverride.label, 'requests.bank.label'),
+			defaultFieldIds: [...new Set(defaultFieldIds)],
+		})
+	}
+
 	for (const [id, overrideSource] of Object.entries(overrides)) {
-		if (standardKinds.includes(id as (typeof standardKinds)[number])) continue
+		if (standardKinds.includes(id as (typeof standardKinds)[number]) || id === 'bank') continue
 		const override = expectRecord(overrideSource, `requests.${id}`)
 		const enabled =
 			override.enabled === undefined
@@ -503,6 +603,72 @@ function inferLink(kind: ContactFieldKind, value: string): string | undefined {
 	if (kind === 'phone') return `tel:${value.replace(/[^\d+]/g, '')}`
 	if (kind === 'url') return value
 	return undefined
+}
+
+function parsePhoneShorthand(alias: string, path: string): { label: string; type: string } {
+	const separatorIndex = alias.indexOf(':')
+	if (separatorIndex >= 0) {
+		const typePrefix = alias.slice(0, separatorIndex).trim().toLowerCase()
+		const type = knownVCardTypes.get(typePrefix)
+		if (type) {
+			return {
+				label: expectNonEmptyString(alias.slice(separatorIndex + 1).trim(), `${path} label`),
+				type,
+			}
+		}
+	}
+
+	return {
+		label: expectNonEmptyString(alias.trim(), `${path} label`),
+		type: 'CELL',
+	}
+}
+
+function normalizeVCardTypeToken(value: string, path: string): string {
+	const token = value
+		.normalize('NFKD')
+		.replace(/[\u0300-\u036f]/g, '')
+		.replace(/[^A-Za-z0-9]+/g, '-')
+		.replace(/^-+|-+$/g, '')
+
+	if (!token) {
+		throw new ContactProfileError(`${path} must contain a letter or number`)
+	}
+	return token
+}
+
+function parseUrlFragmentUsername(value: string, path: string): string | undefined {
+	let url: URL
+	try {
+		url = new URL(value)
+	} catch {
+		throw new ContactProfileError(`${path} must be an absolute URL`)
+	}
+	if (!url.hash || url.hash === '#') return undefined
+
+	try {
+		return decodeURIComponent(url.hash.slice(1)).trim() || undefined
+	} catch {
+		throw new ContactProfileError(`${path} must contain a valid encoded URL fragment`)
+	}
+}
+
+function inferUrlUsername(field: ContactField): string | undefined {
+	if (field.kind !== 'url' || typeof field.value !== 'string') return undefined
+
+	let username
+	try {
+		username = parseUrlFragmentUsername(field.value, field.id)
+	} catch {
+		return undefined
+	}
+	if (!username) return undefined
+
+	const expectedType = `${normalizeVCardTypeToken(field.label, field.id)}-${normalizeVCardTypeToken(
+		username,
+		field.id,
+	)}`
+	return field.vcard.types?.includes(expectedType) ? username : undefined
 }
 
 function isInlineField(value: unknown): boolean {

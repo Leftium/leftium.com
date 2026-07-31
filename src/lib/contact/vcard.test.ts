@@ -18,8 +18,15 @@ street = "123 Example St; Suite 4"
 city = "Example City"
 country = "Example Country"
 
-[private.custom]
-bank = { value = "Bank account: Example Bank 123", label = "Bank account", vcard_property = "NOTE", qr_as_address = true }
+[private.url]
+KakaoTalk = "https://open.kakao.example/example#Leftium"
+
+[private.phone]
+"Korea mobile" = "+82 10 5555 6789"
+"fax:   Korea office" = "+82 2 5555 6789"
+
+[private.custom.bank]
+"Bank account" = "Example Bank 123"
 	`,
 	{
 		resolvePhoto: () => ({
@@ -54,7 +61,9 @@ describe('buildVCard', () => {
 	})
 
 	it('keeps a standard bank note in downloads and uses an address in QR vCards', () => {
-		const fields = selectContactFields(profile, { mode: 'admin' }, ['private.custom.bank'])
+		const fields = selectContactFields(profile, { mode: 'admin' }, [
+			'private.custom.bank.Bank account',
+		])
 		const downloadedVcard = buildVCard(fields)
 		const qrVcard = buildVCard(fields, { includePhoto: false, representation: 'qr' })
 
@@ -63,6 +72,27 @@ describe('buildVCard', () => {
 		expect(qrVcard).toContain('ADR;TYPE=OTHER:;;Bank account: Example Bank 123;;;;\r\n')
 		expect(qrVcard).not.toContain('NOTE:Bank account')
 		expect(buildVCardQrSvg(qrVcard)).toContain('<svg')
+	})
+
+	it('keeps URL username casing in vCard types and appends it as a URL fallback', () => {
+		const fields = selectContactFields(profile, { mode: 'admin' }, ['private.url.KakaoTalk'])
+		const downloadedVcard = buildVCard(fields)
+		const qrVcard = buildVCard(fields, { includePhoto: false, representation: 'qr' })
+		const expectedUrl = 'URL;TYPE=KakaoTalk-Leftium:https://open.kakao.example/example#Leftium\r\n'
+
+		expect(downloadedVcard).toContain(expectedUrl)
+		expect(qrVcard).toContain(expectedUrl)
+	})
+
+	it('serializes default mobile and prefixed fax phone types', () => {
+		const fields = selectContactFields(profile, { mode: 'admin' }, [
+			'private.phone.Korea mobile',
+			'private.phone.fax:   Korea office',
+		])
+		const vcard = buildVCard(fields)
+
+		expect(vcard).toContain('TEL;TYPE=CELL:+82 10 5555 6789\r\n')
+		expect(vcard).toContain('TEL;TYPE=FAX:+82 2 5555 6789\r\n')
 	})
 })
 

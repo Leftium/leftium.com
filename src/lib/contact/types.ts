@@ -18,6 +18,7 @@ export type ContactPhoto = {
 export type ContactVCard = {
 	property: string
 	types?: string[]
+	value?: string
 }
 
 export type ContactField = {

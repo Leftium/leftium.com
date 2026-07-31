@@ -87,10 +87,10 @@
 
 	<fieldset>
 		<legend>Contact fields</legend>
-		{#each contact.fields as field (field.id)}
+		{#each contact.fields as field, index (field.id)}
 			<div class="field-row" class:unshareable={!field.shareable}>
 				<input
-					id={`contact-field-${field.id}`}
+					id={`contact-field-${index}`}
 					type="checkbox"
 					value={field.id}
 					bind:group={selectedFieldIds}
@@ -98,7 +98,7 @@
 					onchange={() => (qrError = '')}
 				/>
 				<span class:has-value={revealedFieldId === field.id} class="field-details">
-					<label class="field-name" for={`contact-field-${field.id}`}>
+					<label class="field-name" for={`contact-field-${index}`}>
 						<strong>{field.label}</strong>
 						{#if field.public}<small>Public</small>{/if}
 					</label>

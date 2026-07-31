@@ -49,7 +49,7 @@ Out of scope:
 
 - [`+page.server.ts`](<../src/routes/(centered)/contact/+page.server.ts>) returns public contact fields and public request-method labels without serializing private values. URL fields are omitted from this route's visible data.
 - [`+page.svelte`](<../src/routes/(centered)/contact/+page.svelte>) renders the public fields, vCard download, QR code, and a small link to `/contact/admin`.
-- [`contact-info.server.example.toml`](<../src/routes/(centered)/contact/contact-info.server.example.toml>) documents concise public and private fields, named sets, and the optional `qr_as_address` compatibility override. Local development can load an ignored private TOML file; deployments load the same TOML text from the `CONTACT_INFO_TOML` runtime secret.
+- [`contact-info.server.example.toml`](<../src/routes/(centered)/contact/contact-info.server.example.toml>) documents concise public and private fields, the bank preset, named sets, and the optional `qr_as_address` compatibility override. Local development can load an ignored private TOML file; deployments load the same TOML text from the `CONTACT_INFO_TOML` runtime secret.
 - [`/contact/admin`](<../src/routes/(centered)/contact/admin/+page.svelte>) provides access-key login, a single "Log out of admin mode" control, 10-minute mobile login links, and the full-width field-selection interface.
 - [`AdminContactControls.svelte`](<../src/routes/(centered)/contact/admin/AdminContactControls.svelte>) provides dense field rows, wrapping labels, named presets, arbitrary checkbox edits, and direct vCard and QR output. Field values are hidden by default, with per-field reveal and copy actions; revealing one field hides the previous value. A preset containing every shareable field clears the selection when everything is already checked, and oversized QR selections show an actionable error without disabling vCard download.
 - [`/api/vcard`](../src/routes/api/vcard/+server.ts) uses public authorization by default, accepts explicit field selections only from an authenticated admin, and serializes download and QR representations separately.
@@ -117,8 +117,8 @@ personal = "john@example.com"
 work = "john@work.example"
 
 [private.phone]
-korea = "+82 10 5555 6789"
-us = { value = "+1 212 555 6789", label = "US mobile", type = "cell" }
+"Korea mobile" = "+82 10 5555 6789"
+"US mobile" = "+1 212 555 6789"
 
 [private.address.korea]
 street = "161 Sajik-ro, Jongno-gu"
@@ -126,12 +126,15 @@ city = "Seoul"
 postal_code = "03045"
 country = "South Korea"
 
+[private.custom.bank]
+"Bank account" = "Example Bank 123"
+
 [sets]
-korea = ["phone.korea", "address.korea"]
-business = ["email.work", "phone.us"]
+korea = ["phone.Korea mobile", "address.korea"]
+business = ["email.work", "phone.US mobile"]
 ```
 
-This produces normalized fields such as `public.email`, `private.email.work`, and `private.phone.korea` without repeating those IDs in the file.
+This produces normalized fields such as `public.email`, `private.email.work`, and `private.phone.Korea mobile` without repeating those IDs in the file.
 
 The TOML should reference an image asset rather than containing a large base64 string. The server-only profile loader resolves that reference into an embeddable photo value at build time. It must remain compatible with Cloudflare Workers and must not depend on reading an arbitrary local filesystem path at request time.
 
@@ -142,31 +145,51 @@ Inference must be deterministic and documented:
 - The `public` or `private` namespace determines visibility.
 - The next path segment determines the field kind: `email`, `phone`, `url`, `address`, or `custom`.
 - A scalar kind value creates one field, such as `public.email`.
-- A table under a kind normally creates named fields, such as `private.phone.korea`.
+- A table under a kind normally creates named fields, such as
+  `private.phone.Korea mobile`.
 - An inline table containing `value` is one field with explicit overrides, not a group of child fields.
 - An address table containing recognized address components is one structured address field. The parser does not guess an address structure from a free-form string.
 - The canonical field ID is its full TOML path. Reordering entries does not change IDs.
-- A named field label defaults to its title-cased alias plus the kind, such as `korea` under `phone` becoming "Korea phone".
+- A scalar named phone uses its TOML key as its label and defaults to the `CELL` vCard type.
+  A recognized, case-insensitive prefix followed by `:` overrides the type, such as
+  `"fax: Korea office"`. Whitespace surrounding the label after the separator is ignored.
+  Unknown prefixes remain part of the label. Inline phone tables retain explicit label and
+  type behavior.
+- Other named field labels default to their title-cased alias plus the kind.
 - A singleton label defaults to the kind label, such as "Email" or "Website".
 - Email and phone links are inferred as `mailto:` and `tel:`.
 - The vCard property is inferred from the kind.
-- Well-known aliases such as `home`, `work`, `cell`, and `fax` may infer a vCard type. Other aliases do not invent one.
+- Well-known inline-table aliases such as `home`, `work`, `cell`, and `fax` may infer a vCard
+  type. Other aliases do not invent one.
+- A scalar named private URL uses its TOML key as the stable field-ID suffix, public request
+  label, and mixed-case vCard type. An optional URL fragment is its private username.
+  Authorized UI renders the decoded fragment as a parenthetical label suffix, while vCard
+  or QR output appends its normalized token to the field type for iOS and retains the
+  fragment in the URL for Android. Inline URL tables remain explicit and do not interpret
+  fragments as usernames.
+- A scalar entry under `custom.bank` uses its TOML key as the label and its scalar as the
+  private value. It infers a `NOTE` for downloaded vCards, prefixes the artifact value with
+  the label, and enables the `OTHER` address representation for QR vCards. Private bank
+  fields also infer one value-free `Bank` request method.
 - Inferred standard fields are shareable by default.
 - The profile ID defaults to the single configured profile, and the profile version defaults to `1`. Either may be supplied in `[profile]` when needed.
 - The request email defaults to the singleton public email or the public email named `main`. Multiple public emails without `main` require an explicit `request_email`.
-- Each standard private field kind becomes one request method. Its label is inferred from the kind, and its default field IDs are every private field of that kind. Custom fields require an explicit request override.
+- Each standard private field kind becomes one request method. Named URL fields instead
+  become separate request methods using their value-free field labels. The `custom.bank`
+  preset becomes one Bank request method; other custom fields require an explicit request
+  override.
 - Applying a named set selects every public field plus the private references in that set. The admin may then change any checkbox.
-- A set reference such as `phone.korea` resolves within the private namespace. A kind reference such as `phone` expands to every private phone field. The reserved value `all` expands to every private field.
+- A set reference such as `phone.Korea mobile` resolves within the private namespace. A kind reference such as `phone` expands to every private phone field. The reserved value `all` expands to every private field.
 - The top-level photo becomes a public identity field included in downloaded vCards when selected by the effective policy and always omitted from QR vCards. Its media type is inferred from the file extension unless explicitly overridden.
 
 Common scalar values may be replaced by inline tables when inference is insufficient:
 
 ```toml
 [private.phone]
-us = { value = "+1 212 555 6789", label = "US mobile", type = "cell" }
+office = { value = "+1 212 555 6789", label = "US office", type = "work" }
 
 [private.url]
-signal = { value = "https://signal.me/example", label = "Signal", vcard_type = "social" }
+KakaoTalk = "https://open.kakao.com/o/example#ExampleUser"
 ```
 
 Only meaningful overrides belong in these tables. Authors should not need to restate inferred IDs, kinds, visibility, shareability, links, or request mappings.
@@ -178,7 +201,7 @@ Optional request overrides are available only when the inferred private-kind beh
 ```toml
 [requests.phone]
 label = "Phone"
-fields = ["phone.korea"]
+fields = ["phone.Korea mobile"]
 
 [requests.url]
 enabled = false
@@ -425,6 +448,8 @@ The vCard generator must:
 - Honor an explicit `qr_as_address` compatibility override for custom fields, preserving the
   configured value as a normal vCard property in downloads while emitting it as an `OTHER` address
   in QR vCards for iPhone Camera compatibility.
+- Apply the same representation automatically to `custom.bank`, prefixing the artifact value
+  with its value-free field label.
 - Embed the configured photo with the correct vCard encoding, media type, and line folding in downloaded vCards.
 - Remove the structured photo field before QR serialization instead of trying to strip serialized continuation lines afterward.
 - Return an actionable admin-side error when the selected vCard is too large for a QR code rather than silently dropping requested contact fields.

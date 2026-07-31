@@ -62,11 +62,13 @@ export function contactFilename(displayName: string, suffix: string): string {
 }
 
 function serializeField(field: ContactField, representation: 'download' | 'qr'): string {
+	const serializedValue = field.vcard.value ?? field.value
+
 	if (representation === 'qr' && field.qrAsAddress) {
-		if (typeof field.value !== 'string') {
+		if (typeof serializedValue !== 'string') {
 			throw new Error(`Field "${field.id}" has an unsupported QR address value`)
 		}
-		return `ADR;TYPE=OTHER:;;${escapeVCardText(field.value)};;;;`
+		return `ADR;TYPE=OTHER:;;${escapeVCardText(serializedValue)};;;;`
 	}
 
 	const parameters = field.vcard.types?.length
@@ -94,11 +96,11 @@ function serializeField(field: ContactField, representation: 'download' | 'qr'):
 		return `${field.vcard.property};ENCODING=b;TYPE=${escapeParameter(type)}:${photo.base64}`
 	}
 
-	if (typeof field.value !== 'string') {
+	if (typeof serializedValue !== 'string') {
 		throw new Error(`Field "${field.id}" has an unsupported vCard value`)
 	}
 
-	return `${field.vcard.property}${parameters}:${escapeVCardText(field.value)}`
+	return `${field.vcard.property}${parameters}:${escapeVCardText(serializedValue)}`
 }
 
 function escapeVCardText(value: string): string {

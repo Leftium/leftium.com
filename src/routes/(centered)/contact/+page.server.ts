@@ -1,4 +1,8 @@
-import { formatContactFieldValue, selectContactFields } from '$lib/contact/profile'
+import {
+	formatContactFieldLabel,
+	formatContactFieldValue,
+	selectContactFields,
+} from '$lib/contact/profile'
 
 import { loadContactProfile } from './contact-profile.server'
 
@@ -7,14 +11,25 @@ import type { PageServerLoad } from './$types'
 export const load: PageServerLoad = ({ setHeaders }) => {
 	const profile = loadContactProfile()
 	const fields = selectContactFields(profile, { mode: 'public' })
-		.filter((field) => field.kind !== 'name' && field.kind !== 'url')
-		.map((field) => ({
-			id: field.id,
-			label: field.label,
-			value:
-				field.kind === 'photo' ? 'Included in downloaded vCard' : formatContactFieldValue(field),
-			href: field.link,
-		}))
+		.filter(
+			(field) =>
+				field.kind !== 'name' &&
+				(field.kind !== 'url' || (!field.public && Boolean(field.vcard.types?.length))),
+		)
+		.map((field) => {
+			const contactUrl = field.kind === 'url' && !field.public && Boolean(field.vcard.types?.length)
+			return {
+				id: field.id,
+				label: formatContactFieldLabel(field),
+				value:
+					field.kind === 'photo'
+						? 'Included in downloaded vCard'
+						: contactUrl
+							? 'Open'
+							: formatContactFieldValue(field),
+				href: field.link,
+			}
+		})
 
 	setHeaders({
 		'Cache-Control': 'private, no-store',
@@ -25,9 +40,7 @@ export const load: PageServerLoad = ({ setHeaders }) => {
 		contact: {
 			displayName: profile.displayName,
 			fields,
-			requestMethods: profile.requestMethods
-				.filter(({ id }) => id !== 'url')
-				.map(({ label }) => ({ label })),
+			requestMethods: profile.requestMethods.map(({ label }) => ({ label })),
 		},
 	}
 }
