@@ -108,7 +108,10 @@ describe('visitor grant route boundaries', () => {
 		])
 		expect(contact.request.body).toContain('[ ] Email\n[ ] Phone\n[ ] KakaoTalk')
 		expect(contact.request.body).not.toMatch(/^(?:To|Subject):/m)
-		expect(new URL(contact.request.mailtoHref).searchParams.get('body')).toBe(contact.request.body)
+		expect(new URL(contact.request.mailtoHref).searchParams.get('body')).toBe(
+			contact.request.body.replaceAll('\n', '\r\n'),
+		)
+		expect(contact.request.mailtoHref).not.toContain('+')
 		expect(serialized).not.toContain('https://public-route.example.com')
 		expect(serialized).not.toContain('private-route@example.com')
 		expect(serialized).not.toContain('+82 10 7654 3210')

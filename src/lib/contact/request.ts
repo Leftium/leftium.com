@@ -15,7 +15,6 @@ export function buildContactRequestTemplate(
 		'',
 		"I'd like to request another way to get in touch.",
 		'',
-		'Contact methods that would help',
 		'(change [ ] to [x] for any that apply):',
 		'',
 		...checklist,
@@ -23,12 +22,11 @@ export function buildContactRequestTemplate(
 		'',
 		'Context:',
 		'',
-		'[What would you like to discuss, and what contact details would help?]',
+		'[What would you like to discuss?]',
 	].join('\n')
-	const parameters = new URLSearchParams({
-		subject: 'Contact information request',
-		body,
-	})
+	const subject = 'Contact information request'
+	const mailBody = body.replaceAll('\n', '\r\n')
+	const parameters = `subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(mailBody)}`
 
 	return {
 		body,
