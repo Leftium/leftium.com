@@ -85,7 +85,7 @@
 			<button type="submit">Log out of admin mode</button>
 		</form>
 
-		<AdminContactControls contact={data.contact} />
+		<AdminContactControls contact={data.contact} {form} />
 
 		<section class="mobile-login" aria-labelledby="mobile-login-heading">
 			<h2 id="mobile-login-heading">Sign in on another device</h2>

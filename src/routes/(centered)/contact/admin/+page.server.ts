@@ -15,6 +15,12 @@ import {
 	formatContactFieldValue,
 	selectContactFields,
 } from '$lib/contact/profile'
+import {
+	CONTACT_GRANT_LIFETIME_DAYS,
+	createContactGrantToken,
+	loadVisitorAuthConfig,
+	VisitorAuthConfigurationError,
+} from '$lib/contact/visitor-auth.server'
 import { buildQrSvg } from '$lib/qr'
 import { resolve } from '$app/paths'
 import { fail, redirect } from '@sveltejs/kit'
@@ -104,6 +110,44 @@ export const actions = {
 			loginLink,
 			loginQrDataUrl: `data:image/svg+xml;charset=utf-8,${encodeURIComponent(loginQrSvg)}`,
 			expiresInMinutes: ADMIN_BOOTSTRAP_LIFETIME_MINUTES,
+		}
+	},
+	createGrantLink: async ({ cookies, request, url }) => {
+		const adminAccess = await resolveAdminAccess(cookies)
+		if (adminAccess.authorization.mode !== 'admin') {
+			return fail(401, { action: 'createGrantLink', unauthorized: true })
+		}
+
+		const profile = loadContactProfile()
+		const formData = await request.formData()
+		const fieldIds = formData.getAll('field')
+		if (!fieldIds.every((fieldId): fieldId is string => typeof fieldId === 'string')) {
+			return fail(400, { action: 'createGrantLink', invalidSelection: true })
+		}
+
+		let config
+		try {
+			config = loadVisitorAuthConfig()
+		} catch (error) {
+			if (!(error instanceof VisitorAuthConfigurationError)) throw error
+			return fail(503, { action: 'createGrantLink', unavailable: true })
+		}
+
+		let token
+		try {
+			token = await createContactGrantToken(config, profile, fieldIds)
+		} catch (error) {
+			if (!(error instanceof TypeError)) throw error
+			return fail(400, { action: 'createGrantLink', invalidSelection: true })
+		}
+
+		const grantUrl = new URL(resolve('/contact'), url.origin)
+		grantUrl.hash = new URLSearchParams({ grant: token }).toString()
+
+		return {
+			action: 'createGrantLink',
+			grantLink: grantUrl.toString(),
+			expiresInDays: CONTACT_GRANT_LIFETIME_DAYS,
 		}
 	},
 	claim: async ({ cookies, request }) => {

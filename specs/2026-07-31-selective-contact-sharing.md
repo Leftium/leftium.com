@@ -1,7 +1,7 @@
 # Selective Contact Sharing
 
 **Date**: 2026-07-31
-**Status**: In Progress - direct admin sharing is implemented; visitor grants and request email remain
+**Status**: In Progress - direct sharing and visitor grants are implemented; request email remains
 **Owner**: John
 
 ## One Sentence
@@ -17,7 +17,7 @@ The completed work establishes two modes:
 - Visitor mode shows public details with matching vCard and QR representations. Website fields stay in contact artifacts but are omitted from the site UI because the visitor is already on the website.
 - Admin mode is unlocked with a high-entropy admin access key. It shows every contact field, applies named sets as selection presets, and generates a direct vCard QR code or download for an arbitrary selection.
 
-The remaining target adds signed field grants, 24-hour visitor sessions, and the request-email workflow. The full change is complete when an unauthorized request cannot retrieve a private value from page data, vCard, or QR endpoints; the admin can share any selected combination by QR or signed link; and a pasted request email can initialize a reviewed selection without becoming trusted input.
+The remaining target adds the request-email workflow and final hardening. The full change is complete when an unauthorized request cannot retrieve a private value from page data, vCard, or QR endpoints; the admin can share any selected combination by QR or signed link; and a pasted request email can initialize a reviewed selection without becoming trusted input.
 
 ## Scope
 
@@ -56,7 +56,8 @@ Out of scope:
 - [`qr.ts`](../src/lib/qr.ts) encodes QR input as UTF-8 bytes so non-ASCII contact text survives scanning.
 - [`admin-auth.server.ts`](../src/lib/contact/admin-auth.server.ts) implements high-entropy access-key verification, one-year admin sessions, and 10-minute bootstrap tokens with distinct token claims.
 - Focused profile, vCard, QR, and admin-auth tests cover the implemented domain and token boundaries.
-- Signed visitor grants, visitor sessions, request email, and request import are not implemented yet.
+- Signed seven-day visitor grants, fragment claiming, unioned 24-hour visitor sessions, and granted
+  page/vCard/QR representations are implemented. Request email and request import remain.
 - [`wrangler.toml`](../wrangler.toml) establishes Cloudflare Workers as an intended deployment target.
 
 ## Terminology
@@ -285,7 +286,8 @@ Additional rules:
 
 - A grant contains private field IDs selected by the admin. Public fields do not need to be included in its scope.
 - Claiming another valid grant unions its private field IDs with the current visitor session and starts a new 24-hour session for the combined scope.
-- Invalid, expired, incorrectly signed, or incompatible tokens produce public-only access.
+- Invalid, expired, incorrectly signed, or incompatible tokens add no authorization. A previously
+  valid visitor session remains effective; otherwise access is public-only.
 - Client-supplied field IDs never expand a visitor's authorized scope.
 - Private values are filtered before SvelteKit serializes page data. They are not sent and hidden with CSS or client-side conditions.
 
@@ -604,7 +606,7 @@ Required controls:
 - [x] Move the current vCard and QR generation onto the new profile and selection helpers.
 - [x] Preserve public behavior using only fields explicitly marked public.
 - [x] Add admin-selected output mode.
-- [ ] Add visitor-authorized output mode.
+- [x] Add visitor-authorized output mode.
 - [x] Add no-store and cookie-varying response headers.
 - [x] Verify that query-parameter field selection cannot expand public access.
 
@@ -618,15 +620,15 @@ Do not remove the old construction path until the new public vCard and QR behavi
 - [x] Return the complete profile and named sets only in admin mode.
 - [x] Build field selection, preset application, direct vCard download, and direct QR display.
 - [x] Refine the admin UI with one logout control, dense wrapping field rows, default-hidden values, per-field reveal and copy actions, full-width layout, and all-fields deselection.
-- [ ] Add the signed access-link action and copy interaction.
+- [x] Add the signed access-link action and copy interaction.
 
 ### Phase 4: Visitor Grants
 
-- [ ] Add seven-day grant signing and strict verification.
-- [ ] Claim fragment tokens through an `onMount`-initiated POST.
-- [ ] Remove the fragment and refresh filtered page data after claim.
-- [ ] Add the 24-hour visitor cookie and scope-union behavior.
-- [ ] Render granted text, links, vCard, and QR from the same effective field set.
+- [x] Add seven-day grant signing and strict verification.
+- [x] Claim fragment tokens through an `onMount`-initiated POST.
+- [x] Remove the fragment and refresh filtered page data after claim.
+- [x] Add the 24-hour visitor cookie and scope-union behavior.
+- [x] Render granted text, links, vCard, and QR from the same effective field set.
 
 ### Phase 5: Request Email and Import
 
@@ -642,11 +644,11 @@ Do not remove the old construction path until the new public vCard and QR behavi
 - [ ] Add coarse admin-login throttling and origin checks.
 - [x] Add private no-store caching and no-referrer protections to implemented contact routes.
 - [ ] Complete token-redaction and origin protections for the remaining grant actions.
-- [ ] Cover invalid, expired, incompatible, and tampered tokens.
+- [x] Cover invalid, expired, incompatible, and tampered tokens.
 - [ ] Verify public, granted, admin, logout, direct QR, direct vCard, grant-link, and request-email flows.
 - [ ] Run type checking and linting.
 - [x] Document admin environment variables, key generation, and local setup.
-- [ ] Document grant-key rotation and recovery after the grant design is implemented.
+- [x] Document grant-key rotation and recovery.
 
 ## Edge Cases
 
@@ -658,7 +660,8 @@ Do not remove the old construction path until the new public vCard and QR behavi
 - **Unsupported inference**: Require an explicit inline or custom-field override rather than guessing.
 - **Unknown field in a set**: Reject the profile configuration.
 - **Unknown field in an admin submission**: Reject the request; do not silently sign a partial selection.
-- **Expired or invalid grant**: Remove or ignore the fragment, retain public access, and show a generic message.
+- **Expired or invalid grant**: Remove or ignore the fragment, preserve any valid existing visitor
+  session, and show a generic message.
 - **Old profile version**: Reject the grant or visitor cookie and retain public access.
 - **Multiple grants**: Union valid private scopes and issue a fresh 24-hour visitor cookie.
 - **Empty grant selection**: Do not create a link.
@@ -679,7 +682,7 @@ Do not remove the old construction path until the new public vCard and QR behavi
 - [x] A random admin access key can establish a one-year admin session, and logout removes it.
 - [x] An authenticated admin can generate a 10-minute mobile-login link and QR code that establish
       the same admin session without exposing the permanent access key.
-- [ ] Admin, grant, and visitor tokens cannot be substituted for one another.
+- [x] Admin, grant, and visitor tokens cannot be substituted for one another.
 - [x] Named sets initialize admin selections, and the admin can adjust any field afterward.
 - [x] The admin can manage the profile through concise TOML without editing TypeScript or raw vCard lines.
 - [x] A common email, phone, URL, address, photo, set, and request configuration does not repeat inferred IDs, labels, kinds, visibility, links, vCard properties, shareability, or request mappings.
@@ -688,10 +691,10 @@ Do not remove the old construction path until the new public vCard and QR behavi
 - [x] A configured custom `NOTE` remains a note in downloads and can be represented as an `OTHER` address only in QR vCards.
 - [x] QR payloads preserve UTF-8 contact text.
 - [x] The admin can produce a vCard and direct vCard QR containing exactly the checked fields plus required identity fields, subject to the QR photo exclusion.
-- [ ] The admin can copy a signed link for the checked private fields.
-- [ ] Opening a valid link grants only those fields and persists them for 24 hours.
-- [ ] Expired, modified, wrongly typed, or incompatible tokens do not reveal private data.
-- [ ] Visitor text, link, vCard, and QR output agree on the effective authorized field set.
+- [x] The admin can copy a signed link for the checked private fields.
+- [x] Opening a valid link grants only those fields and persists them for 24 hours.
+- [x] Expired, modified, wrongly typed, or incompatible tokens do not reveal private data.
+- [x] Visitor text, link, vCard, and QR output agree on the effective authorized field set.
 - [ ] The request action opens an email draft containing every configured request-method label as a bracket-only checklist item.
 - [ ] Pasting an email with checked methods suggests the configured default fields, reports unmatched entries, sends no pasted content to the server, and leaves the admin in control of the final selection.
 - [x] No database or email provider is required.

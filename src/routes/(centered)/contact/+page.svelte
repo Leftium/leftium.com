@@ -1,11 +1,33 @@
 <script lang="ts">
 	import 'open-props/style'
 
+	import { enhance } from '$app/forms'
+	import { replaceState } from '$app/navigation'
 	import { resolve } from '$app/paths'
+	import { page } from '$app/state'
+	import { onMount, tick } from 'svelte'
 
 	import type { PageProps } from './$types'
 
-	let { data }: PageProps = $props()
+	let { data, form }: PageProps = $props()
+	let claimForm = $state<HTMLFormElement>()
+	let claimToken = $state('')
+
+	onMount(() => {
+		const timeout = window.setTimeout(() => void claimGrantLink())
+		return () => window.clearTimeout(timeout)
+	})
+
+	async function claimGrantLink() {
+		const fragment = new URLSearchParams(location.hash.slice(1))
+		const token = fragment.get('grant')
+		if (!token) return
+
+		replaceState(resolve('/contact'), page.state ?? {})
+		claimToken = token
+		await tick()
+		claimForm?.requestSubmit()
+	}
 </script>
 
 <svelte:head>
@@ -13,7 +35,19 @@
 </svelte:head>
 
 <main class="contact">
+	<form class="grant-claim" method="POST" action="?/claimGrant" bind:this={claimForm} use:enhance>
+		<input type="hidden" name="token" value={claimToken} />
+	</form>
+
 	<h1>How to contact {data.contact.displayName.split(' ')[0]}</h1>
+
+	{#if data.contact.granted}
+		<p class="grant-status">Additional contact details have been shared with this browser.</p>
+	{/if}
+
+	{#if form?.action === 'claimGrant' && ('invalid' in form || 'unavailable' in form)}
+		<p class="grant-error" aria-live="polite">This access link is invalid or has expired.</p>
+	{/if}
 
 	<dl>
 		{#each data.contact.fields as field (field.id)}
@@ -42,7 +76,7 @@
 		<h2>Or scan this QR code</h2>
 		<img
 			src={resolve('/api/vcard?format=svg')}
-			alt={`QR code containing ${data.contact.displayName}'s public contact details`}
+			alt={`QR code containing ${data.contact.displayName}'s authorized contact details`}
 		/>
 	</section>
 
@@ -56,6 +90,18 @@
 		max-width: var(--size-content-2);
 		margin: auto;
 		text-align: center;
+	}
+
+	.grant-claim {
+		display: none;
+	}
+
+	.grant-status {
+		color: var(--green-8);
+	}
+
+	.grant-error {
+		color: var(--red-8);
 	}
 
 	dl {

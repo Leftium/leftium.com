@@ -53,11 +53,11 @@ vercel env add CONTACT_INFO_TOML production \
 Add the Vercel variable separately for `preview` when preview deployments need the real profile.
 Redeploy after adding or changing the secret.
 
-The admin controls live at `/contact/admin`. Generate an access key and a separate
-session-signing secret:
+The admin controls live at `/contact/admin`. Generate an access key, an admin-session signing
+secret, and a separate visitor-grant signing secret:
 
 **The login form accepts the generated `admin_...` access key. It does not accept the SHA-256
-digest or session secret stored in `.env`.**
+digest or either signing secret stored in `.env`.**
 
 ```sh
 node <<'NODE'
@@ -66,6 +66,7 @@ const { createHash, randomBytes } = require('node:crypto')
 const accessKey = `admin_${randomBytes(24).toString('base64url')}`
 const accessKeyDigest = createHash('sha256').update(accessKey).digest('hex')
 const sessionSecret = randomBytes(32).toString('base64url')
+const grantSecret = randomBytes(32).toString('base64url')
 
 console.log('\n=== ADMIN ACCESS KEY: SAVE THIS AND ENTER IT IN THE LOGIN FORM ===\n')
 console.log(accessKey)
@@ -73,12 +74,17 @@ console.log('\n=== COPY THESE VALUES TO .env ===\n')
 console.log(`CONTACT_ADMIN_KEY_SHA256=${accessKeyDigest}`)
 console.log(`CONTACT_ADMIN_SESSION_SECRET=${sessionSecret}`)
 console.log('CONTACT_ADMIN_SESSION_VERSION=1')
+console.log(`CONTACT_GRANT_SECRET=${grantSecret}`)
 console.log('\nRestart the development server after updating .env.\n')
 NODE
 ```
 
-The access key is printed once. Store it in a password manager. Keep the session secret separate
-from the access key, and do not commit either value.
+The access key is printed once. Store it in a password manager. Keep both signing secrets separate
+from the access key and from each other, and do not commit any of them. Rotating
+`CONTACT_GRANT_SECRET` immediately invalidates outstanding visitor links and visitor cookies.
+Generate and deploy a new value with the same command when the secret may be exposed, then create
+fresh links for recipients who still need access. Admin sessions use their separate secret and are
+not affected.
 
 Restart the development server after updating `.env`, then follow the small "Admin" link at the
 bottom of `/contact` or open `/contact/admin` directly.

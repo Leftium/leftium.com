@@ -1,17 +1,26 @@
 <script lang="ts">
+	import { enhance } from '$app/forms'
 	import { resolve } from '$app/paths'
 
-	import type { PageData } from './$types'
+	import type { ActionData, PageData } from './$types'
 
-	let { contact }: { contact: PageData['contact'] } = $props()
+	let { contact, form }: { contact: PageData['contact']; form: ActionData | null } = $props()
 
 	const selectableIds = $derived(new Set(contact.allFieldIds))
 	let selectedFieldIds = $derived([...contact.defaultFieldIds])
 	let qrError = $state('')
 	let revealedFieldId = $state<string | null>(null)
 	let copyResult = $state<{ fieldId: string; status: 'copied' | 'failed' } | null>(null)
+	let grantCopyStatus = $state('')
+	let grantLinkInput = $state<HTMLInputElement>()
 
 	const hasSelection = $derived(selectedFieldIds.length > 0)
+	const selectedPrivateFieldIds = $derived(
+		contact.fields
+			.filter((field) => !field.public && field.shareable && selectedFieldIds.includes(field.id))
+			.map((field) => field.id),
+	)
+	const hasPrivateSelection = $derived(selectedPrivateFieldIds.length > 0)
 	const hasAllSelected = $derived(
 		contact.allFieldIds.length > 0 &&
 			contact.allFieldIds.every((id) => selectedFieldIds.includes(id)),
@@ -44,6 +53,27 @@
 		} catch {
 			copyResult = { fieldId, status: 'failed' }
 		}
+	}
+
+	async function copyGrantLink(grantLink: string | undefined) {
+		if (!grantLink) return
+
+		if (navigator.clipboard) {
+			try {
+				await navigator.clipboard.writeText(grantLink)
+				grantCopyStatus = 'Copied'
+				return
+			} catch {
+				// Fall back for browsers that expose the API but deny access.
+			}
+		}
+
+		grantLinkInput?.focus()
+		grantLinkInput?.select()
+		grantLinkInput?.setSelectionRange(0, grantLink.length)
+		grantCopyStatus = document.execCommand('copy')
+			? 'Copied'
+			: 'Select the link and copy it manually.'
 	}
 
 	function buildArtifactQuery(format?: 'svg') {
@@ -156,6 +186,46 @@
 			<p>Select at least one contact field to create a vCard or QR code.</p>
 		{/if}
 	</section>
+
+	<section class="grant-sharing" aria-labelledby="grant-sharing-heading">
+		<h2 id="grant-sharing-heading">Share selected private details by link</h2>
+		<p>The link can be claimed for seven days and grants this browser access for 24 hours.</p>
+		<form method="POST" action="?/createGrantLink" use:enhance>
+			{#each selectedPrivateFieldIds as fieldId (fieldId)}
+				<input type="hidden" name="field" value={fieldId} />
+			{/each}
+			<button class="grant-action" type="submit" disabled={!hasPrivateSelection}
+				>Create visitor link</button
+			>
+		</form>
+
+		{#if form?.action === 'createGrantLink' && 'grantLink' in form}
+			<div class="generated-grant">
+				<label for="visitor-grant-link">Visitor link, claimable for {form.expiresInDays} days</label
+				>
+				<div class="copy-row">
+					<input
+						id="visitor-grant-link"
+						type="text"
+						readonly
+						value={form.grantLink}
+						bind:this={grantLinkInput}
+						onfocus={(event) => event.currentTarget.select()}
+					/>
+					<button type="button" onclick={() => copyGrantLink(form.grantLink)}>Copy link</button>
+				</div>
+				{#if grantCopyStatus}
+					<p class="copy-status" aria-live="polite">{grantCopyStatus}</p>
+				{/if}
+			</div>
+		{:else if form?.action === 'createGrantLink' && 'unauthorized' in form}
+			<p class="form-error">Your admin session is no longer valid. Log in again.</p>
+		{:else if form?.action === 'createGrantLink' && 'unavailable' in form}
+			<p class="form-error">Visitor link signing is not configured.</p>
+		{:else if form?.action === 'createGrantLink' && 'invalidSelection' in form}
+			<p class="form-error">Select at least one private contact field and try again.</p>
+		{/if}
+	</section>
 </section>
 
 <style>
@@ -263,6 +333,54 @@
 		margin-top: var(--size-6);
 	}
 
+	.grant-sharing {
+		margin-top: var(--size-7);
+		padding-top: var(--size-4);
+		border-top: 1px solid var(--gray-4);
+	}
+
+	.grant-action {
+		border-color: var(--blue-9);
+		background: var(--blue-8);
+		color: white;
+		font-weight: var(--font-weight-6);
+	}
+
+	.grant-action:disabled {
+		border-color: var(--gray-5);
+		background: var(--gray-3);
+		color: var(--gray-7);
+		cursor: not-allowed;
+	}
+
+	.generated-grant {
+		display: grid;
+		gap: var(--size-2);
+		max-width: 44rem;
+		margin: var(--size-4) auto 0;
+		text-align: left;
+	}
+
+	.copy-row {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+		gap: var(--size-2);
+	}
+
+	.copy-row input {
+		min-width: 0;
+		padding: var(--size-2);
+	}
+
+	.copy-status {
+		margin: 0;
+		color: var(--gray-7);
+	}
+
+	.form-error {
+		color: var(--red-8);
+	}
+
 	.button {
 		display: inline-block;
 		padding: var(--size-2) var(--size-4);
@@ -292,5 +410,11 @@
 
 	.qr-error {
 		color: var(--red-8);
+	}
+
+	@media (max-width: 35rem) {
+		.copy-row {
+			grid-template-columns: 1fr;
+		}
 	}
 </style>

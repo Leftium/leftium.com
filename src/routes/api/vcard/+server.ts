@@ -1,6 +1,7 @@
 import { resolveAdminAccess } from '$lib/contact/admin-auth.server'
 import { ContactProfileError, selectContactFields } from '$lib/contact/profile'
 import { buildVCard, buildVCardQrSvg, contactFilename, ContactQrError } from '$lib/contact/vcard'
+import { resolveVisitorAccess } from '$lib/contact/visitor-auth.server'
 import { loadContactProfile } from '../../(centered)/contact/contact-profile.server'
 
 import type { RequestHandler } from './$types'
@@ -13,14 +14,12 @@ const contactHeaders = {
 export const GET: RequestHandler = async ({ cookies, url }) => {
 	const profile = loadContactProfile()
 	const adminAccess = await resolveAdminAccess(cookies)
-	const requestedIds =
+	const adminRequestedFields =
 		adminAccess.authorization.mode === 'admin' && url.searchParams.has('field')
-			? url.searchParams.getAll('field')
-			: undefined
-	const authorization =
-		adminAccess.authorization.mode === 'admin' && requestedIds
-			? adminAccess.authorization
-			: ({ mode: 'public' } as const)
+	const requestedIds = adminRequestedFields ? url.searchParams.getAll('field') : undefined
+	const authorization = adminRequestedFields
+		? adminAccess.authorization
+		: (await resolveVisitorAccess(cookies, profile)).authorization
 	let fields
 
 	try {
