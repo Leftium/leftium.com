@@ -12,7 +12,7 @@
 	let { data, form }: PageProps = $props()
 
 	let claimToken = $state('')
-	let copyStatus = $state('')
+	let copyStatus = $state<'idle' | 'copied' | 'failed'>('idle')
 	let loginDialog = $state<HTMLDialogElement>()
 	let loginLinkInput = $state<HTMLInputElement>()
 
@@ -81,7 +81,7 @@
 		if (navigator.clipboard) {
 			try {
 				await navigator.clipboard.writeText(loginLink)
-				copyStatus = 'Copied'
+				copyStatus = 'copied'
 				return
 			} catch {
 				// Fall back for browsers that expose the API but deny access.
@@ -91,7 +91,7 @@
 		loginLinkInput?.focus()
 		loginLinkInput?.select()
 		loginLinkInput?.setSelectionRange(0, loginLink.length)
-		copyStatus = document.execCommand('copy') ? 'Copied' : 'Select the link and copy it manually.'
+		copyStatus = document.execCommand('copy') ? 'copied' : 'failed'
 	}
 </script>
 
@@ -116,7 +116,7 @@
 				method="POST"
 				action="?/createLoginLink"
 				use:enhance={() => {
-					copyStatus = ''
+					copyStatus = 'idle'
 					return async ({ update }) => update({ invalidateAll: false, reset: false })
 				}}
 			>
@@ -184,9 +184,19 @@
 						bind:this={loginLinkInput}
 						onfocus={(event) => event.currentTarget.select()}
 					/>
-					<button type="button" onclick={() => copyLoginLink(form.loginLink)}>Copy link</button>
+					<button
+						type="button"
+						aria-label={copyStatus === 'copied'
+							? 'Copied mobile login link'
+							: copyStatus === 'failed'
+								? 'Copy failed. Retry copying mobile login link'
+								: 'Copy mobile login link'}
+						aria-live="polite"
+						onclick={() => copyLoginLink(form.loginLink)}
+					>
+						{copyStatus === 'copied' ? 'Copied' : copyStatus === 'failed' ? 'Retry' : 'Copy link'}
+					</button>
 				</div>
-				{#if copyStatus}<p class="copy-status" aria-live="polite">{copyStatus}</p>{/if}
 				<img
 					class="login-qr"
 					src={form.loginQrDataUrl}
@@ -286,11 +296,6 @@
 	.copy-row input {
 		min-width: 0;
 		padding: var(--size-2);
-	}
-
-	.copy-status {
-		margin: 0;
-		color: var(--gray-7);
 	}
 
 	.login-qr {
