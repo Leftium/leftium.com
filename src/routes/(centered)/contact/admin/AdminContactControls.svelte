@@ -647,6 +647,7 @@
 		display: block;
 		width: min(100%, 20rem);
 		height: auto;
+		aspect-ratio: 1;
 		margin: var(--size-3) auto 0;
 	}
 
