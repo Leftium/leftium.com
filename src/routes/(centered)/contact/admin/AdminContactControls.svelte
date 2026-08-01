@@ -7,7 +7,9 @@
 	import type { ActionData, PageData } from './$types'
 
 	let { contact, form }: { contact: PageData['contact']; form: ActionData | null } = $props()
-	type QrTarget = { kind: 'selection' } | { kind: 'field'; label: string; url: string }
+	type DialogTarget =
+		| { kind: 'selection' }
+		| { kind: 'field'; id: string; label: string; value: string; qrEligible: boolean; url: string }
 
 	const selectableIds = $derived(new Set(contact.allFieldIds))
 	const privateFieldIds = $derived(
@@ -17,11 +19,10 @@
 	)
 	let selectedFieldIds = $derived([...contact.defaultFieldIds])
 	let qrError = $state('')
-	let revealedFieldId = $state<string | null>(null)
 	let copyResult = $state<{ fieldId: string; status: 'copied' | 'failed' } | null>(null)
 	let grantCopyStatus = $state('')
-	let qrDialog = $state<HTMLDialogElement>()
-	let qrTarget = $state<QrTarget | null>(null)
+	let detailsDialog = $state<HTMLDialogElement>()
+	let dialogTarget = $state<DialogTarget | null>(null)
 	let grantDialog = $state<HTMLDialogElement>()
 	let grantLinkInput = $state<HTMLInputElement>()
 
@@ -52,18 +53,18 @@
 	const vcardQuery = $derived(buildArtifactQuery())
 	const qrQuery = $derived(buildArtifactQuery('svg'))
 	const qrUrl = $derived(resolve(`/api/vcard?${qrQuery}`))
-	const activeQrUrl = $derived(qrTarget?.kind === 'field' ? qrTarget.url : qrUrl)
-	const activeQrHeading = $derived(
-		qrTarget?.kind === 'field' ? `${qrTarget.label} QR code` : 'Selected contact QR code',
+	const activeQrUrl = $derived(dialogTarget?.kind === 'field' ? dialogTarget.url : qrUrl)
+	const activeDialogHeading = $derived(
+		dialogTarget?.kind === 'field' ? dialogTarget.label : 'Selected contact QR code',
 	)
 	const activeQrAlt = $derived(
-		qrTarget?.kind === 'field'
-			? `QR code for ${qrTarget.label}`
+		dialogTarget?.kind === 'field'
+			? `QR code for ${dialogTarget.label}`
 			: `QR code containing the selected contact details for ${contact.displayName}`,
 	)
 	const activeQrDescription = $derived(
-		qrTarget?.kind === 'field'
-			? `Scan to use ${qrTarget.label}.`
+		dialogTarget?.kind === 'field'
+			? `Scan to use ${dialogTarget.label}.`
 			: `Scan to add the selected contact details for ${contact.displayName}.`,
 	)
 
@@ -112,13 +113,14 @@
 		applySelection(set.fieldIds)
 	}
 
-	function openQrDialog(event: MouseEvent, target: QrTarget) {
-		if (!qrDialog || typeof qrDialog.showModal !== 'function') return
+	function openDetailsDialog(event: MouseEvent, target: DialogTarget) {
+		if (!detailsDialog || typeof detailsDialog.showModal !== 'function') return
 
 		event.preventDefault()
 		qrError = ''
-		qrTarget = target
-		if (!qrDialog.open) qrDialog.showModal()
+		if (target.kind === 'field' && copyResult?.fieldId !== target.id) copyResult = null
+		dialogTarget = target
+		if (!detailsDialog.open) detailsDialog.showModal()
 	}
 
 	function closeDialogOnBackdrop(event: MouseEvent) {
@@ -142,10 +144,6 @@
 		grantDialog.showModal()
 	}
 
-	function toggleFieldValue(fieldId: string) {
-		revealedFieldId = revealedFieldId === fieldId ? null : fieldId
-	}
-
 	async function copyFieldValue(fieldId: string, value: string) {
 		try {
 			await navigator.clipboard.writeText(value)
@@ -153,6 +151,23 @@
 		} catch {
 			copyResult = { fieldId, status: 'failed' }
 		}
+	}
+
+	function copyDialogFieldValue() {
+		if (dialogTarget?.kind !== 'field') return
+		void copyFieldValue(dialogTarget.id, dialogTarget.value)
+	}
+
+	function fieldCopyButtonText(fieldId: string) {
+		if (copyResult?.fieldId !== fieldId) return 'Copy'
+		return copyResult.status === 'copied' ? 'Copied' : 'Retry'
+	}
+
+	function fieldCopyAriaLabel(fieldId: string, label: string) {
+		if (copyResult?.fieldId !== fieldId) return `Copy ${label} value`
+		return copyResult.status === 'copied'
+			? `Copied ${label} value`
+			: `Copy failed. Retry copying ${label} value`
 	}
 
 	async function copyGrantLink(grantLink: string | undefined) {
@@ -204,13 +219,13 @@
 			qrError =
 				response.status === 422
 					? await response.text()
-					: qrTarget?.kind === 'field'
+					: dialogTarget?.kind === 'field'
 						? 'The QR code could not be generated. Try again.'
 						: 'The QR code could not be generated. Try selecting fewer fields.'
 		} catch {
 			if (failedUrl === activeQrUrl) {
 				qrError =
-					qrTarget?.kind === 'field'
+					dialogTarget?.kind === 'field'
 						? 'The QR code could not be generated. Try again.'
 						: 'The QR code could not be generated. Try selecting fewer fields.'
 			}
@@ -253,57 +268,36 @@
 						grantCopyStatus = ''
 					}}
 				/>
-				<span class:has-value={revealedFieldId === field.id} class="field-details">
-					<label class="field-name" for={`contact-field-${index}`}>
-						<strong>{field.label}</strong>
-						{#if field.public}<small>Public</small>{/if}
-					</label>
-					{#if revealedFieldId === field.id}
-						<span class="field-value">{field.value}</span>
-					{/if}
-				</span>
+				<label class="field-name" for={`contact-field-${index}`}>
+					<strong>{field.label}</strong>
+					{#if field.public}<small>Public</small>{/if}
+				</label>
 				<span class="field-actions">
 					<button
 						type="button"
 						class="field-action"
-						aria-label={`${revealedFieldId === field.id ? 'Hide' : 'Show'} ${field.label} value`}
-						aria-pressed={revealedFieldId === field.id}
-						onclick={() => toggleFieldValue(field.id)}
+						aria-label={`Show ${field.label} value${field.qrEligible ? ' and QR code' : ''}`}
+						onclick={(event) =>
+							openDetailsDialog(event, {
+								kind: 'field',
+								id: field.id,
+								label: field.label,
+								value: field.value,
+								qrEligible: field.qrEligible,
+								url: buildFieldQrUrl(field.id),
+							})}
 					>
-						{revealedFieldId === field.id ? 'Hide' : 'Show'}
+						Show
 					</button>
 					<button
 						type="button"
 						class="field-action"
-						aria-label={copyResult?.fieldId === field.id
-							? copyResult.status === 'copied'
-								? `Copied ${field.label} value`
-								: `Copy failed. Retry copying ${field.label} value`
-							: `Copy ${field.label} value`}
+						aria-label={fieldCopyAriaLabel(field.id, field.label)}
 						aria-live="polite"
 						onclick={() => copyFieldValue(field.id, field.value)}
 					>
-						{copyResult?.fieldId === field.id
-							? copyResult.status === 'copied'
-								? 'Copied'
-								: 'Retry'
-							: 'Copy'}
+						{fieldCopyButtonText(field.id)}
 					</button>
-					{#if field.qrEligible}
-						<a
-							class="field-action"
-							href={buildFieldQrUrl(field.id)}
-							rel="external"
-							data-sveltekit-reload
-							onclick={(event) =>
-								openQrDialog(event, {
-									kind: 'field',
-									label: field.label,
-									url: event.currentTarget.href,
-								})}
-							aria-label={`Show ${field.label} QR code`}>QR</a
-						>
-					{/if}
 				</span>
 			</div>
 		{/each}
@@ -319,7 +313,7 @@
 				href={qrUrl}
 				rel="external"
 				data-sveltekit-reload
-				onclick={(event) => openQrDialog(event, { kind: 'selection' })}>QR code</a
+				onclick={(event) => openDetailsDialog(event, { kind: 'selection' })}>QR code</a
 			>
 		{:else}
 			<p>Select at least one contact field to create a vCard or QR code.</p>
@@ -342,14 +336,19 @@
 	</div>
 
 	<dialog
-		id="admin-contact-qr-dialog"
-		aria-labelledby="admin-contact-qr-heading"
-		bind:this={qrDialog}
+		id="admin-contact-details-dialog"
+		aria-labelledby="admin-contact-details-heading"
+		bind:this={detailsDialog}
 		onclick={closeDialogOnBackdrop}
-		onclose={() => (qrTarget = null)}
+		onclose={() => (dialogTarget = null)}
 	>
-		<h2 id="admin-contact-qr-heading">{activeQrHeading}</h2>
-		{#if qrTarget && (qrTarget.kind === 'field' || hasSelection)}
+		<h2 id="admin-contact-details-heading">{activeDialogHeading}</h2>
+		{#if dialogTarget?.kind === 'field'}
+			<div class="field-dialog-value">
+				<span>{dialogTarget.value}</span>
+			</div>
+		{/if}
+		{#if dialogTarget && (dialogTarget.kind === 'selection' ? hasSelection : dialogTarget.qrEligible)}
 			<img
 				class:failed={qrError}
 				src={activeQrUrl}
@@ -358,9 +357,20 @@
 					void showQrError(event.currentTarget.getAttribute('src') ?? activeQrUrl)}
 			/>
 			{#if qrError}<p class="qr-error" aria-live="polite">{qrError}</p>{/if}
+			<p>{activeQrDescription}</p>
 		{/if}
-		<p>{activeQrDescription}</p>
-		<form method="dialog">
+		<form method="dialog" class="dialog-actions">
+			{#if dialogTarget?.kind === 'field'}
+				<button
+					type="button"
+					class="button secondary"
+					aria-label={fieldCopyAriaLabel(dialogTarget.id, dialogTarget.label)}
+					aria-live="polite"
+					onclick={copyDialogFieldValue}
+				>
+					{fieldCopyButtonText(dialogTarget.id)}
+				</button>
+			{/if}
 			<button class="button" type="submit">Close</button>
 		</form>
 	</dialog>
@@ -388,11 +398,19 @@
 							bind:this={grantLinkInput}
 							onfocus={(event) => event.currentTarget.select()}
 						/>
-						<button type="button" onclick={() => copyGrantLink(form.grantLink)}>Copy link</button>
+						<button
+							type="button"
+							aria-label={grantCopyStatus === 'Copied'
+								? 'Copied visitor link'
+								: grantCopyStatus
+									? 'Copy failed. Retry copying visitor link'
+									: 'Copy visitor link'}
+							aria-live="polite"
+							onclick={() => copyGrantLink(form.grantLink)}
+						>
+							{grantCopyStatus === 'Copied' ? 'Copied' : grantCopyStatus ? 'Retry' : 'Copy link'}
+						</button>
 					</div>
-					{#if grantCopyStatus}
-						<p class="copy-status" aria-live="polite">{grantCopyStatus}</p>
-					{/if}
 				</div>
 			{:else if 'grantLink' in form}
 				<p class="form-error">The selection changed. Create a new visitor link.</p>
@@ -460,7 +478,10 @@
 	}
 
 	fieldset {
+		box-sizing: border-box;
 		display: grid;
+		inline-size: var(--size-content-2);
+		max-inline-size: 100%;
 		gap: 0;
 		margin: auto;
 		padding: var(--size-2);
@@ -497,24 +518,8 @@
 		font-weight: normal;
 	}
 
-	.field-details {
-		display: grid;
-		grid-template-columns: minmax(0, 1fr);
-		gap: var(--size-2);
-		align-items: baseline;
-	}
-
-	.field-details.has-value {
-		grid-template-columns: minmax(7rem, 0.45fr) minmax(0, 1fr);
-	}
-
 	.field-name {
 		overflow-wrap: anywhere;
-	}
-
-	.field-value {
-		overflow-wrap: anywhere;
-		color: var(--gray-7);
 	}
 
 	.field-actions {
@@ -544,11 +549,6 @@
 	@media (max-width: 30rem) {
 		.field-row {
 			grid-template-columns: auto minmax(0, 1fr);
-		}
-
-		.field-details.has-value {
-			grid-template-columns: minmax(0, 1fr);
-			gap: 0;
 		}
 
 		.field-actions {
@@ -600,11 +600,6 @@
 		padding: var(--size-2);
 	}
 
-	.copy-status {
-		margin: 0;
-		color: var(--gray-7);
-	}
-
 	.form-error {
 		color: var(--red-8);
 	}
@@ -651,6 +646,14 @@
 		margin-top: 0;
 	}
 
+	.field-dialog-value {
+		text-align: center;
+	}
+
+	.field-dialog-value span {
+		overflow-wrap: anywhere;
+	}
+
 	dialog img {
 		display: block;
 		width: min(100%, 20rem);
@@ -664,6 +667,23 @@
 
 	dialog form {
 		margin-top: var(--size-4);
+	}
+
+	.dialog-actions {
+		display: flex;
+		justify-content: center;
+		gap: var(--size-2);
+	}
+
+	.button.secondary {
+		border-color: var(--gray-5);
+		background: var(--gray-0);
+		color: inherit;
+		box-shadow: none;
+	}
+
+	.button.secondary:hover {
+		background: var(--gray-1);
 	}
 
 	.qr-error {
