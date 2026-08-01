@@ -52,7 +52,7 @@ export const load: PageServerLoad = async ({ cookies, setHeaders }) => {
 
 	setHeaders({
 		'Cache-Control': 'private, no-store',
-		'Referrer-Policy': 'no-referrer',
+		'Referrer-Policy': 'same-origin',
 		Vary: 'Cookie',
 	})
 
