@@ -11,7 +11,6 @@
 
 	let { data, form }: PageProps = $props()
 
-	let claimForm = $state<HTMLFormElement>()
 	let claimToken = $state('')
 	let copyStatus = $state('')
 	let loginDialog = $state<HTMLDialogElement>()
@@ -26,11 +25,11 @@
 	})
 
 	onMount(() => {
-		const timeout = window.setTimeout(() => void claimBootstrapLink())
+		const timeout = window.setTimeout(readBootstrapLink)
 		return () => window.clearTimeout(timeout)
 	})
 
-	async function claimBootstrapLink() {
+	function readBootstrapLink() {
 		if (location.hash === '#signed-in') {
 			clearBootstrapFragment()
 			return
@@ -39,11 +38,12 @@
 		const fragment = new URLSearchParams(location.hash.slice(1))
 		const token = fragment.get('login')
 		if (!token) return
+		if (data.contact.mode === 'admin') {
+			clearBootstrapFragment()
+			return
+		}
 
-		clearBootstrapFragment()
 		claimToken = token
-		await tick()
-		claimForm?.requestSubmit()
 	}
 
 	function clearBootstrapFragment() {
@@ -100,10 +100,6 @@
 </svelte:head>
 
 <main class="admin">
-	<form class="bootstrap-claim" method="POST" action="?/claim" bind:this={claimForm}>
-		<input type="hidden" name="token" value={claimToken} />
-	</form>
-
 	{#if data.contact.mode !== 'admin'}
 		<h1>Contact Admin</h1>
 	{/if}
@@ -130,6 +126,12 @@
 				<button type="submit">Log out of admin mode</button>
 			</form>
 		</div>
+	{:else if claimToken}
+		<form class="bootstrap-claim" method="POST" action="?/claim" onsubmit={clearBootstrapFragment}>
+			<p>Open this page in Safari before continuing, then tap "Enter admin mode."</p>
+			<input type="hidden" name="token" value={claimToken} />
+			<button type="submit">Enter admin mode</button>
+		</form>
 	{:else if data.contact.adminAccessAvailable}
 		<form class="login" method="POST" action="?/login" use:enhance>
 			<label for="access-key">Admin access key</label>
@@ -205,7 +207,15 @@
 	}
 
 	.bootstrap-claim {
-		display: none;
+		display: grid;
+		gap: var(--size-3);
+		justify-items: center;
+		max-width: 28rem;
+		margin: var(--size-6) auto 0;
+	}
+
+	.bootstrap-claim p {
+		margin: 0;
 	}
 
 	.back-link {
