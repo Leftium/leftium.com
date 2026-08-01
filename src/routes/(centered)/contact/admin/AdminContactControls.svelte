@@ -546,17 +546,6 @@
 		cursor: pointer;
 	}
 
-	@media (max-width: 30rem) {
-		.field-row {
-			grid-template-columns: auto minmax(0, 1fr);
-		}
-
-		.field-actions {
-			grid-column: 2;
-			justify-content: flex-start;
-		}
-	}
-
 	.grant-action {
 		border-color: var(--blue-9);
 		background: var(--blue-8);
