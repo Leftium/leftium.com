@@ -62,11 +62,6 @@
 			? `QR code for ${dialogTarget.label}`
 			: `QR code containing the selected contact details for ${contact.displayName}`,
 	)
-	const activeQrDescription = $derived(
-		dialogTarget?.kind === 'field'
-			? `Scan to use ${dialogTarget.label}.`
-			: `Scan to add the selected contact details for ${contact.displayName}.`,
-	)
 
 	function applySelection(fieldIds: string[]) {
 		qrError = ''
@@ -357,7 +352,6 @@
 					void showQrError(event.currentTarget.getAttribute('src') ?? activeQrUrl)}
 			/>
 			{#if qrError}<p class="qr-error" aria-live="polite">{qrError}</p>{/if}
-			<p>{activeQrDescription}</p>
 		{/if}
 		<form method="dialog" class="dialog-actions">
 			{#if dialogTarget?.kind === 'field'}
@@ -470,11 +464,15 @@
 
 	button {
 		padding: var(--size-2) var(--size-3);
-		border: 1px solid var(--gray-5);
+		border: 1px solid var(--admin-neutral-button-border);
 		border-radius: var(--radius-2);
-		background: var(--gray-0);
+		background: var(--admin-neutral-button-background);
 		color: inherit;
 		cursor: pointer;
+	}
+
+	button:hover {
+		background: var(--admin-neutral-button-hover-background);
 	}
 
 	fieldset {
@@ -500,8 +498,9 @@
 		line-height: 1.25;
 	}
 
-	.field-row:hover {
-		background: var(--gray-1);
+	.field-row:hover,
+	.field-row:focus-within {
+		background: var(--admin-neutral-button-hover-background);
 	}
 
 	.field-row.unshareable {
@@ -535,22 +534,15 @@
 		inline-size: 4rem;
 		min-block-size: 1.75rem;
 		padding: 0 var(--size-2);
-		border: 1px solid var(--gray-5);
+		border: 1px solid var(--admin-neutral-button-border);
 		border-radius: var(--radius-2);
-		background: var(--gray-0);
+		background: var(--admin-neutral-button-background);
 		color: inherit;
 		font: inherit;
 		font-size: var(--font-size-0);
 		line-height: 1.25;
 		text-decoration: none;
 		cursor: pointer;
-	}
-
-	.grant-action {
-		border-color: var(--blue-9);
-		background: var(--blue-8);
-		color: white;
-		font-weight: var(--font-weight-6);
 	}
 
 	.grant-action:disabled,
@@ -600,9 +592,9 @@
 		justify-content: center;
 		margin: 0;
 		padding: var(--size-2) var(--size-4);
-		border: 1px solid var(--blue-9);
+		border: 1px solid var(--admin-primary-button-border);
 		border-radius: var(--radius-2);
-		background: var(--blue-8);
+		background: var(--admin-primary-button-background);
 		color: white;
 		font: inherit;
 		font-weight: var(--font-weight-6);
@@ -613,7 +605,7 @@
 	}
 
 	.button:hover {
-		background: var(--blue-9);
+		background: var(--admin-primary-button-hover-background);
 	}
 
 	dialog {
@@ -666,14 +658,14 @@
 	}
 
 	.button.secondary {
-		border-color: var(--gray-5);
-		background: var(--gray-0);
+		border-color: var(--admin-neutral-button-border);
+		background: var(--admin-neutral-button-background);
 		color: inherit;
 		box-shadow: none;
 	}
 
 	.button.secondary:hover {
-		background: var(--gray-1);
+		background: var(--admin-neutral-button-hover-background);
 	}
 
 	.qr-error {

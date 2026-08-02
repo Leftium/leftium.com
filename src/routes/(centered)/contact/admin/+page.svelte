@@ -212,6 +212,13 @@
 
 <style>
 	.admin {
+		--admin-primary-button-border: var(--blue-9);
+		--admin-primary-button-background: var(--blue-8);
+		--admin-primary-button-hover-background: var(--blue-9);
+		--admin-neutral-button-border: color-mix(in srgb, var(--nc-secondary) 55%, transparent);
+		--admin-neutral-button-background: var(--nc-surface-2);
+		--admin-neutral-button-hover-background: var(--nc-surface-3);
+
 		margin: auto;
 		text-align: center;
 	}
@@ -249,14 +256,14 @@
 	}
 
 	.admin-logout button {
-		border-color: var(--gray-5);
-		background: var(--gray-1);
+		border-color: var(--admin-neutral-button-border);
+		background: var(--admin-neutral-button-background);
 		color: inherit;
 		box-shadow: none;
 	}
 
 	.admin-logout button:hover {
-		background: var(--gray-2);
+		background: var(--admin-neutral-button-hover-background);
 	}
 
 	.login {
@@ -311,9 +318,9 @@
 
 	button {
 		padding: var(--size-2) var(--size-4);
-		border: 1px solid var(--blue-9);
+		border: 1px solid var(--admin-primary-button-border);
 		border-radius: var(--radius-2);
-		background: var(--blue-8);
+		background: var(--admin-primary-button-background);
 		color: white;
 		font: inherit;
 		font-weight: var(--font-weight-6);
@@ -321,7 +328,7 @@
 	}
 
 	button:hover {
-		background: var(--blue-9);
+		background: var(--admin-primary-button-hover-background);
 	}
 
 	dialog {
