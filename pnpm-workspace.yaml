@@ -6,3 +6,6 @@ allowBuilds:
   esbuild: true
   sharp: true
   workerd: true
+
+minimumReleaseAgeExclude:
+  - '@leftium/nimble.css@0.24.0'

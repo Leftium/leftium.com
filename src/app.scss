@@ -11,9 +11,9 @@
 	--nc-primary: light-dark(#2060df, #8999f9);
 }
 
-/* Remove nimble's top body padding so header sits flush at top of viewport */
+/* Keep the header flush with the top of the viewport. */
 body {
-	padding-block-start: 0;
+	--nc-page-padding-block: 0;
 }
 
 /* Fix hr vertical margin: nimble defaults to 2x spacing, Pico used 1x */
@@ -27,14 +27,6 @@ hr {
    would lose to a global ul li rule. Scope to .resume instead. */
 .resume ul li {
 	list-style: square;
-}
-
-/* Reset nimble's button margin on LeftiumLogo's interactive div.
-   nimble adds margin: 0 0.25em 0.25em 0 to [role="button"] which shifts
-   the logo square relative to its glow/shadow overlays.
-   Fix belongs in @leftium/logo (add margin: 0 to .ripples.square). */
-logo-container [role='button'] {
-	margin: 0;
 }
 
 /* Restore Pico's responsive root font-size scaling (lost when removing Pico's $breakpoints config) */

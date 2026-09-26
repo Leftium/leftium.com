@@ -20,7 +20,7 @@
 			boundaries to find what is blocking the outcome and build a way forward.
 		</p>
 		<h2 class="consulting-action">
-			<a href={resolve('/digital-consulting')} role="button" class="outline">
+			<a href={resolve('/digital-consulting')} class="nc-button outline">
 				See what I can do for you
 			</a>
 		</h2>
@@ -94,7 +94,7 @@
 	</div>
 
 	<p class="testimonial-action">
-		<a href={resolve('/testimonials')} role="button" class="outline">Read the full testimonials</a>
+		<a href={resolve('/testimonials')} class="nc-button outline">Read the full testimonials</a>
 	</p>
 </scope-css>
 
@@ -135,7 +135,7 @@
 			justify-self: center;
 		}
 
-		:global([role='button']) {
+		:global(.nc-button) {
 			border-radius: 2rem;
 		}
 

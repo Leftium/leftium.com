@@ -133,14 +133,6 @@
 		min-width: var(--switch-min-width);
 		overflow: hidden;
 
-		/* Suppress nimble [role="group"] dividers and border-radius reset */
-		:global(> * + *::before) {
-			content: none !important;
-		}
-		:global(> *) {
-			border-radius: inherit !important;
-		}
-
 		.switch-slider {
 			position: absolute;
 			background: var(--nc-primary);

@@ -431,7 +431,7 @@
 	</section>
 
 	<p class="contact-action">
-		<a href={resolve('/contact')} role="button" class="outline">Tell me what you're stuck on</a>
+		<a href={resolve('/contact')} class="nc-button outline">Tell me what you're stuck on</a>
 	</p>
 </div>
 
@@ -578,7 +578,7 @@
 		text-align: center;
 	}
 
-	.contact-action [role='button'] {
+	.contact-action .nc-button {
 		border-radius: 2rem;
 	}
 </style>

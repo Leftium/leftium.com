@@ -20,7 +20,7 @@
 		"@eslint/compat": "^2.1.0",
 		"@eslint/js": "^10.0.1",
 		"@leftium/logo": "^0.4.0",
-		"@leftium/nimble.css": "^0.20.0",
+		"@leftium/nimble.css": "^0.24.0",
 		"@sveltejs/adapter-auto": "^7.0.1",
 		"@sveltejs/adapter-cloudflare": "^7.2.9",
 		"@sveltejs/adapter-vercel": "^6.3.4",
