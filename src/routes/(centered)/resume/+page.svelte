@@ -1,13 +1,13 @@
 <script lang="ts">
 	import 'open-props/style'
-	import '$lib/resume.css'
+	import '#lib/resume.css'
 
 	import markdownit from 'markdown-it'
 	import markdownitDeflist from 'markdown-it-deflist'
 	import { LeftiumLogo } from '@leftium/logo'
 	import { page } from '$app/state'
 	import { fly } from 'svelte/transition'
-	import { dev } from '$app/environment'
+	import { dev } from '$app/env'
 
 	import resume from './resume.md?raw'
 	const md = markdownit({

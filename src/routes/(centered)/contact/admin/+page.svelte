@@ -48,7 +48,7 @@
 
 	function clearBootstrapFragment() {
 		try {
-			replaceState(resolve('/contact/admin'), page.state ?? {})
+			replaceState(resolve('contact/admin'), page.state ?? {})
 		} catch {
 			// A fresh page can mount before SvelteKit's router is ready. The claim redirect also clears it.
 		}
@@ -158,7 +158,7 @@
 	{/if}
 
 	<footer>
-		<a class="back-link" href={resolve('/contact')}>Back to public contact page</a>
+		<a class="back-link" href={resolve('contact')}>Back to public contact page</a>
 	</footer>
 
 	{#if form?.action === 'createLoginLink' && 'loginLink' in form}

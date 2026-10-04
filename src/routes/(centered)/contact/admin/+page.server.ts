@@ -9,20 +9,20 @@ import {
 	setAdminSessionCookie,
 	verifyAdminAccessKey,
 	verifyAdminBootstrapToken,
-} from '$lib/contact/admin-auth.server'
+} from '#lib/contact/admin-auth.server.js'
 import {
 	formatContactFieldLabel,
 	formatContactFieldValue,
 	selectContactFields,
-} from '$lib/contact/profile'
-import { isContactFieldQrEligible } from '$lib/contact/field-qr'
+} from '#lib/contact/profile.js'
+import { isContactFieldQrEligible } from '#lib/contact/field-qr.js'
 import {
 	CONTACT_GRANT_LIFETIME_DAYS,
 	createContactGrantToken,
 	loadVisitorAuthConfig,
 	VisitorAuthConfigurationError,
-} from '$lib/contact/visitor-auth.server'
-import { buildQrSvg } from '$lib/qr'
+} from '#lib/contact/visitor-auth.server.js'
+import { buildQrSvg } from '#lib/qr.js'
 import { resolve } from '$app/paths'
 import { fail, redirect } from '@sveltejs/kit'
 
@@ -102,7 +102,7 @@ export const actions = {
 
 		const config = loadAdminAuthConfig()
 		const token = await createAdminBootstrapToken(config)
-		const loginUrl = new URL(resolve('/contact/admin'), url.origin)
+		const loginUrl = new URL(resolve('contact/admin'), url.origin)
 		loginUrl.hash = new URLSearchParams({ login: token }).toString()
 		const loginLink = loginUrl.toString()
 		const loginQrSvg = buildQrSvg(loginLink)
@@ -143,7 +143,7 @@ export const actions = {
 			return fail(400, { action: 'createGrantLink', invalidSelection: true })
 		}
 
-		const grantUrl = new URL(resolve('/contact'), url.origin)
+		const grantUrl = new URL(resolve('contact'), url.origin)
 		grantUrl.hash = new URLSearchParams({ grant: grant.token }).toString()
 
 		return {
@@ -171,10 +171,10 @@ export const actions = {
 
 		const sessionToken = await createAdminSessionToken(config)
 		setAdminSessionCookie(cookies, sessionToken, config)
-		redirect(303, `${resolve('/contact/admin')}#signed-in`)
+		redirect(303, `${resolve('contact/admin')}#signed-in`)
 	},
 	logout: ({ cookies }) => {
 		clearAdminSessionCookie(cookies)
-		redirect(303, resolve('/contact'))
+		redirect(303, resolve('contact'))
 	},
 } satisfies Actions

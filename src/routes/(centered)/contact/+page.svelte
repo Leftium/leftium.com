@@ -32,7 +32,7 @@
 
 	function clearGrantFragment() {
 		try {
-			replaceState(resolve('/contact'), page.state ?? {})
+			replaceState(resolve('contact'), page.state ?? {})
 		} catch {
 			// A fresh page can mount before SvelteKit's router is ready. A successful claim also clears it.
 		}
@@ -105,10 +105,10 @@
 
 	<h1>How to contact {data.contact.displayName.split(' ')[0]}</h1>
 	<div class="button-row contact-actions" aria-label="Contact card actions">
-		<a class="button" href={resolve('/api/vcard')} data-sveltekit-reload download>Download vCard</a>
+		<a class="button" href={resolve('api/vcard')} data-sveltekit-reload download>Download vCard</a>
 		<a
 			class="button"
-			href={resolve('/api/vcard?format=svg')}
+			href={resolve('api/vcard?format=svg')}
 			rel="external"
 			data-sveltekit-reload
 			onclick={openQrDialog}>QR code</a
@@ -172,7 +172,7 @@
 	>
 		<h2 id="contact-qr-heading">Contact QR code</h2>
 		<img
-			src={resolve('/api/vcard?format=svg')}
+			src={resolve('api/vcard?format=svg')}
 			alt={`QR code containing ${data.contact.displayName}'s authorized contact details`}
 		/>
 		<p>Scan to add {data.contact.displayName.split(' ')[0]}'s authorized contact details.</p>
@@ -182,7 +182,7 @@
 	</dialog>
 
 	<footer>
-		<a class="admin-link" href={resolve('/contact/admin')}>Admin</a>
+		<a class="admin-link" href={resolve('contact/admin')}>Admin</a>
 	</footer>
 </main>
 

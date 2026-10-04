@@ -1,12 +1,12 @@
-import { resolveAdminAccess } from '$lib/contact/admin-auth.server'
+import { resolveAdminAccess } from '#lib/contact/admin-auth.server.js'
 import {
 	buildContactFieldQrPayload,
 	ContactFieldQrError,
 	isContactFieldQrEligible,
-} from '$lib/contact/field-qr'
-import { ContactProfileError, selectContactFields } from '$lib/contact/profile'
-import { contactFilename } from '$lib/contact/vcard'
-import { buildQrSvg } from '$lib/qr'
+} from '#lib/contact/field-qr.js'
+import { ContactProfileError, selectContactFields } from '#lib/contact/profile.js'
+import { contactFilename } from '#lib/contact/vcard.js'
+import { buildQrSvg } from '#lib/qr.js'
 import { loadContactProfile } from '../../(centered)/contact/contact-profile.server'
 
 import type { RequestHandler } from './$types'

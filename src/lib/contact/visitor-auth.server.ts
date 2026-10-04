@@ -1,5 +1,5 @@
-import { dev } from '$app/environment'
-import { env } from '$env/dynamic/private'
+import { dev } from '$app/env'
+import { CONTACT_GRANT_SECRET } from '$app/env/private'
 import { base64url, jwtVerify, SignJWT } from 'jose'
 
 import type { Cookies } from '@sveltejs/kit'
@@ -62,7 +62,7 @@ export function parseVisitorAuthConfig(
 }
 
 export function loadVisitorAuthConfig(): VisitorAuthConfig {
-	return parseVisitorAuthConfig(env)
+	return parseVisitorAuthConfig({ CONTACT_GRANT_SECRET })
 }
 
 export async function createContactGrantToken(

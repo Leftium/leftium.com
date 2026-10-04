@@ -1,4 +1,4 @@
-import { buildQrSvg } from '$lib/qr'
+import { buildQrSvg } from '#lib/qr.js'
 
 import type { ContactAddress, ContactField, ContactPhoto } from './types'
 

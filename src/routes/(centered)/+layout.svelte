@@ -2,15 +2,13 @@
 	import 'open-props/style'
 
 	import { LeftiumLogo } from '@leftium/logo'
-	import { page } from '$app/stores'
+	import { page } from '$app/state'
 	import { resolve } from '$app/paths'
 
 	let { children } = $props()
 
 	// Read resume format from URL for brand visibility
-	const hideBrand = $derived(
-		$page.url.pathname === '/resume' && !$page.url.searchParams.has('text'),
-	)
+	const hideBrand = $derived(page.url.pathname === '/resume' && !page.url.searchParams.has('text'))
 </script>
 
 <header class="screen-only bleed-edge">
@@ -21,7 +19,7 @@
 					<div class="logo-wrapper" class:hidden={hideBrand}>
 						<LeftiumLogo boundingBox="cropped" size="3.75rem" />
 					</div>
-					<a href={resolve('/')} class="brand-text">
+					<a href={resolve('')} class="brand-text">
 						<h1>Leftium</h1>
 						<em>The element of creativity!</em>
 					</a>
@@ -29,17 +27,17 @@
 			</li>
 		</ul>
 		<ul>
-			<li><a href={resolve('/')} class:active={$page.url.pathname === '/'}>Home</a></li>
+			<li><a href={resolve('')} class:active={page.url.pathname === '/'}>Home</a></li>
 			<li>
-				<a href={resolve('/resume')} class:active={$page.url.pathname === '/resume'}>Resume</a>
+				<a href={resolve('resume')} class:active={page.url.pathname === '/resume'}>Resume</a>
 			</li>
 			<li>
-				<a href={resolve('/portfolio')} class:active={$page.url.pathname === '/portfolio'}
+				<a href={resolve('portfolio')} class:active={page.url.pathname === '/portfolio'}
 					>Portfolio</a
 				>
 			</li>
 			<li>
-				<a href={resolve('/contact')} class:active={$page.url.pathname === '/contact'}>Contact</a>
+				<a href={resolve('contact')} class:active={page.url.pathname === '/contact'}>Contact</a>
 			</li>
 		</ul>
 	</nav>

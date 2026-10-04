@@ -1,14 +1,14 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { createAdminSessionToken, parseAdminAuthConfig } from '$lib/contact/admin-auth.server'
-import { parseContactProfileToml } from '$lib/contact/profile'
+import { createAdminSessionToken, parseAdminAuthConfig } from '#lib/contact/admin-auth.server.js'
+import { parseContactProfileToml } from '#lib/contact/profile.js'
 import {
 	createContactGrantToken,
 	createVisitorSessionToken,
 	parseVisitorAuthConfig,
 	verifyContactGrantToken,
 	verifyVisitorSessionToken,
-} from '$lib/contact/visitor-auth.server'
+} from '#lib/contact/visitor-auth.server.js'
 
 import type { Cookies } from '@sveltejs/kit'
 
@@ -21,7 +21,7 @@ const testState = vi.hoisted(() => ({
 	},
 }))
 
-vi.mock('$env/dynamic/private', () => ({ env: testState.env }))
+vi.mock('$app/env/private', () => testState.env)
 
 const profile = parseContactProfileToml(`
 [profile]

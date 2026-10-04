@@ -1,21 +1,19 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import {
-	createAdminBootstrapToken,
-	parseAdminAuthConfig,
-} from '$lib/contact/admin-auth.server'
+import { createAdminBootstrapToken, parseAdminAuthConfig } from '#lib/contact/admin-auth.server.js'
 
 import type { Cookies } from '@sveltejs/kit'
 
 const testState = vi.hoisted(() => ({
 	env: {
+		CONTACT_INFO_TOML: '',
 		CONTACT_ADMIN_KEY_SHA256: '0'.repeat(64),
 		CONTACT_ADMIN_SESSION_SECRET: 'A'.repeat(43),
 		CONTACT_ADMIN_SESSION_VERSION: '1',
 	},
 }))
 
-vi.mock('$env/dynamic/private', () => ({ env: testState.env }))
+vi.mock('$app/env/private', () => testState.env)
 
 const now = new Date('2026-08-01T00:00:00.000Z')
 

@@ -117,7 +117,7 @@
 		</ul>
 
 		<p class="centered-action">
-			<a href={resolve('/portfolio')} class="nc-button outline">See more work</a>
+			<a href={resolve('portfolio')} class="nc-button outline">See more work</a>
 		</p>
 	</section>
 
@@ -133,7 +133,7 @@
 		</blockquote>
 
 		<p class="centered-action">
-			<a href={resolve('/testimonials')} class="nc-button outline">Read the testimonials</a>
+			<a href={resolve('testimonials')} class="nc-button outline">Read the testimonials</a>
 		</p>
 	</section>
 
@@ -148,7 +148,7 @@
 			ongoing fractional support, or the right full-time role.
 		</p>
 		<p class="centered-action">
-			<a href={resolve('/contact')} class="nc-button outline">Tell me what you're stuck on</a>
+			<a href={resolve('contact')} class="nc-button outline">Tell me what you're stuck on</a>
 		</p>
 	</section>
 </div>
