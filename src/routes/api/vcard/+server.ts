@@ -1,7 +1,7 @@
-import { resolveAdminAccess } from '$lib/contact/admin-auth.server'
-import { ContactProfileError, selectContactFields } from '$lib/contact/profile'
-import { buildVCard, buildVCardQrSvg, contactFilename, ContactQrError } from '$lib/contact/vcard'
-import { resolveVisitorAccess } from '$lib/contact/visitor-auth.server'
+import { resolveAdminAccess } from '#lib/contact/admin-auth.server.js'
+import { ContactProfileError, selectContactFields } from '#lib/contact/profile.js'
+import { buildVCard, buildVCardQrSvg, contactFilename, ContactQrError } from '#lib/contact/vcard.js'
+import { resolveVisitorAccess } from '#lib/contact/visitor-auth.server.js'
 import { loadContactProfile } from '../../(centered)/contact/contact-profile.server'
 
 import type { RequestHandler } from './$types'

@@ -2,8 +2,8 @@ import {
 	formatContactFieldLabel,
 	formatContactFieldValue,
 	selectContactFields,
-} from '$lib/contact/profile'
-import { buildContactRequestTemplate } from '$lib/contact/request'
+} from '#lib/contact/profile.js'
+import { buildContactRequestTemplate } from '#lib/contact/request.js'
 import {
 	createVisitorSessionToken,
 	loadVisitorAuthConfig,
@@ -11,12 +11,12 @@ import {
 	setVisitorSessionCookie,
 	verifyContactGrantToken,
 	VisitorAuthConfigurationError,
-} from '$lib/contact/visitor-auth.server'
+} from '#lib/contact/visitor-auth.server.js'
 import { fail } from '@sveltejs/kit'
 
 import { loadContactProfile } from './contact-profile.server'
 
-import type { ContactField } from '$lib/contact/types'
+import type { ContactField } from '#lib/contact/types.js'
 import type { Actions, PageServerLoad } from './$types'
 
 export const load: PageServerLoad = async ({ cookies, setHeaders }) => {

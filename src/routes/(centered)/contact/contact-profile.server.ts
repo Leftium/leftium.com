@@ -1,8 +1,8 @@
-import { parseContactProfileToml } from '$lib/contact/profile'
-import { dev } from '$app/environment'
-import { env } from '$env/dynamic/private'
+import { parseContactProfileToml } from '#lib/contact/profile.js'
+import { dev } from '$app/env'
+import { CONTACT_INFO_TOML } from '$app/env/private'
 
-import type { ContactPhotoSource, ContactProfile } from '$lib/contact/types'
+import type { ContactPhotoSource, ContactProfile } from '#lib/contact/types.js'
 
 const profileSources = import.meta.glob('./contact-info.server*.toml', {
 	eager: true,
@@ -22,7 +22,7 @@ export function loadContactProfile(): ContactProfile {
 	if (cachedProfile) return cachedProfile
 
 	const source =
-		env.CONTACT_INFO_TOML?.trim() ||
+		CONTACT_INFO_TOML?.trim() ||
 		profileSources['./contact-info.server.toml'] ||
 		(dev ? profileSources['./contact-info.server.example.toml'] : undefined)
 

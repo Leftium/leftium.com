@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { createAdminSessionToken, parseAdminAuthConfig } from '$lib/contact/admin-auth.server'
-import { parseContactProfileToml } from '$lib/contact/profile'
+import { createAdminSessionToken, parseAdminAuthConfig } from '#lib/contact/admin-auth.server.js'
+import { parseContactProfileToml } from '#lib/contact/profile.js'
 
 import type { Cookies } from '@sveltejs/kit'
 
@@ -14,8 +14,8 @@ const testState = vi.hoisted(() => ({
 	payloads: [] as string[],
 }))
 
-vi.mock('$env/dynamic/private', () => ({ env: testState.env }))
-vi.mock('$lib/qr', () => ({
+vi.mock('$app/env/private', () => testState.env)
+vi.mock('#lib/qr.js', () => ({
 	buildQrSvg: (payload: string) => {
 		testState.payloads.push(payload)
 		return '<svg xmlns="http://www.w3.org/2000/svg"></svg>'

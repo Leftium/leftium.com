@@ -2,7 +2,7 @@
 	import 'open-props/style'
 
 	import { resolve } from '$app/paths'
-	import { makeTagFunctionMd } from '$lib/tag-functions/markdown'
+	import { makeTagFunctionMd } from '#lib/tag-functions/markdown.js'
 	import attr from 'markdown-it-attrs'
 
 	const md = makeTagFunctionMd({ html: true, linkify: true, typographer: true, breaks: false }, [
@@ -20,7 +20,7 @@
 			boundaries to find what is blocking the outcome and build a way forward.
 		</p>
 		<h2 class="consulting-action">
-			<a href={resolve('/digital-consulting')} class="nc-button outline">
+			<a href={resolve('digital-consulting')} class="nc-button outline">
 				See what I can do for you
 			</a>
 		</h2>
@@ -94,7 +94,7 @@
 	</div>
 
 	<p class="testimonial-action">
-		<a href={resolve('/testimonials')} class="nc-button outline">Read the full testimonials</a>
+		<a href={resolve('testimonials')} class="nc-button outline">Read the full testimonials</a>
 	</p>
 </scope-css>
 

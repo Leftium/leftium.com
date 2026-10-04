@@ -1,5 +1,9 @@
-import { dev } from '$app/environment'
-import { env } from '$env/dynamic/private'
+import { dev } from '$app/env'
+import {
+	CONTACT_ADMIN_KEY_SHA256,
+	CONTACT_ADMIN_SESSION_SECRET,
+	CONTACT_ADMIN_SESSION_VERSION,
+} from '$app/env/private'
 import { base64url, jwtVerify, SignJWT } from 'jose'
 
 import type { Cookies } from '@sveltejs/kit'
@@ -62,7 +66,11 @@ export function parseAdminAuthConfig(
 }
 
 export function loadAdminAuthConfig(): AdminAuthConfig {
-	return parseAdminAuthConfig(env)
+	return parseAdminAuthConfig({
+		CONTACT_ADMIN_KEY_SHA256,
+		CONTACT_ADMIN_SESSION_SECRET,
+		CONTACT_ADMIN_SESSION_VERSION,
+	})
 }
 
 export async function verifyAdminAccessKey(

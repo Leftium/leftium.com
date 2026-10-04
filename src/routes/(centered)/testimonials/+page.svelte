@@ -1,7 +1,7 @@
 <script>
 	import 'open-props/style'
 
-	import { makeTagFunctionMd } from '$lib/tag-functions/markdown.js'
+	import { makeTagFunctionMd } from '#lib/tag-functions/markdown.js'
 	import attr from 'markdown-it-attrs'
 	import centerText from 'markdown-it-center-text'
 	import deflist from 'markdown-it-deflist'

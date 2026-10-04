@@ -431,7 +431,7 @@
 	</section>
 
 	<p class="contact-action">
-		<a href={resolve('/contact')} class="nc-button outline">Tell me what you're stuck on</a>
+		<a href={resolve('contact')} class="nc-button outline">Tell me what you're stuck on</a>
 	</p>
 </div>
 
